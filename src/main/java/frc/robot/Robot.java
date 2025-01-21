@@ -1,13 +1,9 @@
 package frc.robot;
 
-import java.util.function.Consumer;
-
 import org.apache.logging.log4j.Logger;
+import org.usfirst.frc3620.*;
 import org.usfirst.frc3620.logger.EventLogging;
 import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
-import org.usfirst.frc3620.misc.FileSaver;
-import org.usfirst.frc3620.misc.GitNess;
-import org.usfirst.frc3620.misc.RobotMode;
 
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
@@ -38,49 +34,44 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    DogLog.setOptions(new DogLogOptions().withCaptureDs(false));
-
+    // get data logging going
+    DogLog.setOptions(new DogLogOptions().withCaptureDs(true).withCaptureNt(false));
     DogLog.log("Version", GitNess.gitDescription());
-    
+
     logger = EventLogging.getLogger(Robot.class, FRC3620Level.INFO);
     logger.info ("I'm alive! {}", GitNess.gitDescription());
+
+    Utilities.addDataLogForNT("frc3620");
 
     PortForwarder.add (10080, "wpilibpi.local", 80);
     PortForwarder.add (10022, "wpilibpi.local", 22);
     
     for (int port = 5800; port <= 5809; port++) {
       PortForwarder.add(port, "limelight.local", port);
-    }    
+    }
 
 
-    CommandScheduler.getInstance().onCommandInitialize(new Consumer<Command>() {//whenever a command initializes, the function declared bellow will run.
-      public void accept(Command command) {
-        logger.info("Initialized {}", command.getClass().getSimpleName());//I scream at people
-      }
-    });
+    // whenever a command initializes, the function declared below will run.
+    CommandScheduler.getInstance().onCommandInitialize(command ->
+            logger.info("Initialized {}", command.getClass().getSimpleName()));
 
-    CommandScheduler.getInstance().onCommandFinish(new Consumer<Command>() {//whenever a command ends, the function declared bellow will run.
-      public void accept(Command command) {
-        logger.info("Ended {}", command.getClass().getSimpleName());//I, too, scream at people
-      }
-    });
+    // whenever a command ends, the function declared below will run.
+    CommandScheduler.getInstance().onCommandFinish(command ->
+            logger.info("Ended {}", command.getClass().getSimpleName()));
 
-    CommandScheduler.getInstance().onCommandInterrupt(new Consumer<Command>() {//whenever a command ends, the function declared bellow will run.
-      public void accept(Command command) {
-        logger.info("Interrupted {}", command.getClass().getSimpleName());//I, in addition, as well, scream.
-      }
-    });
+    // whenever a command ends, the function declared below will run.
+    CommandScheduler.getInstance().onCommandInterrupt(command ->
+            logger.info("Interrupted {}", command.getClass().getSimpleName()));
     
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
-    // get data logging going
-    // TODO: set up Doglog
-
     FileSaver.add("networktables.ini");
 
     enableLiveWindowInTest(true);
+
+    DriverStation.silenceJoystickConnectionWarning(true);
   }
 
   /**
@@ -172,16 +163,21 @@ public class Robot extends TimedRobot {
     previousRobotMode = currentRobotMode;
     currentRobotMode = newMode;
 
+    NTPublisher.putString("frc3620/mode", newMode.toString());
+    NTPublisher.putNumber("frc3620/modeInt", newMode.ordinal());
+
     // if any subsystems need to know about mode changes, let
     // them know here.
     // exampleSubsystem.processRobotModeChange(newMode);
     
   }
 
+  @SuppressWarnings("unused")
   public static RobotMode getCurrentRobotMode(){
     return currentRobotMode;
   }
 
+  @SuppressWarnings("unused")
   public static RobotMode getPreviousRobotMode(){
     return previousRobotMode;
   }
@@ -197,20 +193,19 @@ public class Robot extends TimedRobot {
     logger.info("Alliance {}, position {}", DriverStation.getAlliance(), DriverStation.getLocation());
   }
 
-  private final static long SOME_TIME_AFTER_1970 = 523980000000L;
   private boolean hasCANBusBeenLogged;
   
   void logCANBusIfNecessary() {
     if (!hasCANBusBeenLogged) {
-      long now = System.currentTimeMillis();
-      if (now > SOME_TIME_AFTER_1970) {
-        logger.info ("CAN bus: " + RobotContainer.canDeviceFinder.getDeviceSet());
+      if (DriverStation.isDSAttached()) {
+        logger.info("CAN bus: {}", RobotContainer.canDeviceFinder.getDeviceSet());
         var missingDevices = RobotContainer.canDeviceFinder.getMissingDeviceSet();
-        if (missingDevices.size() > 0) {
-          logger.warn ("Missing devices: " + missingDevices);
+        if (!missingDevices.isEmpty()) {
+          logger.warn("Missing devices: {}", missingDevices);
         }
         hasCANBusBeenLogged = true;
       }
     }
   }
+
 }
