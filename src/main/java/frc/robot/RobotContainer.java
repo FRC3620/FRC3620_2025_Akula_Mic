@@ -19,11 +19,10 @@ import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
 import org.usfirst.frc3620.CANDeviceFinder;
 import org.usfirst.frc3620.CANDeviceType;
 import org.usfirst.frc3620.RobotParametersContainer;
+import org.usfirst.frc3620.Utilities;
 import org.usfirst.frc3620.XBoxConstants;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -56,7 +55,6 @@ public class RobotContainer {
   public static PneumaticsModuleType pneumaticModuleType = null;
 
   // subsystems here
-  private static ExampleSubsystem exampleSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -158,10 +156,14 @@ public class RobotContainer {
 
     setupAutonomousCommands();
 
-    // Configure the trigger bindings
-    configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
+
+    Utilities.addDataLogForNT("SmartDashboard/swerve");
+  }
+
+  private void makeSubsystems() {
+  
   }
 
   /**
@@ -177,7 +179,7 @@ public class RobotContainer {
    * controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick
    * Flight joysticks}.
    */
-  private void configureBindings() {
+  private void configureButtonBindings() {
 
     Command driveFieldOrientedDirectAngle = drivebase.driveFieldOriented(driveDirectAngle);
     Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
@@ -221,28 +223,15 @@ public class RobotContainer {
       driverXbox.rightBumper().onTrue(Commands.none());
     }
 
-  }
-
-  private void makeSubsystems() {
-    exampleSubsystem = new ExampleSubsystem();
-  }
-
-  /**
-   * Use this method to define your button->command mappings. Buttons can be
-   * created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
-   * it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
-  private void configureButtonBindings() {
     driverJoystick = new Joystick(0);
     operatorJoystick = new Joystick(1);
 
     new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A)
         .onTrue(new LogCommand("'A' button hit"));
 
+
   }
+
 
   private void setupSmartDashboardCommands() {
     // SmartDashboard.putData(new xxxxCommand());
@@ -253,7 +242,7 @@ public class RobotContainer {
   public void setupAutonomousCommands() {
     SmartDashboard.putData("Auto mode", chooser);
 
-    chooser.addOption("Example Command", new ExampleCommand(exampleSubsystem));
+    //chooser.addOption("Example Command", new ExampleCommand(exampleSubsystem));
   }
 
   /**
