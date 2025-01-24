@@ -129,6 +129,7 @@ public class RobotContainer {
 
     robotParameters = RobotParametersContainer.getRobotParameters(RobotParameters.class);
     logger.info("got parameters for chassis '{}'", robotParameters.getName());
+    Utilities.logMetadataToDataLog("Robot", robotParameters.getName());
 
     practiceBotJumper = new DigitalInput(0);
     boolean iAmACompetitionRobot = amIACompBot();
