@@ -9,13 +9,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.io.File;
 
-import org.apache.logging.log4j.Logger;
-import org.usfirst.frc3620.logger.EventLogging;
+import org.tinylog.TaggedLogger;
+
 import org.usfirst.frc3620.logger.LogCommand;
+import org.usfirst.frc3620.logger.LoggingMaster;
 
 import com.pathplanner.lib.auto.NamedCommands;
 
-import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
 import org.usfirst.frc3620.CANDeviceFinder;
 import org.usfirst.frc3620.CANDeviceType;
 import org.usfirst.frc3620.RobotParametersContainer;
@@ -42,7 +42,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  public final static Logger logger = EventLogging.getLogger(RobotContainer.class, FRC3620Level.INFO);
+  public final static TaggedLogger logger = LoggingMaster.getLogger(RobotContainer.class);
 
   // need this
   public static CANDeviceFinder canDeviceFinder;
