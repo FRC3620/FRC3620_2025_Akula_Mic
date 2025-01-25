@@ -13,6 +13,7 @@ import org.usfirst.frc3620.RobotParametersContainer;
 import org.usfirst.frc3620.XBoxConstants;
 
 import frc.robot.commands.ExampleCommand;
+import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -40,6 +41,8 @@ public class RobotContainer {
 
   // subsystems here
   private static ExampleSubsystem exampleSubsystem;
+  ClimberSubsystem climberSubsystem;
+
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -81,6 +84,7 @@ public class RobotContainer {
 
   private void makeSubsystems() {
     exampleSubsystem = new ExampleSubsystem();
+    climberSubsystem=new ClimberSubsystem();
   }
 
   /**
