@@ -1,34 +1,55 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.apache.logging.log4j.Logger;
-import org.usfirst.frc3620.logger.EventLogging;
+
+import java.io.File;
+
+import org.tinylog.TaggedLogger;
+
 import org.usfirst.frc3620.logger.LogCommand;
-import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
+import org.usfirst.frc3620.logger.LoggingMaster;
+
+import com.pathplanner.lib.auto.NamedCommands;
+
 import org.usfirst.frc3620.CANDeviceFinder;
 import org.usfirst.frc3620.CANDeviceType;
 import org.usfirst.frc3620.RobotParametersContainer;
+import org.usfirst.frc3620.Utilities;
 import org.usfirst.frc3620.XBoxConstants;
 
-import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.SetClimberPostionCommand;
-import frc.robot.subsystems.ClimberSubsystem;
-import frc.robot.subsystems.ExampleSubsystem;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.Constants.OperatorConstants;
 
+import frc.robot.subsystems.HealthSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
+
+import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import swervelib.SwerveInputStream;
+
+import frc.robot.commands.SetClimberPostionCommand;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  public final static Logger logger = EventLogging.getLogger(RobotContainer.class, FRC3620Level.INFO);
-  
+  public final static TaggedLogger logger = LoggingMaster.getLogger(RobotContainer.class);
+
   // need this
   public static CANDeviceFinder canDeviceFinder;
   public static RobotParameters robotParameters;
@@ -41,7 +62,8 @@ public class RobotContainer {
   public static PneumaticsModuleType pneumaticModuleType = null;
 
   // subsystems here
-  private static ExampleSubsystem exampleSubsystem;
+  public static SwerveSubsystem swerveSubsystem;
+  public static HealthSubsystem healthSubsystem;
   ClimberSubsystem climberSubsystem;
 
 
@@ -49,12 +71,19 @@ public class RobotContainer {
   public static Joystick driverJoystick;
   public static Joystick operatorJoystick;
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  // Replace with CommandPS4Controller or CommandJoystick if needed
+  final CommandXboxController driverXbox = new CommandXboxController(0);
+  // The robot's subsystems and commands are defined here...
+
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
   public RobotContainer() {
     canDeviceFinder = new CANDeviceFinder();
 
     robotParameters = RobotParametersContainer.getRobotParameters(RobotParameters.class);
     logger.info("got parameters for chassis '{}'", robotParameters.getName());
+    Utilities.logMetadataToDataLog("Robot", robotParameters.getName());
 
     practiceBotJumper = new DigitalInput(0);
     boolean iAmACompetitionRobot = amIACompBot();
@@ -81,40 +110,163 @@ public class RobotContainer {
     setupSmartDashboardCommands();
 
     setupAutonomousCommands();
+
+    DriverStation.silenceJoystickConnectionWarning(true);
+    NamedCommands.registerCommand("test", Commands.print("I EXIST"));
+
+    Utilities.addDataLogForNT("SmartDashboard/swerve");
   }
 
   private void makeSubsystems() {
-    exampleSubsystem = new ExampleSubsystem();
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 1, "Swerve Drive 1")) {
+      swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/Joehann"));
+    }
+
+    // need to create healthSubsystem LAST!!!!!!!
+    healthSubsystem = new HealthSubsystem();
     climberSubsystem=new ClimberSubsystem();
   }
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+   * Use this method to define your trigger->command mappings. Triggers can be
+   * created via the
+   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with
+   * an arbitrary predicate, or via the
+   * named factories in
+   * {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses
+   * for
+   * {@link CommandXboxController
+   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4}
+   * controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick
+   * Flight joysticks}.
    */
   private void configureButtonBindings() {
+    /**
+     * Converts driver input into a field-relative ChassisSpeeds that is controlled
+     * by angular velocity.
+     */
+    if (swerveSubsystem != null) {
+      SwerveInputStream driveAngularVelocity = SwerveInputStream.of(swerveSubsystem.getSwerveDrive(),
+          () -> driverXbox.getLeftY() * -1,
+          () -> driverXbox.getLeftX() * -1)
+          .withControllerRotationAxis(driverXbox::getRightX)
+          .deadband(OperatorConstants.DEADBAND)
+          .scaleTranslation(0.8)
+          .allianceRelativeControl(true);
+
+      /**
+       * Clone's the angular velocity input stream and converts it to a fieldRelative
+       * input stream.
+       */
+      SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().withControllerHeadingAxis(driverXbox::getRightX,
+          driverXbox::getRightY)
+          .headingWhile(true);
+
+      /**
+       * Clone's the angular velocity input stream and converts it to a robotRelative
+       * input stream.
+       */
+      SwerveInputStream driveRobotOriented = driveAngularVelocity.copy().robotRelative(true)
+          .allianceRelativeControl(false);
+
+      SwerveInputStream driveAngularVelocityKeyboard = SwerveInputStream.of(swerveSubsystem.getSwerveDrive(),
+          () -> -driverXbox.getLeftY(),
+          () -> -driverXbox.getLeftX())
+          .withControllerRotationAxis(() -> driverXbox.getRawAxis(
+              2))
+          .deadband(OperatorConstants.DEADBAND)
+          .scaleTranslation(0.8)
+          .allianceRelativeControl(true);
+
+      // Derive the heading axis with math!
+      SwerveInputStream driveDirectAngleKeyboard = driveAngularVelocityKeyboard.copy()
+          .withControllerHeadingAxis(() -> Math.sin(
+              driverXbox.getRawAxis(
+                  2) *
+                  Math.PI)
+              *
+              (Math.PI *
+                  2),
+              () -> Math.cos(
+                  driverXbox.getRawAxis(
+                      2) *
+                      Math.PI)
+                  *
+                  (Math.PI *
+                      2))
+          .headingWhile(true);
+
+      Command driveFieldOrientedDirectAngle = swerveSubsystem.driveFieldOriented(driveDirectAngle);
+      Command driveFieldOrientedAnglularVelocity = swerveSubsystem.driveFieldOriented(driveAngularVelocity);
+      Command driveRobotOrientedAngularVelocity = swerveSubsystem.driveFieldOriented(driveRobotOriented);
+      Command driveSetpointGen = swerveSubsystem.driveWithSetpointGeneratorFieldRelative(
+          driveDirectAngle);
+      Command driveFieldOrientedDirectAngleKeyboard = swerveSubsystem.driveFieldOriented(driveDirectAngleKeyboard);
+      Command driveFieldOrientedAnglularVelocityKeyboard = swerveSubsystem
+          .driveFieldOriented(driveAngularVelocityKeyboard);
+      Command driveSetpointGenKeyboard = swerveSubsystem.driveWithSetpointGeneratorFieldRelative(
+          driveDirectAngleKeyboard);
+
+      if (RobotBase.isSimulation()) {
+        swerveSubsystem.setDefaultCommand(driveFieldOrientedDirectAngleKeyboard);
+      } else {
+        swerveSubsystem.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+      }
+
+      if (Robot.isSimulation()) {
+        driverXbox.start()
+            .onTrue(Commands.runOnce(() -> swerveSubsystem.resetOdometry(new Pose2d(3, 3, new Rotation2d()))));
+        driverXbox.button(1).whileTrue(swerveSubsystem.sysIdDriveMotorCommand());
+      }
+
+      /**
+       * note from Doug:
+       * this looks kind of incorrect; we will NEVER be in test mode when the robot is
+       * coming up
+       */
+      if (DriverStation.isTest()) {
+        swerveSubsystem.setDefaultCommand(driveFieldOrientedAnglularVelocity); // Overrides drive command above!
+
+        driverXbox.x().whileTrue(Commands.runOnce(swerveSubsystem::lock, swerveSubsystem).repeatedly());
+        driverXbox.y().whileTrue(swerveSubsystem.driveToDistanceCommand(1.0, 0.2));
+        driverXbox.start().onTrue((Commands.runOnce(swerveSubsystem::zeroGyro)));
+        driverXbox.back().whileTrue(swerveSubsystem.centerModulesCommand());
+        driverXbox.leftBumper().onTrue(Commands.none());
+        driverXbox.rightBumper().onTrue(Commands.none());
+      } else {
+        driverXbox.a().onTrue((Commands.runOnce(swerveSubsystem::zeroGyro)));
+        driverXbox.x().onTrue(Commands.runOnce(swerveSubsystem::addFakeVisionReading));
+        driverXbox.b().whileTrue(
+            swerveSubsystem.driveToPose(
+                new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0))));
+        driverXbox.start().whileTrue(Commands.none());
+        driverXbox.back().whileTrue(Commands.none());
+        driverXbox.leftBumper().whileTrue(Commands.runOnce(swerveSubsystem::lock, swerveSubsystem).repeatedly());
+        driverXbox.rightBumper().onTrue(Commands.none());
+      }
+    }
+
     driverJoystick = new Joystick(0);
     operatorJoystick = new Joystick(1);
 
     new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A)
-      .onTrue(new LogCommand("'A' button hit"));
+        .onTrue(new LogCommand("'A' button hit"));
 
   }
 
   private void setupSmartDashboardCommands() {
     // SmartDashboard.putData(new xxxxCommand());
-    SmartDashboard.putData("climber:p1", new SetClimberPostionCommand(1, climberSubsystem));
-    SmartDashboard.putData("climber:p2", new SetClimberPostionCommand(2, climberSubsystem));
+    SmartDashboard.putData("climber:p1", new SetClimberPostionCommand(ClimberSubsystem.pos1, climberSubsystem));
+    SmartDashboard.putData("climber:p2", new SetClimberPostionCommand(ClimberSubsystem.pos2, climberSubsystem));
     
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
+
   public void setupAutonomousCommands() {
     SmartDashboard.putData("Auto mode", chooser);
 
-    chooser.addOption("Example Command", new ExampleCommand(exampleSubsystem));
+    //chooser.addOption("Example Command", new ExampleCommand(exampleSubsystem));
   }
 
   /**
@@ -124,27 +276,36 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    //return new GoldenAutoCommand(driveSubsystem, shooterSubsystem, VisionSubsystem, intakeSubsystem);
+    // return new GoldenAutoCommand(driveSubsystem, shooterSubsystem,
+    // VisionSubsystem, intakeSubsystem);
     return chooser.getSelected();
   }
 
   /**
    * Determine if this robot is a competition robot.
-   * <p><li>
-   * <ul>It is if it's connected to an FMS.</ul>
-   * <ul>It is if it is missing a grounding jumper on DigitalInput 0.</ul>
-   * <ul>It is if the robot_parameters.json says so for this MAC address.</ul>
-   * </li></p>
+   * <p>
+   * <li>
+   * <ul>
+   * It is if it's connected to an FMS.
+   * </ul>
+   * <ul>
+   * It is if it is missing a grounding jumper on DigitalInput 0.
+   * </ul>
+   * <ul>
+   * It is if the robot_parameters.json says so for this MAC address.
+   * </ul>
+   * </li>
+   * </p>
    *
    * @return true if this robot is a competition robot.
    */
-  @SuppressWarnings({"unused", "RedundantIfStatement", "PointlessBooleanExpression"})
+  @SuppressWarnings({ "unused", "RedundantIfStatement", "PointlessBooleanExpression" })
   public static boolean amIACompBot() {
     if (DriverStation.isFMSAttached()) {
       return true;
     }
 
-    if(practiceBotJumper.get() == true){
+    if (practiceBotJumper.get() == true) {
       return true;
     }
 
@@ -156,24 +317,32 @@ public class RobotContainer {
   }
 
   /**
-   * Determine if we should make software objects, even if the device does 
+   * Determine if we should make software objects, even if the device does
    * not appear on the CAN bus.
-   * <p><li>
-   * <ul>We should if it's connected to an FMS.</ul>
-   * <ul>We should if it is missing a grounding jumper on DigitalInput 0.</ul>
-   * <ul>We should if the robot_parameters.json says so for this MAC address.</ul>
-   * </li></p>
+   * <p>
+   * <li>
+   * <ul>
+   * We should if it's connected to an FMS.
+   * </ul>
+   * <ul>
+   * We should if it is missing a grounding jumper on DigitalInput 0.
+   * </ul>
+   * <ul>
+   * We should if the robot_parameters.json says so for this MAC address.
+   * </ul>
+   * </li>
+   * </p>
    *
    * @return true if we should make all software objects for CAN devices
    */
-  @SuppressWarnings({"unused", "RedundantIfStatement"})
+  @SuppressWarnings({ "unused", "RedundantIfStatement" })
   public static boolean shouldMakeAllCANDevices() {
     if (DriverStation.isFMSAttached()) {
       return true;
     }
 
-    //noinspection PointlessBooleanExpression
-    if(practiceBotJumper.get() == true){
+    // noinspection PointlessBooleanExpression
+    if (practiceBotJumper.get() == true) {
       return true;
     }
 

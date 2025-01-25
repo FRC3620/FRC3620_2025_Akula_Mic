@@ -8,19 +8,24 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.tinylog.TaggedLogger;
+import org.usfirst.frc3620.logger.LoggingMaster;
+
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DataLogManager;
-import org.apache.logging.log4j.Logger;
-import org.usfirst.frc3620.logger.EventLogging;
-import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.RuntimeType;
 
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.util.sendable.SendableRegistry.CallbackData;
 
 /** Add your docs here. */
 @SuppressWarnings("unused")
 public class Utilities {
-  static Logger logger = EventLogging.getLogger(Utilities.class, FRC3620Level.INFO);
+  static TaggedLogger logger = LoggingMaster.getLogger(Utilities.class);
 
   /**
    * This method makes sure the angle difference calculated falls between -180
@@ -163,6 +168,43 @@ public class Utilities {
     String rv = s.replaceFirst("/+$", "");
     rv = rv.replaceFirst("^/+", "");
     return rv;
+  }
+
+  public static void logMetadataToDataLog () {
+    DataLog l = DataLogManager.getLog();
+    String s;
+
+    s = GitNess.getBuildTime();
+    if (s != null) logMetadataToDataLog(l, "BuildDate", s);
+
+    s = GitNess.getBranch(null);
+    if (s != null) logMetadataToDataLog(l, "GitBranch", s);
+
+    s = GitNess.getCommitDate();
+    if (s != null) logMetadataToDataLog(l, "GitDate", s);
+
+    Boolean dirty = GitNess.getDirty();
+    if (dirty != null) logMetadataToDataLog(l, "GitDirty", dirty ? "Uncommitted changes" : "All changes committed");
+
+    s = GitNess.getCommitId();
+    if (s != null) logMetadataToDataLog(l, "GitSHA", s);
+
+    s = GitNess.getProject(null);
+    if (s != null) logMetadataToDataLog(l, "ProjectName" ,s);
+
+    RuntimeType rt = RobotBase.getRuntimeType();
+    if (s != null) logMetadataToDataLog(l, "RuntimeType", rt.name());
+
+    s = RobotController.getSerialNumber();
+    if (s != null && !s.equals("")) logMetadataToDataLog(l, "SerialNumber", s);
+  }
+
+  public static void logMetadataToDataLog (String name, String value) {
+    new StringLogEntry(DataLogManager.getLog(), "/Metadata/" + name).append(value);
+  }
+
+  static void logMetadataToDataLog (DataLog l, String name, String value) {
+    new StringLogEntry(l, "/Metadata/" + name).append(value);
   }
 
 }
