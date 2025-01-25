@@ -8,6 +8,7 @@
 ## PWM
 
 ## Motor Controllers
+* TalonFX 10: ESEF Shoulder Motor
 
 # PDB assignments
 
