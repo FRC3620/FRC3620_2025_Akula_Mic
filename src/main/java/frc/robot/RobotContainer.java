@@ -13,6 +13,7 @@ import org.usfirst.frc3620.RobotParametersContainer;
 import org.usfirst.frc3620.XBoxConstants;
 
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.SetClimberPostionCommand;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -104,6 +105,9 @@ public class RobotContainer {
 
   private void setupSmartDashboardCommands() {
     // SmartDashboard.putData(new xxxxCommand());
+    SmartDashboard.putData("climber:p1", new SetClimberPostionCommand(1, climberSubsystem));
+    SmartDashboard.putData("climber:p2", new SetClimberPostionCommand(2, climberSubsystem));
+    
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
