@@ -16,7 +16,7 @@ public class HealthSubsystem extends SubsystemBase {
   /** Creates a new HealthSubsystem. */
   public HealthSubsystem() {
     if(RobotContainer.swerveSubsystem!=null){
-      swerveMotorWatcher = new MotorWatcher("frc3620/health/swerve");
+      swerveMotorWatcher = new MotorWatcher("SmartDashboard/frc3620/health/swerve");
   
       for (var mapEntry : RobotContainer.swerveSubsystem.getSwerveDrive().getModuleMap().entrySet()) {
         var name = mapEntry.getKey();

@@ -123,8 +123,13 @@ public class RobotContainer {
   }
 
   private void makeSubsystems() {
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 1, "Swerve Drive 1")) {
-      swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/Joehann"));
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 1, "Swerve Drive 1") || shouldMakeAllCANDevices()) {
+      String swerveFolder = robotParameters.getSwerveDirectoryName();
+      if (swerveFolder == null)
+        swerveFolder = "swerve/Joehann";
+      SmartDashboard.putString("swerveFolder", swerveFolder);
+      logger.info("using swerveFolder '{}'", swerveFolder);
+      swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), swerveFolder));
     }
 
     esefSubsystem = new ESEFSubsystem();
@@ -148,11 +153,11 @@ public class RobotContainer {
    * Flight joysticks}.
    */
   private void configureButtonBindings() {
-    /**
-     * Converts driver input into a field-relative ChassisSpeeds that is controlled
-     * by angular velocity.
-     */
     if (swerveSubsystem != null) {
+      /*
+        Converts driver input into a field-relative ChassisSpeeds that is controlled
+        by angular velocity.
+       */
       SwerveInputStream driveAngularVelocity = SwerveInputStream.of(swerveSubsystem.getSwerveDrive(),
           () -> driverXbox.getLeftY() * -1,
           () -> driverXbox.getLeftX() * -1)
@@ -161,17 +166,17 @@ public class RobotContainer {
           .scaleTranslation(0.8)
           .allianceRelativeControl(true);
 
-      /**
-       * Clone's the angular velocity input stream and converts it to a fieldRelative
-       * input stream.
+      /*
+        Clone's the angular velocity input stream and converts it to a fieldRelative
+        input stream.
        */
       SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().withControllerHeadingAxis(driverXbox::getRightX,
           driverXbox::getRightY)
           .headingWhile(true);
 
-      /**
-       * Clone's the angular velocity input stream and converts it to a robotRelative
-       * input stream.
+      /*
+        Clone's the angular velocity input stream and converts it to a robotRelative
+        input stream.
        */
       SwerveInputStream driveRobotOriented = driveAngularVelocity.copy().robotRelative(true)
           .allianceRelativeControl(false);
@@ -226,10 +231,10 @@ public class RobotContainer {
         driverXbox.button(1).whileTrue(swerveSubsystem.sysIdDriveMotorCommand());
       }
 
-      /**
-       * note from Doug:
-       * this looks kind of incorrect; we will NEVER be in test mode when the robot is
-       * coming up
+      /*
+        note from Doug:
+        this looks kind of incorrect; we will NEVER be in test mode when the robot is
+        coming up
        */
       if (DriverStation.isTest()) {
         swerveSubsystem.setDefaultCommand(driveFieldOrientedAnglularVelocity); // Overrides drive command above!
@@ -349,12 +354,7 @@ public class RobotContainer {
    */
   @SuppressWarnings({ "unused", "RedundantIfStatement" })
   public static boolean shouldMakeAllCANDevices() {
-    if (DriverStation.isFMSAttached()) {
-      return true;
-    }
-
-    // noinspection PointlessBooleanExpression
-    if (practiceBotJumper.get() == true) {
+    if (amIACompBot()) {
       return true;
     }
 
