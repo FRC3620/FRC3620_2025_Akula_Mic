@@ -9,6 +9,8 @@
 
 ## Motor Controllers
 * TalonFX 10: ESEF Shoulder Motor
+* TalonFX 11: ESEF Elevator Motor A
+* TalonFX 12: ESEF Elevator Motor B
 
 # PDB assignments
 
