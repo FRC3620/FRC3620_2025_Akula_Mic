@@ -1,0 +1,49 @@
+package frc.robot.subsystems;
+
+import org.usfirst.frc3620.NTPublisher;
+
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import edu.wpi.first.wpilibj.motorcontrol.Talon;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+public class ClimberSubsystem extends SubsystemBase {
+
+    static public double pos1 = 0;
+    static public double pos2 = 2;
+    TalonFX motor;
+    // in init function, set slot 0 gains
+    Slot0Configs slot0Configs= new Slot0Configs();
+
+    public ClimberSubsystem() {
+        motor = new TalonFX(15);
+
+        // slot0Configs = new Slot0Configs();
+        slot0Configs.kP =4.8; // An error of 1 rotation results in 2.4 V output
+        slot0Configs.kI = 1; // no output for integrated error
+        slot0Configs.kD = 0.003; // A velocity of 1 rps results in 0.1 V output
+        motor.getConfigurator().apply(slot0Configs);
+    }
+    @Override
+    public void periodic() {
+        // TODO Auto-generated method stub
+        
+        NTPublisher.putNumber("frc3620/climer postion",motor.getPosition().getValueAsDouble());
+    }
+    public void setPostion(Double cpos) {
+
+    
+        // create a position closed-loop request, voltage output, slot 0 configs
+final PositionVoltage m_request = new PositionVoltage(0).withSlot(0);
+
+// set position to 10 rotations
+motor.setControl(m_request.withPosition(cpos));
+        // motor.set(0.4);
+        NTPublisher.putNumber("frc3620/requested climer postion", cpos);
+
+    }
+
+}
