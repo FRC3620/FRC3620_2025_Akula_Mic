@@ -6,6 +6,7 @@
 ## Analog IO
 
 ## PWM
+* PWM 1, 2: Blinky Lights
 
 ## Motor Controllers
 * TalonFX 10: ESEF Shoulder Motor
