@@ -19,10 +19,18 @@ import frc.robot.RobotContainer;*/
 
 public class ESEFSubsystem extends SubsystemBase {
   /** Creates a new ESEFSubsystem. */
-  public ESEFSubsystem() {}
+  private ESEFShoulderMechanism shoulderMechanism;
+  public ESEFSubsystem() {
+    shoulderMechanism = new ESEFShoulderMechanism();
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    shoulderMechanism.periodic();
+  }
+
+  public void setShoulderPosition(Double position){
+    shoulderMechanism.setShoulderPosition(position);
   }
 }
