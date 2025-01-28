@@ -1,13 +1,13 @@
 package frc.robot;
 
-import org.apache.logging.log4j.Logger;
+import org.tinylog.TaggedLogger;
 import org.usfirst.frc3620.*;
-import org.usfirst.frc3620.logger.EventLogging;
-import org.usfirst.frc3620.logger.EventLogging.FRC3620Level;
+import org.usfirst.frc3620.logger.LoggingMaster;
 
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.net.PortForwarder;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,7 +25,7 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  private Logger logger;
+  private TaggedLogger logger;
 
   static private RobotMode currentRobotMode = RobotMode.INIT, previousRobotMode;
 
@@ -37,10 +37,11 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // get data logging going
     DogLog.setOptions(new DogLogOptions().withCaptureDs(true).withCaptureNt(false));
-    DogLog.log("Version", GitNess.gitDescription());
+    DataLogManager.start();
 
-    logger = EventLogging.getLogger(Robot.class, FRC3620Level.INFO);
+    logger = LoggingMaster.getLogger(Robot.class);
     logger.info ("I'm alive! {}", GitNess.gitDescription());
+    Utilities.logMetadataToDataLog();
 
     Utilities.addDataLogForNT("frc3620");
     Utilities.addDataLogForNT("SmartDashboard/frc3620");
@@ -51,7 +52,6 @@ public class Robot extends TimedRobot {
     for (int port = 5800; port <= 5809; port++) {
       PortForwarder.add(port, "limelight.local", port);
     }
-
 
     // whenever a command initializes, the function declared below will run.
     CommandScheduler.getInstance().onCommandInitialize(command ->
@@ -69,7 +69,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
-    FileSaver.add("networktables.ini");
+    FileSaver.add("networktables.json");
 
     enableLiveWindowInTest(true);
 
@@ -174,12 +174,10 @@ public class Robot extends TimedRobot {
     
   }
 
-  @SuppressWarnings("unused")
   public static RobotMode getCurrentRobotMode(){
     return currentRobotMode;
   }
 
-  @SuppressWarnings("unused")
   public static RobotMode getPreviousRobotMode(){
     return previousRobotMode;
   }
