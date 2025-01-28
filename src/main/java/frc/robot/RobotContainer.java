@@ -22,10 +22,15 @@ import org.usfirst.frc3620.RobotParametersContainer;
 import org.usfirst.frc3620.Utilities;
 import org.usfirst.frc3620.XBoxConstants;
 
+import frc.robot.commands.SetShoulderPositionCommand;
+import frc.robot.subsystems.esef.ESEFShoulderMechanism;
+import frc.robot.subsystems.esef.ESEFSubsystem;
+
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.HealthSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveInputStream;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -56,6 +61,7 @@ public class RobotContainer {
   public static PneumaticsModuleType pneumaticModuleType = null;
 
   // subsystems here
+  private static ESEFSubsystem esefSubsystem;
   public static SwerveSubsystem swerveSubsystem;
   public static HealthSubsystem healthSubsystem;
 
@@ -110,6 +116,7 @@ public class RobotContainer {
   }
 
   private void makeSubsystems() {
+    esefSubsystem = new ESEFSubsystem();
     swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/Joehann"));
 
     // need to create healthSubsystem LAST!!!!!!!
@@ -241,6 +248,11 @@ public class RobotContainer {
   }
 
   private void setupSmartDashboardCommands() {
+    //SmartDashboard.putData("Shoulder.P1", new SetShoulderPositionCommand(null, null));
+    SmartDashboard.putData("ShoulderSetPosition1", new SetShoulderPositionCommand(10.0, esefSubsystem));
+    SmartDashboard.putData("ShoulderSetPosition2", new SetShoulderPositionCommand(5.0, esefSubsystem));
+
+
     // SmartDashboard.putData(new xxxxCommand());
   }
 

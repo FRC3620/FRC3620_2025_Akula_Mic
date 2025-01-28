@@ -10,6 +10,7 @@ import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -43,6 +44,7 @@ public class Robot extends TimedRobot {
     Utilities.logMetadataToDataLog();
 
     Utilities.addDataLogForNT("frc3620");
+    Utilities.addDataLogForNT("SmartDashboard/frc3620");
 
     PortForwarder.add (10080, "wpilibpi.local", 80);
     PortForwarder.add (10022, "wpilibpi.local", 22);
@@ -163,8 +165,8 @@ public class Robot extends TimedRobot {
     previousRobotMode = currentRobotMode;
     currentRobotMode = newMode;
 
-    NTPublisher.putString("frc3620/mode", newMode.toString());
-    NTPublisher.putNumber("frc3620/modeInt", newMode.ordinal());
+    SmartDashboard.putString("frc3620/mode", newMode.toString());
+    SmartDashboard.putNumber("frc3620/modeInt", newMode.ordinal());
 
     // if any subsystems need to know about mode changes, let
     // them know here.
