@@ -92,7 +92,8 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     Runtime rt = Runtime.getRuntime();
-    
+    SmartDashboard.putNumber("frc3620/heap/free", rt.freeMemory());
+    SmartDashboard.putNumber("frc3620/heap/total", rt.totalMemory());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

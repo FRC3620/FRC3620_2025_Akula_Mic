@@ -133,10 +133,10 @@ public class RobotContainer {
     }
 
     esefSubsystem = new ESEFSubsystem();
+    climberSubsystem=new ClimberSubsystem();
 
     // need to create healthSubsystem LAST!!!!!!!
     healthSubsystem = new HealthSubsystem();
-    climberSubsystem=new ClimberSubsystem();
   }
 
   /**

@@ -13,7 +13,6 @@ public class MotorWatcher {
     MotorWatcherFetcher fetcher;
     EnumSet<MotorWatcherMetric> metrics;
     String name;
-    MotorWatcherValueContainer values;
   }
 
   public MotorWatcher(String name) {
@@ -37,7 +36,6 @@ public class MotorWatcher {
       mwi.metrics = _metrics;
       mwi.fetcher = f;
       mwi.name = watcherName + "/" + Utilities.removeLeadingAndTrailingSlashes(name);
-      mwi.values = new MotorWatcherValueContainer();
       collectedInformationList.add(mwi);
     }
   }
@@ -45,16 +43,14 @@ public class MotorWatcher {
   public void collect(boolean publish) {
     if (! collectedInformationListIsFrozen) freezeCollectedInformation();
     for (var mwi : collectedInformationList) {
-      mwi.fetcher.collect(mwi.values, mwi.metrics);
+      mwi.fetcher.collect(mwi.metrics);
     }
 
     if (publish) {
       for (var mwi : collectedInformationList) {
         for (var metric : mwi.metrics) {
           Double value = null;
-          if (metric == MotorWatcherMetric.TEMPERATURE) {
-            value = mwi.values.getTemperature();
-          }
+          value = metric.getValue(mwi.fetcher);
           if (value != null) {
             NTPublisher.putNumber(mwi.name + "/" + metric.getName(), value);
           }
