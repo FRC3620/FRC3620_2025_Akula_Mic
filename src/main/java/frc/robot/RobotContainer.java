@@ -22,6 +22,10 @@ import org.usfirst.frc3620.RobotParametersContainer;
 import org.usfirst.frc3620.Utilities;
 import org.usfirst.frc3620.XBoxConstants;
 
+import frc.robot.commands.SetShoulderPositionCommand;
+import frc.robot.subsystems.esef.ESEFShoulderMechanism;
+import frc.robot.subsystems.esef.ESEFSubsystem;
+
 import frc.robot.Constants.OperatorConstants;
 
 import frc.robot.subsystems.HealthSubsystem;
@@ -62,6 +66,7 @@ public class RobotContainer {
   public static PneumaticsModuleType pneumaticModuleType = null;
 
   // subsystems here
+  private static ESEFSubsystem esefSubsystem;
   public static SwerveSubsystem swerveSubsystem;
   public static HealthSubsystem healthSubsystem;
   ClimberSubsystem climberSubsystem;
@@ -121,6 +126,8 @@ public class RobotContainer {
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 1, "Swerve Drive 1")) {
       swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/Joehann"));
     }
+
+    esefSubsystem = new ESEFSubsystem();
 
     // need to create healthSubsystem LAST!!!!!!!
     healthSubsystem = new HealthSubsystem();
@@ -255,6 +262,11 @@ public class RobotContainer {
   }
 
   private void setupSmartDashboardCommands() {
+    //SmartDashboard.putData("Shoulder.P1", new SetShoulderPositionCommand(null, null));
+    SmartDashboard.putData("ShoulderSetPosition1", new SetShoulderPositionCommand(10.0, esefSubsystem));
+    SmartDashboard.putData("ShoulderSetPosition2", new SetShoulderPositionCommand(5.0, esefSubsystem));
+
+
     // SmartDashboard.putData(new xxxxCommand());
     SmartDashboard.putData("climber:p1", new SetClimberPostionCommand(ClimberSubsystem.pos1, climberSubsystem));
     SmartDashboard.putData("climber:p2", new SetClimberPostionCommand(ClimberSubsystem.pos2, climberSubsystem));
