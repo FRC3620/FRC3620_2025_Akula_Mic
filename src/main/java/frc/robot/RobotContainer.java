@@ -27,7 +27,10 @@ import frc.robot.subsystems.esef.ESEFShoulderMechanism;
 import frc.robot.subsystems.esef.ESEFSubsystem;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.blinky.DefaultBlinkyCommand;
+import frc.robot.subsystems.BlinkySubsystem;
 import frc.robot.subsystems.HealthSubsystem;
+import frc.robot.subsystems.BlinkySubsystem.LightSegment;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 
@@ -64,6 +67,7 @@ public class RobotContainer {
   private static ESEFSubsystem esefSubsystem;
   public static SwerveSubsystem swerveSubsystem;
   public static HealthSubsystem healthSubsystem;
+  public static BlinkySubsystem blinkySubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -118,7 +122,7 @@ public class RobotContainer {
   private void makeSubsystems() {
     esefSubsystem = new ESEFSubsystem();
     swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/Joehann"));
-
+    blinkySubsystem = new BlinkySubsystem();
     // need to create healthSubsystem LAST!!!!!!!
     healthSubsystem = new HealthSubsystem();
   }
@@ -137,6 +141,9 @@ public class RobotContainer {
    * Flight joysticks}.
    */
   private void configureButtonBindings() {
+    LightSegment lightSegment = blinkySubsystem.getLightSegment(0, 19);
+    lightSegment.setDefaultCommand(new DefaultBlinkyCommand(lightSegment));
+
     /**
      * Converts driver input into a field-relative ChassisSpeeds that is controlled
      * by angular velocity.

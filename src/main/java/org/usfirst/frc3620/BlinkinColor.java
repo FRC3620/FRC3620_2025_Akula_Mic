@@ -6,7 +6,7 @@ package org.usfirst.frc3620;
 
 /** Add your docs here. */
 @SuppressWarnings("unused")
-public enum BlinkinColor {
+public enum BlinkinColor { 
   BLACK(0.99),
   DARK_GRAY(0.97),
   GRAY(0.95),

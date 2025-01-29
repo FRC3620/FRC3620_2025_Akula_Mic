@@ -22,7 +22,6 @@ public class BlinkySubsystem extends SubsystemBase {
   AddressableLEDBuffer lBuffer;
   Timer timer;
   List<LightSegment> lightSegments = new ArrayList<>();
-  public LightSegment lightSegment = new LightSegment(0, 19);
 
   Spark spark, s2;
 
@@ -61,7 +60,7 @@ public class BlinkySubsystem extends SubsystemBase {
 
   void blinkinPeriodic() {
     if (getCurrentCommand() == null) {
-      BlinkinColor c = BlinkinColor.GRAY;
+      BlinkinColor c = BlinkinColor.BLUE;
     
       setBlinkin(c);
     } else {

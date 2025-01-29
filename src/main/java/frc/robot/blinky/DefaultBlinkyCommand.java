@@ -35,12 +35,10 @@ public class DefaultBlinkyCommand extends Command {
   public void execute() {
     Pattern p=new SolidPattern();
     if (Robot.getCurrentRobotMode() == RobotMode.DISABLED) {
-     
+     p=patternSick;
     } else {
 
-      if (!DriverStation.isFMSAttached()) {
-
-      }
+     p=patternIdle;
 
     }
     lightSegment.setPattern(p);
