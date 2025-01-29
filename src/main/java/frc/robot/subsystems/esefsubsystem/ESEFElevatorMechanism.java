@@ -70,12 +70,12 @@ public class ESEFElevatorMechanism {
 
     public void periodic() {
         if (elevatorA != null) {
-            if (elevatorB != null) {
-                SmartDashboard.putNumber("frc3620/Elevator/AMotorActualPosition",
-                        elevatorA.getPosition().getValueAsDouble());
-                SmartDashboard.putNumber("frc3620/Elevator/BMotorActualPosition",
-                        elevatorB.getPosition().getValueAsDouble());
-            }
+            SmartDashboard.putNumber("frc3620/Elevator/AMotorActualPosition",
+                    elevatorA.getPosition().getValueAsDouble());
+        }
+        if (elevatorB != null) {
+            SmartDashboard.putNumber("frc3620/Elevator/BMotorActualPosition",
+                    elevatorB.getPosition().getValueAsDouble());
         }
     }
 
@@ -84,10 +84,10 @@ public class ESEFElevatorMechanism {
         SmartDashboard.putNumber("frc3620/Elevator/RequestedPosition", position);
 
         if (elevatorA != null) {
-            if (elevatorB != null) {
-                elevatorA.setControl(elevatorARequest.withPosition(position));
-                elevatorB.setControl(elevatorBRequest.withPosition(position));
-            }
+            elevatorA.setControl(elevatorARequest.withPosition(position));
+        }
+        if (elevatorB != null) {
+            elevatorB.setControl(elevatorBRequest.withPosition(position));
         }
     }
 
