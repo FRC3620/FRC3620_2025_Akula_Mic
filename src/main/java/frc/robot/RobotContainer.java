@@ -26,7 +26,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.esefcommands.SetElevatorPositionCommand;
 import frc.robot.commands.esefcommands.SetShoulderPositionCommand;
 import frc.robot.subsystems.HealthSubsystem;
-import frc.robot.subsystems.esefsubsystem.ESEFShoulderMechanism;
+import frc.robot.subsystems.esefsubsystem.ESEFEndEffectorMechanism;
 import frc.robot.subsystems.esefsubsystem.ESEFSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveInputStream;

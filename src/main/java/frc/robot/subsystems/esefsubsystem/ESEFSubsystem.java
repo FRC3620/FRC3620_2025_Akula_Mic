@@ -31,6 +31,7 @@ public class ESEFSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     shoulderMechanism.periodic();
     elevatorMechanism.periodic();
+
   }
 
   public void setShoulderPosition(Double position){
