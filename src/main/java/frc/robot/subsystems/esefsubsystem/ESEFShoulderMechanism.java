@@ -11,6 +11,7 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 //import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.simulation.DutyCycleSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotContainer;
 
@@ -32,7 +33,7 @@ public class ESEFShoulderMechanism {
 
     final PositionVoltage shoulderRequest = new PositionVoltage(0).withSlot(0);
 
-    public ESEFShoulderMechanism() { // Constructor
+    public ESEFShoulderMechanism() { // Constructor sdyvgbewkhb
         if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 10, "Shoulder")
                 || RobotContainer.shouldMakeAllCANDevices()) {
             this.shoulder = new TalonFX(10);
@@ -70,3 +71,5 @@ public class ESEFShoulderMechanism {
     }
 
 }
+
+

@@ -24,6 +24,7 @@ import org.usfirst.frc3620.XBoxConstants;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.esefcommands.SetElevatorPositionCommand;
+import frc.robot.commands.esefcommands.SetEndEffectorSpeedCommand;
 import frc.robot.commands.esefcommands.SetShoulderPositionCommand;
 import frc.robot.subsystems.HealthSubsystem;
 import frc.robot.subsystems.esefsubsystem.ESEFEndEffectorMechanism;
@@ -259,6 +260,7 @@ public class RobotContainer {
     SmartDashboard.putData("ShoulderSetPosition2", new SetShoulderPositionCommand(5.0, esefSubsystem));
     SmartDashboard.putData("ElevatorSetPosition1", new SetElevatorPositionCommand(10.0, esefSubsystem));
     SmartDashboard.putData("ElevatorSetPosition2", new SetElevatorPositionCommand(5.0, esefSubsystem));
+    SmartDashboard.putData("move End Effector", new SetEndEffectorSpeedCommand(0.1, esefSubsystem));
     // SmartDashboard.putData('CoralSpeed');
 
     // SmartDashboard.putData(new xxxxCommand());
