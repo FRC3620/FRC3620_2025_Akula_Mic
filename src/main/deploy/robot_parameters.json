@@ -3,7 +3,7 @@
     "name": "simulator",
     "serialNumber": "(simulation)",
     "makeAllCANDevices": true,
-    "swerveFolder": "swerve/simulation"
+    "swerveDirectoryName": "swerve/simulation"
   },
   {
     "name": "Joehann",
@@ -20,6 +20,7 @@
   {
     "name": "unknown",
     "serialNumber": "(unknown)",
-    "makeAllCANDevices": true
+    "makeAllCANDevices": true,
+    "swerveDirectoryName": "swerve/simulation"
   }
 ]

@@ -124,9 +124,6 @@ public class RobotContainer {
   private void makeSubsystems() {
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 1, "Swerve Drive 1") || shouldMakeAllCANDevices()) {
       String swerveFolder = robotParameters.getSwerveDirectoryName();
-      if (swerveFolder == null)
-  //      swerveFolder = "swerve/Joehann";
-          swerveFolder = robotParameters.getSwerveDirectoryName();
 
       SmartDashboard.putString("swerveFolder", swerveFolder);
       logger.info("using swerveFolder '{}'", swerveFolder);
@@ -134,9 +131,8 @@ public class RobotContainer {
     }
 
     esefSubsystem = new ESEFSubsystem();
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 1, "Swerve Drive 1")) { // Fake Bandage?
-      swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/Joehann"));
-    }
+    climberSubsystem = new ClimberSubsystem();
+
     // need to create healthSubsystem LAST!!!!!!!
     healthSubsystem = new HealthSubsystem();
   }
