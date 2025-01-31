@@ -12,10 +12,10 @@ public class HealthSubsystem extends SubsystemBase {
   MotorWatcher swerveMotorWatcher;
 
   EnumSet<MotorWatcherMetric> whatToWatch = EnumSet.allOf(MotorWatcherMetric.class);
-  
+
   /** Creates a new HealthSubsystem. */
   public HealthSubsystem() {
-    if(RobotContainer.swerveSubsystem!=null){
+    if(RobotContainer.swerveSubsystem != null) {
       swerveMotorWatcher = new MotorWatcher("SmartDashboard/frc3620/health/swerve");
   
       for (var mapEntry : RobotContainer.swerveSubsystem.getSwerveDrive().getModuleMap().entrySet()) {
@@ -27,18 +27,18 @@ public class HealthSubsystem extends SubsystemBase {
         swerveMotorWatcher.addMotor(name + "/angle", angleMotor, whatToWatch);
         swerveMotorWatcher.addMotor(name + "/drive", driveMotor, whatToWatch);
       }
-
     }
-
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler ru
-    if(swerveMotorWatcher!=null)
-    swerveMotorWatcher.collect(true);
+    // This method will be called once per scheduler run
+    if(swerveMotorWatcher != null) {
+      swerveMotorWatcher.collect(true);
+    }
 
-    // need to look at contents of swerveMotorWatcher and do SmartDashboard and wpilib alerts, as well
+    // need to look at contents of swerveMotorWatcher and do SmartDashboard and
+    // wpilib alerts, as well
     // as lights
   }
 }

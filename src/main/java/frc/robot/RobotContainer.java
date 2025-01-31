@@ -22,15 +22,14 @@ import org.usfirst.frc3620.RobotParametersContainer;
 import org.usfirst.frc3620.Utilities;
 import org.usfirst.frc3620.XBoxConstants;
 
-import frc.robot.commands.SetShoulderPositionCommand;
-import frc.robot.subsystems.esef.ESEFShoulderMechanism;
-import frc.robot.subsystems.esef.ESEFSubsystem;
-
 import frc.robot.Constants.OperatorConstants;
-
-import frc.robot.subsystems.HealthSubsystem;
+import frc.robot.commands.esefcommands.SetElevatorPositionCommand;
+import frc.robot.commands.esefcommands.SetEndEffectorSpeedCommand;
+import frc.robot.commands.esefcommands.SetShoulderPositionCommand;
 import frc.robot.subsystems.ClimberSubsystem;
-
+import frc.robot.subsystems.HealthSubsystem;
+import frc.robot.subsystems.esefsubsystem.ESEFEndEffectorMechanism;
+import frc.robot.subsystems.esefsubsystem.ESEFSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 
@@ -135,8 +134,9 @@ public class RobotContainer {
     }
 
     esefSubsystem = new ESEFSubsystem();
-    climberSubsystem=new ClimberSubsystem();
-
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 1, "Swerve Drive 1")) { // Fake Bandage?
+      swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/Joehann"));
+    }
     // need to create healthSubsystem LAST!!!!!!!
     healthSubsystem = new HealthSubsystem();
   }
@@ -269,10 +269,14 @@ public class RobotContainer {
   }
 
   private void setupSmartDashboardCommands() {
-    //SmartDashboard.putData("Shoulder.P1", new SetShoulderPositionCommand(null, null));
+    // SmartDashboard.putData("Shoulder.P1", new SetShoulderPositionCommand(null,
+    // null));
     SmartDashboard.putData("ShoulderSetPosition1", new SetShoulderPositionCommand(10.0, esefSubsystem));
     SmartDashboard.putData("ShoulderSetPosition2", new SetShoulderPositionCommand(5.0, esefSubsystem));
-
+    SmartDashboard.putData("ElevatorSetPosition1", new SetElevatorPositionCommand(10.0, esefSubsystem));
+    SmartDashboard.putData("ElevatorSetPosition2", new SetElevatorPositionCommand(5.0, esefSubsystem));
+    SmartDashboard.putData("move End Effector", new SetEndEffectorSpeedCommand(0.1, esefSubsystem));
+    // SmartDashboard.putData('CoralSpeed');
 
     // SmartDashboard.putData(new xxxxCommand());
     SmartDashboard.putData("climber:p1", new SetClimberPostionCommand(ClimberSubsystem.pos1, climberSubsystem));
@@ -285,7 +289,7 @@ public class RobotContainer {
   public void setupAutonomousCommands() {
     SmartDashboard.putData("Auto mode", chooser);
 
-    //chooser.addOption("Example Command", new ExampleCommand(exampleSubsystem));
+    // chooser.addOption("Example Command", new ExampleCommand(exampleSubsystem));
   }
 
   /**
