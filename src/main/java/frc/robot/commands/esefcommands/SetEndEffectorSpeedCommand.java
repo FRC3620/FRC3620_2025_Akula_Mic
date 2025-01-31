@@ -14,10 +14,10 @@ public class SetEndEffectorSpeedCommand extends Command {
   /** Creates a new SetEndEffectorSpeedCommand. */
   public SetEndEffectorSpeedCommand(double _speed, ESEFSubsystem subsystem) {
     esefSubsystem = subsystem;
-    esefSubsystem = new ESEFSubsystem();
-    addRequirements(esefSubsystem);
     speed = _speed;
+    
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(esefSubsystem);
   }
 
   // Called when the command is initially scheduled.
