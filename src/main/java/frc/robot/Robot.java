@@ -90,6 +90,10 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    Runtime rt = Runtime.getRuntime();
+    SmartDashboard.putNumber("frc3620/heap/free", rt.freeMemory());
+    SmartDashboard.putNumber("frc3620/heap/total", rt.totalMemory());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

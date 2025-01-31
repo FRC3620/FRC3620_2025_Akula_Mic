@@ -15,25 +15,27 @@ public class HealthSubsystem extends SubsystemBase {
 
   /** Creates a new HealthSubsystem. */
   public HealthSubsystem() {
-    swerveMotorWatcher = new MotorWatcher("frc3620/health/swerve");
-    if (RobotContainer.swerveSubsystem != null) {
+    if(RobotContainer.swerveSubsystem != null) {
+      swerveMotorWatcher = new MotorWatcher("SmartDashboard/frc3620/health/swerve");
+  
       for (var mapEntry : RobotContainer.swerveSubsystem.getSwerveDrive().getModuleMap().entrySet()) {
         var name = mapEntry.getKey();
         var swerveModule = mapEntry.getValue();
         var angleMotor = swerveModule.getAngleMotor().getMotor();
         var driveMotor = swerveModule.getDriveMotor().getMotor();
-
+  
         swerveMotorWatcher.addMotor(name + "/angle", angleMotor, whatToWatch);
         swerveMotorWatcher.addMotor(name + "/drive", driveMotor, whatToWatch);
       }
     }
-
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    swerveMotorWatcher.collect(true);
+    if(swerveMotorWatcher != null) {
+      swerveMotorWatcher.collect(true);
+    }
 
     // need to look at contents of swerveMotorWatcher and do SmartDashboard and
     // wpilib alerts, as well
