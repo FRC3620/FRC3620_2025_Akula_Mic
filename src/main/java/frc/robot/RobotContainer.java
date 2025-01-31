@@ -126,7 +126,9 @@ public class RobotContainer {
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 1, "Swerve Drive 1") || shouldMakeAllCANDevices()) {
       String swerveFolder = robotParameters.getSwerveDirectoryName();
       if (swerveFolder == null)
-        swerveFolder = "swerve/Joehann";
+  //      swerveFolder = "swerve/Joehann";
+          swerveFolder = robotParameters.getSwerveDirectoryName();
+
       SmartDashboard.putString("swerveFolder", swerveFolder);
       logger.info("using swerveFolder '{}'", swerveFolder);
       swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), swerveFolder));
