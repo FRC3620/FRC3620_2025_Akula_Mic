@@ -6,6 +6,12 @@
     "swerveFolder": "swerve/simulation"
   },
   {
+    "name": "Joehann",
+    "serialNumber": "03063d7e",
+    "makeAllCANDevices": true,
+    "swerveDirectoryName": "swerve/Joehann"
+  },
+  {
     "name": "unknown",
     "serialNumber": "(unknown)",
     "makeAllCANDevices": true
