@@ -15,8 +15,9 @@ public class SetShoulderPositionCommand extends Command {
   public SetShoulderPositionCommand(Double _position, ESEFSubsystem _esefSubsystem) {
     position = _position;
     esefSubsystem = _esefSubsystem;
-    addRequirements(esefSubsystem);
+
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(esefSubsystem);
   }
 
   // Called when the command is initially scheduled.

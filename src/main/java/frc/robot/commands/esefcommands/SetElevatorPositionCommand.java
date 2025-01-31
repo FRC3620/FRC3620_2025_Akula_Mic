@@ -5,7 +5,6 @@
 package frc.robot.commands.esefcommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.esefsubsystem.ESEFElevatorMechanism;
 import frc.robot.subsystems.esefsubsystem.ESEFSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -16,8 +15,9 @@ public class SetElevatorPositionCommand extends Command {
   public SetElevatorPositionCommand(Double _position, ESEFSubsystem _esefSubsystem) {
     position = _position;
     esefSubsystem = _esefSubsystem;
-    addRequirements(esefSubsystem);
+    
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(esefSubsystem);
   }
 
   // Called when the command is initially scheduled.
