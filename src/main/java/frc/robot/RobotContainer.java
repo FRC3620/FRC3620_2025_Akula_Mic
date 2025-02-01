@@ -26,6 +26,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.esefcommands.SetElevatorPositionCommand;
 import frc.robot.commands.esefcommands.SetEndEffectorSpeedCommand;
 import frc.robot.commands.esefcommands.SetShoulderPositionCommand;
+import frc.robot.subsystems.AFISubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.HealthSubsystem;
 import frc.robot.subsystems.esefsubsystem.ESEFEndEffectorMechanism;
@@ -34,7 +35,7 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 
 import frc.robot.commands.SetClimberPostionCommand;
-
+import frc.robot.commands.SetPivotPositionCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -65,7 +66,8 @@ public class RobotContainer {
   public static PneumaticsModuleType pneumaticModuleType = null;
 
   // subsystems here
-  private static ESEFSubsystem esefSubsystem;
+  public static ESEFSubsystem esefSubsystem;
+  public static AFISubsystem afiSubsystem;
   public static SwerveSubsystem swerveSubsystem;
   public static HealthSubsystem healthSubsystem;
   ClimberSubsystem climberSubsystem;
@@ -131,6 +133,7 @@ public class RobotContainer {
     }
 
     esefSubsystem = new ESEFSubsystem();
+    afiSubsystem = new AFISubsystem();
     climberSubsystem = new ClimberSubsystem();
 
     // need to create healthSubsystem LAST!!!!!!!
@@ -271,7 +274,11 @@ public class RobotContainer {
     SmartDashboard.putData("ShoulderSetPosition2", new SetShoulderPositionCommand(5.0, esefSubsystem));
     SmartDashboard.putData("ElevatorSetPosition1", new SetElevatorPositionCommand(10.0, esefSubsystem));
     SmartDashboard.putData("ElevatorSetPosition2", new SetElevatorPositionCommand(5.0, esefSubsystem));
-    SmartDashboard.putData("move End Effector", new SetEndEffectorSpeedCommand(0.1, esefSubsystem));
+    SmartDashboard.putData("move End Effector", new SetEndEffectorSpeedCommand(0.5, esefSubsystem));
+
+    SmartDashboard.putData("PivotPosition2", new SetPivotPositionCommand(10.0, afiSubsystem));
+    SmartDashboard.putData("PivotPositionInit", new SetPivotPositionCommand(00., afiSubsystem));
+
     // SmartDashboard.putData('CoralSpeed');
 
     // SmartDashboard.putData(new xxxxCommand());

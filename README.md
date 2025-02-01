@@ -13,6 +13,11 @@
 * TalonFX 11: ESEF Elevator Motor A
 * TalonFX 12: ESEF Elevator Motor B
 
+* TalonFX 13: AFI Pivot Motor
+* SparkMax 14: AFI roller Motor 
+
+* TalonFX 15: Climber Motor
+
 
 # PDB assignments
 
