@@ -42,8 +42,8 @@ public class ESEFSubsystem extends SubsystemBase {
   public void setElevatorPosition(Double position){
     elevatorMechanism.setElevatorPosition(position);
   }
-  public void setEndEffSpeed(double speed){
-    endEffectorMechanism.setEndEffSpeed(speed);
+  public void setEndEffSpeed(double volts){
+    endEffectorMechanism.setEndEffSpeed(volts);
   }
 
 }

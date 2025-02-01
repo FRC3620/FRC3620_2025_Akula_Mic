@@ -25,9 +25,7 @@ import frc.robot.RobotContainer;
 public class ESEFEndEffectorMechanism {
 
     SparkMax endEff;
-    SparkMaxConfig clawConfig = new SparkMaxConfig();
-
-    final DutyCycleOut endEffControl = new DutyCycleOut(0);
+    //SparkMaxConfig clawConfig = new SparkMaxConfig();
 
     public ESEFEndEffectorMechanism() {
         // constructor
@@ -38,9 +36,9 @@ public class ESEFEndEffectorMechanism {
 
     }
 
-    public void setEndEffSpeed(double speed) {
+    public void setEndEffSpeed(double volts) {
         if (endEff != null) {
-            endEff.set(speed);
+            endEff.setVoltage(volts);
         }
     }
 
