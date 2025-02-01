@@ -18,6 +18,21 @@
 
 # Vision
 
+## Joehan limelight locations
+
+### limelight-front:
+
+* LL UP: 0.29845 m
+* LL FRONT: 0.33655 m
+* LL PITCH: 25
+
+### limelight-back:
+
+* LL UP: 0.3429 m
+* LL FRONT: -0.33655 m
+* LL PITCH: 25
+* LL YAW: 180
+
 # Driver Controller
 
 # Programming Requirnements
