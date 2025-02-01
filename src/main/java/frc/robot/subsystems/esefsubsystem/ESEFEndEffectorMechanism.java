@@ -12,7 +12,11 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 //import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.simulation.DutyCycleSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotContainer;
@@ -20,32 +24,24 @@ import frc.robot.RobotContainer;
 /** Add your docs here. */
 public class ESEFEndEffectorMechanism {
 
-    TalonFX endEff;
-    TalonFXConfiguration clawConfig = new TalonFXConfiguration();
+    SparkMax endEff;
+    SparkMaxConfig clawConfig = new SparkMaxConfig();
 
     final DutyCycleOut endEffControl = new DutyCycleOut(0);
 
-    public ESEFEndEffectorMechanism(){ 
-        //constructor
-        if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 9, "End Effector")
+    public ESEFEndEffectorMechanism() {
+        // constructor
+        if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 9, "End Effector")
                 || RobotContainer.shouldMakeAllCANDevices()) {
-        endEff = new TalonFX(9);
-        Slot0Configs slot0Configs = new Slot0Configs();
-        slot0Configs.kG = 0; // Gravity FeedForward
-        slot0Configs.kS = 0; // Friction FeedForward
-        slot0Configs.kP = 1; // an error of 1 rotation results in x Volt output
-        slot0Configs.kI = 0;
-        slot0Configs.kD = 0;
-
-        endEff.getConfigurator().apply(slot0Configs);
-
+            endEff = new SparkMax(9, MotorType.kBrushless);
         }
-                
+
     }
 
-    public void setEndEffSpeed(double speed){
-        endEff.setControl(endEffControl.withOutput(speed));
+    public void setEndEffSpeed(double speed) {
+        if (endEff != null) {
+            endEff.set(speed);
+        }
     }
-
 
 }
