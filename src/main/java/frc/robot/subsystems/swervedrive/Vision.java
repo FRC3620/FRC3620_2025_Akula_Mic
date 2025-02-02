@@ -1,5 +1,6 @@
 package frc.robot.subsystems.swervedrive;
 
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Microseconds;
 import static edu.wpi.first.units.Units.Milliseconds;
 import static edu.wpi.first.units.Units.Seconds;
@@ -8,6 +9,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -22,8 +24,10 @@ import edu.wpi.first.networktables.NetworkTablesJNI;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import frc.robot.LimelightHelpers;
 import frc.robot.Robot;
 import java.awt.Desktop;
+import java.lang.StackWalker.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,9 +42,17 @@ import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
+
+import com.studica.frc.AHRS;
+
 import swervelib.SwerveDrive;
 import swervelib.telemetry.SwerveDriveTelemetry;
-
+import limelight.Limelight;
+import limelight.networktables.AngularVelocity3d;
+import limelight.networktables.LimelightSettings.ImuMode;
+import limelight.networktables.LimelightSettings.LEDMode;
+import limelight.networktables.Orientation3d;
+import limelight.networktables.PoseEstimate;
 
 /**
  * Example PhotonVision class to aid in the pursuit of accurate odometry. Taken from
@@ -75,6 +87,10 @@ public class Vision
    */
   private             Field2d             field2d;
 
+  private             Limelight           limelightFront;
+  private             Limelight           limelightBack;
+
+
 
   /**
    * Constructor for the Vision class.
@@ -86,6 +102,23 @@ public class Vision
   {
     this.currentPose = currentPose;
     this.field2d = field;
+
+    this.limelightFront = new Limelight("limelight-front");
+    this.limelightBack  = new Limelight("limelight-back");
+
+    limelightFront.getSettings()
+                  .withImuMode(ImuMode.ExternalImu)
+                  .withCameraOffset(Pose3d.kZero)
+                  .withLimelightLEDMode(LEDMode.PipelineControl)
+                  .save();
+
+    limelightBack.getSettings()
+                 .withImuMode(ImuMode.ExternalImu)
+                 .withCameraOffset(Pose3d.kZero)
+                 .withLimelightLEDMode(LEDMode.PipelineControl)
+                 .save();
+
+    
 
     if (Robot.isSimulation())
     {
@@ -140,7 +173,7 @@ public class Vision
        */
       visionSim.update(swerveDrive.getSimulationDriveTrainPose().get());
     }
-    for (Cameras camera : Cameras.values())
+    /*for (Cameras camera : Cameras.values())
     {
       Optional<EstimatedRobotPose> poseEst = getEstimatedGlobalPose(camera);
       if (poseEst.isPresent())
@@ -150,8 +183,33 @@ public class Vision
                                          pose.timestampSeconds,
                                          camera.curStdDevs);
       }
-    }
+    }*/
 
+    AHRS ahrs = (AHRS) swerveDrive.getGyro().getIMU();
+
+    limelightFront.getSettings()
+                    .withRobotOrientation(new Orientation3d(swerveDrive.getGyro().getRotation3d(),
+                                          new AngularVelocity3d(DegreesPerSecond.of(ahrs.)),
+																	            DegreesPerSecond.of(gyro.getRollVelocity()),
+																	            DegreesPerSecond.of(gyro.getYawVelocity()))))
+                    .save();
+
+
+    Optional<PoseEstimate> poseEstFront = limelightFront.getPoseEstimator(true).getPoseEstimate();
+
+    poseEstFront.ifPresent((PoseEstimate poseEstimate) -> {
+      // Add it to the Pose Estimator
+      swerveDrive.addVisionMeasurement(poseEstimate.pose.toPose2d(), 
+                                       poseEstimate.timestampSeconds);
+    });
+
+    Optional<PoseEstimate> poseEstBack = limelightBack.getPoseEstimator(true).getPoseEstimate();
+
+    poseEstBack.ifPresent((PoseEstimate poseEstimate) -> {
+      //Add it to the Pose Estimator
+      swerveDrive.addVisionMeasurement(poseEstimate.pose.toPose2d(),
+                                       poseEstimate.timestampSeconds);
+    });
   }
 
   /**
