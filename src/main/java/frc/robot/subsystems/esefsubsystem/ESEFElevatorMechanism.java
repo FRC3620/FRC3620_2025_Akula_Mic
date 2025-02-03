@@ -23,6 +23,8 @@ public class ESEFElevatorMechanism {
     TalonFXConfiguration elevatorBConfig = new TalonFXConfiguration();
     public TalonFX elevatorA;
     public TalonFX elevatorB;
+    final int ELEVATORA_MOTORID = 9; 
+    final int ELEVATORB_MOTORID = 10;
 
     final PositionVoltage elevatorARequest = new PositionVoltage(0).withSlot(0); //check if update frequency to follower needs to be updated
     //update frequency will also affect PID
@@ -31,10 +33,10 @@ public class ESEFElevatorMechanism {
 
     public ESEFElevatorMechanism() { // constructor
 
-        if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 11, "Elevator Motor A")
+        if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, ELEVATORA_MOTORID, "Elevator Motor A")
                 || RobotContainer.shouldMakeAllCANDevices()) {
-            this.elevatorA = new TalonFX(11);
-            this.elevatorB = new TalonFX(12);
+            this.elevatorA = new TalonFX(ELEVATORA_MOTORID);
+            this.elevatorB = new TalonFX(ELEVATORB_MOTORID);
             // this.shoulderEncoder = new CANcoder(10);
             Slot0Configs elevatorAConfigs = new Slot0Configs();
             elevatorAConfigs.kG = 0; // Gravity FeedForward
@@ -44,7 +46,7 @@ public class ESEFElevatorMechanism {
             elevatorAConfigs.kD = 0;
 
             elevatorA.getConfigurator().apply(elevatorAConfigs); // Applies the Config to the motor
-            elevatorB.setControl(new Follower(11, false));
+            elevatorB.setControl(new Follower(ELEVATORA_MOTORID, false));
         }
 
     }

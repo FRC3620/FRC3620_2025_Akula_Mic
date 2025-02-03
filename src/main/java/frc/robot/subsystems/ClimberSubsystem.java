@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimberSubsystem extends SubsystemBase {
 
+    final int CLIMBER_MOTORID = 13;
+
     static public double pos1 = 0;
     static public double pos2 = 2;
     TalonFX motor;
@@ -19,7 +21,7 @@ public class ClimberSubsystem extends SubsystemBase {
     Slot0Configs slot0Configs= new Slot0Configs();
 
     public ClimberSubsystem() {
-        motor = new TalonFX(15);
+        motor = new TalonFX(CLIMBER_MOTORID);
 
         // slot0Configs = new Slot0Configs();
         slot0Configs.kP =4.8; // An error of 1 rotation results in 2.4 V output

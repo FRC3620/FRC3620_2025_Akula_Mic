@@ -20,6 +20,7 @@ public class ESEFShoulderMechanism {
 
     TalonFXConfiguration shoulderConfig = new TalonFXConfiguration();
     public TalonFX shoulder;
+    final int SHOULDER_MOTOR_ID = 11;
     //public CANcoder shoulderEncoder;
     // public final VelocityVoltage -- Do I need this?
 
@@ -34,9 +35,9 @@ public class ESEFShoulderMechanism {
     final PositionVoltage shoulderRequest = new PositionVoltage(0).withSlot(0);
 
     public ESEFShoulderMechanism() { // Constructor sdyvgbewkhb
-        if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 10, "Shoulder")
+        if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, SHOULDER_MOTOR_ID, "Shoulder")
                 || RobotContainer.shouldMakeAllCANDevices()) {
-            this.shoulder = new TalonFX(10);
+            this.shoulder = new TalonFX(SHOULDER_MOTOR_ID);
             // this.shoulderEncoder = new CANcoder(10);
             Slot0Configs slot0Configs = new Slot0Configs();
             slot0Configs.kG = 0; // Gravity FeedForward
