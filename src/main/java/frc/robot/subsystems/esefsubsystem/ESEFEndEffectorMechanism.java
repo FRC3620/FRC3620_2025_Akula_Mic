@@ -29,11 +29,13 @@ public class ESEFEndEffectorMechanism {
 
     final DutyCycleOut endEffControl = new DutyCycleOut(0);
 
+    final int ENDEFFECTORMOTORID = 12;
+
     public ESEFEndEffectorMechanism() {
         // constructor
-        if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 9, "End Effector")
+        if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, ENDEFFECTORMOTORID, "End Effector")
                 || RobotContainer.shouldMakeAllCANDevices()) {
-            endEff = new SparkMax(9, MotorType.kBrushless);
+            endEff = new SparkMax(ENDEFFECTORMOTORID, MotorType.kBrushless);
         }
 
     }

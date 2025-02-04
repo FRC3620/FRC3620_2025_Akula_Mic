@@ -28,17 +28,19 @@ public class AFISubsystem extends SubsystemBase {
     SparkMaxConfig rollerConfig = new SparkMaxConfig();
     public SparkMax roller;
 
-    
+    final int AFIPIVOTMOTORID = 14;
+    final int AFIROLLERMOTORID = 15;
     
   
 
   public AFISubsystem() {
     //constructor
 
+  
     //Pivot
-     if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 13, "AFIPivot")
+     if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, AFIPIVOTMOTORID, "AFIPivot")
                 || RobotContainer.shouldMakeAllCANDevices()) {
-            this.pivot = new TalonFX(13);
+            this.pivot = new TalonFX(AFIPIVOTMOTORID);
             // this.shoulderEncoder = new CANcoder(10);
             Slot0Configs slot0Configs = new Slot0Configs();
             slot0Configs.kG = 0; // Gravity FeedForward
@@ -51,9 +53,9 @@ public class AFISubsystem extends SubsystemBase {
           } // Applies the Config to the shoulder motor
 
       //Roller
-      if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 14, "AFIRoller")
+      if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, AFIROLLERMOTORID, "AFIRoller")
                 || RobotContainer.shouldMakeAllCANDevices()) {
-            this.roller = new SparkMax(14, MotorType.kBrushless);
+            this.roller = new SparkMax(AFIROLLERMOTORID, MotorType.kBrushless);
           } 
           
   }
