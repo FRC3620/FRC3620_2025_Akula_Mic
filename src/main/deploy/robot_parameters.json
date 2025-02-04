@@ -18,6 +18,12 @@
     "swerveDirectoryName": "swerve/CheepCheep"
   },
   {
+    "name": "Compbot",
+    "serialNumber": "0326F30D",
+    "makeAllCANDevices": true,
+    "swerveDirectoryName": "swerve/Compbot"
+  },
+  {
     "name": "unknown",
     "serialNumber": "(unknown)",
     "makeAllCANDevices": true,
