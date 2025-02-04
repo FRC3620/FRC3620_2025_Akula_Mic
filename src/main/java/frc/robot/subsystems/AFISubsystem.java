@@ -36,10 +36,11 @@ public class AFISubsystem extends SubsystemBase {
   public AFISubsystem() {
     //constructor
 
+  
     //Pivot
      if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, AFIPIVOTMOTORID, "AFIPivot")
                 || RobotContainer.shouldMakeAllCANDevices()) {
-            this.pivot = new TalonFX(13);
+            this.pivot = new TalonFX(AFIPIVOTMOTORID);
             // this.shoulderEncoder = new CANcoder(10);
             Slot0Configs slot0Configs = new Slot0Configs();
             slot0Configs.kG = 0; // Gravity FeedForward

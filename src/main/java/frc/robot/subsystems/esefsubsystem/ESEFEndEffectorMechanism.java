@@ -33,7 +33,7 @@ public class ESEFEndEffectorMechanism {
 
     public ESEFEndEffectorMechanism() {
         // constructor
-        if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 12, "End Effector")
+        if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, ENDEFFECTORMOTORID, "End Effector")
                 || RobotContainer.shouldMakeAllCANDevices()) {
             endEff = new SparkMax(ENDEFFECTORMOTORID, MotorType.kBrushless);
         }
