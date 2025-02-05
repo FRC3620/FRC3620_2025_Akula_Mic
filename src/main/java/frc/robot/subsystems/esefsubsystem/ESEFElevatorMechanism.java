@@ -47,7 +47,6 @@ public class ESEFElevatorMechanism {
             elevatorAConfigs.kD = 0;
 
             elevatorA.getConfigurator().apply(elevatorAConfigs); // Applies the Config to the motor
-            elevatorB.setControl(new Follower(ELEVATORA_MOTORID, false));
         }
 
         if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, ELEVATORB_MOTORID,
