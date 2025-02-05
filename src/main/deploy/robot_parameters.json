@@ -8,13 +8,13 @@
   {
     "name": "Joehann",
     "serialNumber": "03063d7e",
-    "makeAllCANDevices": true,
+    "makeAllCANDevices": false,
     "swerveDirectoryName": "swerve/Joehann"
   },
   {
     "name": "CheepCheep",
     "serialNumber": "030a8289",
-    "makeAllCANDevices": true,
+    "makeAllCANDevices": false,
     "swerveDirectoryName": "swerve/CheepCheep"
   },
   {
