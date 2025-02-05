@@ -40,7 +40,12 @@ public class ClimberSubsystem extends SubsystemBase {
     public void periodic() {
         // TODO Auto-generated method stub
 
+        if (motor != null){
+            
         NTPublisher.putNumber("frc3620/climer postion", motor.getPosition().getValueAsDouble());
+
+        }
+
     }
 
     public void setPostion(Double cpos) {
