@@ -60,7 +60,7 @@ public class RobotContainer {
   public static CANDeviceFinder canDeviceFinder;
   public static RobotParameters robotParameters;
 
-  Alert missingDevicesAlert = new Alert("Diagnostics", "", Alert.AlertType.kWarning);
+  Alert missingDevicesAlert = new Alert(HealthSubsystem.DIAGNOSTIC_ALERT_GROUP_NAME, "", Alert.AlertType.kWarning);
 
   // hardware here...
   private static DigitalInput practiceBotJumper;
