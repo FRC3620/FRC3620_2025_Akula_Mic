@@ -6,13 +6,17 @@ package frc.robot.subsystems.esefsubsystem;
 
 import org.usfirst.frc3620.CANDeviceType;
 
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 //import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotContainer;
 
@@ -40,19 +44,30 @@ public class ESEFElevatorMechanism {
             this.elevatorA = new TalonFX(ELEVATORA_MOTORID);
             // this.shoulderEncoder = new CANcoder(10);
             Slot0Configs elevatorAConfigs = new Slot0Configs();
-            elevatorAConfigs.kG = 0; // Gravity FeedForward
+            elevatorAConfigs.kG = 0.2; // Gravity FeedForward
             elevatorAConfigs.kS = 0; // Friction FeedForward
-            elevatorAConfigs.kP = 1; // an error of 1 rotation results in x Volt output
+            elevatorAConfigs.kP = 0.35; // an error of 1 rotation results in x Volt output
             elevatorAConfigs.kI = 0;
             elevatorAConfigs.kD = 0;
+            elevatorAConfigs.GravityType = GravityTypeValue.Elevator_Static;
 
             elevatorA.getConfigurator().apply(elevatorAConfigs); // Applies the Config to the motor
+
+            MotorOutputConfigs elevatorAOutConfigs = new MotorOutputConfigs();
+            elevatorAOutConfigs.Inverted = InvertedValue.Clockwise_Positive;
+            elevatorAOutConfigs.PeakForwardDutyCycle = 0.05;
+            elevatorAOutConfigs.PeakReverseDutyCycle = 0.025;
+
+            elevatorA.setPosition(0);
+            elevatorA.getConfigurator().apply(elevatorAOutConfigs); // Applies the Config to the motor
+
         }
 
         if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, ELEVATORB_MOTORID,
                 "Elevator Motor B")
                 || RobotContainer.shouldMakeAllCANDevices()) {
             this.elevatorB = new TalonFX(ELEVATORB_MOTORID);
+            elevatorB.setPosition(0);
 
             elevatorB.setControl(new Follower(ELEVATORA_MOTORID, false));
         }
@@ -63,14 +78,20 @@ public class ESEFElevatorMechanism {
         if (elevatorA != null) {
             SmartDashboard.putNumber("frc3620/Elevator/AMotorActualPosition",
                     elevatorA.getPosition().getValueAsDouble());
+            SmartDashboard.putNumber("frc3620/Elevator/AMotorAppliedOutput", elevatorA.get());
         }
         if (elevatorB != null) {
             SmartDashboard.putNumber("frc3620/Elevator/BMotorActualPosition",
                     elevatorB.getPosition().getValueAsDouble());
+            SmartDashboard.putNumber("frc3620/Elevator/BMotorAppliedOutput", elevatorB.get());
+
         }
+        
     }
 
     public void setElevatorPosition(double position) {
+        MathUtil.clamp(position, 1, 35);
+
         // set the shoulder to the desired position Cat
         SmartDashboard.putNumber("frc3620/Elevator/RequestedPosition", position);
 
@@ -78,5 +99,7 @@ public class ESEFElevatorMechanism {
             elevatorA.setControl(elevatorARequest.withPosition(position));
         }
     }
+
+    
 
 }
