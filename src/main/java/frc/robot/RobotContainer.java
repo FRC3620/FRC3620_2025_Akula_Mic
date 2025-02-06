@@ -30,6 +30,7 @@ import frc.robot.subsystems.AFISubsystem;
 import frc.robot.subsystems.BlinkySubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.HealthSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.esefsubsystem.ESEFSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveInputStream;
@@ -72,6 +73,7 @@ public class RobotContainer {
   public static HealthSubsystem healthSubsystem;
   ClimberSubsystem climberSubsystem;
   public static BlinkySubsystem blinkySubsystem;
+  public static VisionSubsystem visionSubsystem;
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -136,6 +138,8 @@ public class RobotContainer {
     afiSubsystem = new AFISubsystem();
     climberSubsystem = new ClimberSubsystem();
     blinkySubsystem = new BlinkySubsystem();
+    visionSubsystem = new VisionSubsystem();
+    
     // need to create healthSubsystem LAST!!!!!!!
     healthSubsystem = new HealthSubsystem();
   }
