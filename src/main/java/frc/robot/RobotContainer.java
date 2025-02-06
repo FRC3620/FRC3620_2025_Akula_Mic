@@ -36,6 +36,7 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 
 import frc.robot.commands.SetClimberPostionCommand;
+import frc.robot.commands.SetIMUFromMegaTag1Command;
 import frc.robot.commands.SetPivotPositionCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -288,6 +289,8 @@ public class RobotContainer {
     // SmartDashboard.putData(new xxxxCommand());
     SmartDashboard.putData("climber:p1", new SetClimberPostionCommand(ClimberSubsystem.pos1, climberSubsystem));
     SmartDashboard.putData("climber:p2", new SetClimberPostionCommand(ClimberSubsystem.pos2, climberSubsystem));
+
+    SmartDashboard.putData("Reset IMU from Limelight data", new SetIMUFromMegaTag1Command());
     
   }
 

@@ -1,7 +1,9 @@
 package frc.robot.subsystems;
 
+import java.nio.file.attribute.PosixFileAttributes;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Supplier;
 
 import org.usfirst.frc3620.NTPublisher;
 import org.usfirst.frc3620.NTStructs;
@@ -12,7 +14,10 @@ import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
+import frc.robot.RobotContainer;
 import frc.robot.LimelightHelpers.PoseEstimate;
+import frc.robot.subsystems.VisionSubsystem.CameraData.MegaTagData;
+import swervelib.SwerveDrive;
 
 public class VisionSubsystem extends SubsystemBase {
   NetworkTableInstance inst = NetworkTableInstance.getDefault();
@@ -28,73 +33,114 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public class CameraData {
-    // gets set whenever we have new data
-    AtomicBoolean haveNewMetatag1Pose = new AtomicBoolean(false);
-
-    Pose2d metatag1Pose;
-    double metatag1Timestamp;
-    int metatag1TagCount;
+    final String limelightName;
+    public final MegaTagData megaTag1 = new MegaTagData("megaTag1");
+    public final MegaTagData megaTag2 = new MegaTagData("megaTag2");
 
     CameraData(Camera c) {
+      limelightName = c.limelightName;
       /*
        * see
-       * https://docs.wpilib.org/en/stable/docs/software/networktables/listening-for-change.html#using-networktableinstance-to-listen-for-changes
+       * https://docs.wpilib.org/en/stable/docs/software/networktables/listening-for-
+       * change.html#using-networktableinstance-to-listen-for-changes
        * 
-       * we set the haveNew* atomic(s) when the corresponding network entry is updated,
-       * and in periodic(), only
-       * go through all the work of reading it if we got a new one.
+       * we set the haveNew* atomic(s) when the corresponding network entry is
+       * updated, and in periodic() we only go through all the work of reading
+       * the network entry if it had been updated.
        */
       DoubleArrayEntry entry = LimelightHelpers.getLimelightDoubleArrayEntry(c.limelightName, "botpose_wpiblue");
       inst.addListener(
           entry,
           EnumSet.of(NetworkTableEvent.Kind.kValueAll),
-          event -> haveNewMetatag1Pose.set(true));
+          event -> megaTag1.haveNewPose.set(true));
+
+      entry = LimelightHelpers.getLimelightDoubleArrayEntry(c.limelightName, "botpose_orb_wpiblue");
+      inst.addListener(
+          entry,
+          EnumSet.of(NetworkTableEvent.Kind.kValueAll),
+          event -> megaTag2.haveNewPose.set(true)); 
     }
 
-    public Pose2d getMetatag1Pose() {
-      return metatag1Pose;
+    public String getLimelightName() {
+      return limelightName;
     }
 
-    public double getMetatag1Timestamp() {
-      return metatag1Timestamp;
-    }
+    public class MegaTagData {
+      // gets set whenever we have new data
+      AtomicBoolean haveNewPose = new AtomicBoolean(false);
 
-    public int getMetatag1TagCount() {
-      return metatag1TagCount;
-    }
-  }
+      final String megaTagName;
 
-  Map<Camera, CameraData> cameraData = new TreeMap<>();
+      PoseEstimate poseEstimate;
 
-  public VisionSubsystem() {
-    cameraData.put(Camera.FRONT, new CameraData(Camera.FRONT));
-    cameraData.put(Camera.BACK, new CameraData(Camera.BACK));
-  }
+      MegaTagData(String megaTagName) {
+        this.megaTagName = megaTagName;
+      }
 
-  @Override
-  public void periodic() {
-    for (var entry : cameraData.entrySet()) {
-      var cameraData = entry.getValue();
+      public String getMegaTagName() {
+        return megaTagName;
+      }
 
-      if (cameraData.haveNewMetatag1Pose.getAndSet(false)) {
-        var limelightName = entry.getKey().limelightName;
-        PoseEstimate m = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
+      public PoseEstimate getPoseEstimate() {
+        return poseEstimate;
+      }
 
-        if (m != null) {
-          cameraData.metatag1Pose = m.pose;
-          cameraData.metatag1Timestamp = m.timestampSeconds;
-          cameraData.metatag1TagCount = m.tagCount;
-
-          var prefix = "SmartDashboard/frc3620/vision/" + limelightName + "/";
-          NTPublisher.putNumber(prefix + "targetCount", m.tagCount);
-          NTStructs.publish(prefix + "poseEstimate", m.pose);
-        }
+      public String getLimelightName() {
+        return limelightName;
       }
     }
   }
 
+  Map<Camera, CameraData> allCameraData = new TreeMap<>();
+  Set<CameraData> allCameraDataAsSet;
+
+  public VisionSubsystem() {
+    allCameraData.put(Camera.FRONT, new CameraData(Camera.FRONT));
+    allCameraData.put(Camera.BACK, new CameraData(Camera.BACK));
+    allCameraData = Map.copyOf(allCameraData); // make immutable
+    allCameraDataAsSet = Set.copyOf(allCameraData.values());
+  }
+
+  void processMegaTag(MegaTagData megaTagData, Supplier<PoseEstimate> supplier) {
+    if (megaTagData.haveNewPose.getAndSet(false)) {
+      PoseEstimate m = supplier.get();
+
+      if (m != null) {
+        megaTagData.poseEstimate = m;
+
+        var prefix = "SmartDashboard/frc3620/vision/" + megaTagData.getLimelightName() + "/" + megaTagData.megaTagName
+            + "/";
+        NTPublisher.putNumber(prefix + "targetCount", m.tagCount);
+        NTStructs.publish(prefix + "poseEstimate", m.pose);
+      }
+    }
+  }
+
+  @Override
+  public void periodic() {
+    double yaw = 0;
+    double yawRate = 0;
+    double pitch = 0;
+    if (RobotContainer.swerveSubsystem != null) {
+      SwerveDrive sd = RobotContainer.swerveSubsystem.getSwerveDrive();
+      yaw = sd.getYaw().getDegrees();
+      pitch = sd.getPitch().getDegrees();
+      // need to convert this to degrees / s.
+      // yawRate = sd.getGyro().getYawAngularVelocity();
+    }
+    for (var cameraData : allCameraData.values()) {
+      LimelightHelpers.SetRobotOrientation(cameraData.limelightName, yaw, yawRate, pitch, 0, 0, 0);
+      processMegaTag(cameraData.megaTag1, () -> LimelightHelpers.getBotPoseEstimate_wpiBlue(cameraData.limelightName));
+      processMegaTag(cameraData.megaTag2, () -> LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(cameraData.limelightName));
+    }
+  }
+
   public CameraData getCameraData(Camera camera) {
-    return cameraData.get(camera);
+    return allCameraData.get(camera);
+  }
+
+  public Set<CameraData> getAllCameraData() {
+    return allCameraDataAsSet;
   }
 
 }
