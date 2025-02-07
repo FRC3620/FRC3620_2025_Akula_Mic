@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 import org.usfirst.frc3620.NTPublisher;
 import org.usfirst.frc3620.NTStructs;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.DoubleArrayEntry;
 import edu.wpi.first.networktables.NetworkTableEvent;
@@ -58,7 +59,7 @@ public class VisionSubsystem extends SubsystemBase {
       inst.addListener(
           entry,
           EnumSet.of(NetworkTableEvent.Kind.kValueAll),
-          event -> megaTag2.haveNewPose.set(true)); 
+          event -> megaTag2.haveNewPose.set(true));
     }
 
     public String getLimelightName() {
@@ -112,6 +113,7 @@ public class VisionSubsystem extends SubsystemBase {
             + "/";
         NTPublisher.putNumber(prefix + "targetCount", m.tagCount);
         NTStructs.publish(prefix + "poseEstimate", m.pose);
+      
       }
     }
   }
@@ -121,18 +123,40 @@ public class VisionSubsystem extends SubsystemBase {
     double yaw = 0;
     double yawRate = 0;
     double pitch = 0;
+    boolean doRejectUpdate = false;
+    SwerveDrive sd = null;
     if (RobotContainer.swerveSubsystem != null) {
-      SwerveDrive sd = RobotContainer.swerveSubsystem.getSwerveDrive();
+      sd = RobotContainer.swerveSubsystem.getSwerveDrive();
       yaw = sd.getYaw().getDegrees();
       pitch = sd.getPitch().getDegrees();
       // need to convert this to degrees / s.
       // yawRate = sd.getGyro().getYawAngularVelocity();
     }
     for (var cameraData : allCameraData.values()) {
+      
       LimelightHelpers.SetRobotOrientation(cameraData.limelightName, yaw, yawRate, pitch, 0, 0, 0);
       processMegaTag(cameraData.megaTag1, () -> LimelightHelpers.getBotPoseEstimate_wpiBlue(cameraData.limelightName));
-      processMegaTag(cameraData.megaTag2, () -> LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(cameraData.limelightName));
+      processMegaTag(cameraData.megaTag2,
+          () -> LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(cameraData.limelightName));
+
+      // update robot odometry from vision
+      if (Math.abs(yawRate) > 720) // if our angular velocity is greater than 720 degrees per second, ignore
+                                            // vision updates
+      {
+        doRejectUpdate = true;
+      }
+      if (cameraData.megaTag2.poseEstimate.tagCount == 0) {
+        doRejectUpdate = true;
+      }
+      if(sd == null){
+        doRejectUpdate = true;
+      }
+      if (!doRejectUpdate) {
+        sd.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
+        sd.addVisionMeasurement(cameraData.megaTag2.poseEstimate.pose, cameraData.megaTag2.poseEstimate.timestampSeconds);
+      }
     }
+
   }
 
   public CameraData getCameraData(Camera camera) {
