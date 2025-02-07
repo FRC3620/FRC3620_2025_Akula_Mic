@@ -26,6 +26,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.esefcommands.SetElevatorPositionCommand;
 import frc.robot.commands.esefcommands.SetEndEffectorSpeedCommand;
 import frc.robot.commands.esefcommands.SetShoulderPositionCommand;
+import frc.robot.commands.swervedrive.drivebase.ContinuousSetIMUFromMegaTag1Command;
 import frc.robot.subsystems.AFISubsystem;
 import frc.robot.subsystems.BlinkySubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -39,6 +40,7 @@ import frc.robot.commands.SetClimberPostionCommand;
 import frc.robot.commands.SetIMUFromMegaTag1Command;
 import frc.robot.commands.SetPivotPositionCommand;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -143,6 +145,8 @@ public class RobotContainer {
     
     // need to create healthSubsystem LAST!!!!!!!
     healthSubsystem = new HealthSubsystem();
+
+    CommandScheduler.getInstance().schedule(new ContinuousSetIMUFromMegaTag1Command());
   }
 
   /**
