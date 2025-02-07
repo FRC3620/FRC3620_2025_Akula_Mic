@@ -28,7 +28,6 @@ import frc.robot.commands.esefcommands.SetEndEffectorSpeedCommand;
 import frc.robot.commands.esefcommands.SetShoulderPositionCommand;
 import frc.robot.commands.swervedrive.drivebase.ContinuousSetIMUFromMegaTag1Command;
 import frc.robot.subsystems.AFISubsystem;
-import frc.robot.subsystems.BlinkySubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.HealthSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
@@ -62,11 +61,12 @@ public class RobotContainer {
   public static CANDeviceFinder canDeviceFinder;
   public static RobotParameters robotParameters;
 
-  Alert missingDevicesAlert = new Alert(HealthSubsystem.DIAGNOSTIC_ALERT_GROUP_NAME, "", Alert.AlertType.kWarning);
+  Alert missingDevicesAlert = new Alert(HealthSubsystem.HARDWARE_ALERT_GROUP_NAME, "", Alert.AlertType.kError);
 
   // hardware here...
   private static DigitalInput practiceBotJumper;
 
+  public static PowerDistribution powerDistribution = null;
   public static PneumaticsModuleType pneumaticModuleType = null;
 
   // subsystems here
@@ -75,8 +75,8 @@ public class RobotContainer {
   public static SwerveSubsystem swerveSubsystem;
   public static HealthSubsystem healthSubsystem;
   ClimberSubsystem climberSubsystem;
-  public static BlinkySubsystem blinkySubsystem;
   public static VisionSubsystem visionSubsystem;
+
 
   // joysticks here....
   public static Joystick driverJoystick;
@@ -106,6 +106,12 @@ public class RobotContainer {
       pneumaticModuleType = PneumaticsModuleType.REVPH;
     } else if (canDeviceFinder.isDevicePresent(CANDeviceType.CTRE_PCM, 0, "CTRE PCM")) {
       pneumaticModuleType = PneumaticsModuleType.CTREPCM;
+    }
+
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.REV_PDH, 1) || iAmACompetitionRobot) {
+      powerDistribution = new PowerDistribution();
+    } else if (canDeviceFinder.isDevicePresent(CANDeviceType.CTRE_PDP, 0)) {
+      powerDistribution = new PowerDistribution();
     }
 
     makeSubsystems();
@@ -140,7 +146,7 @@ public class RobotContainer {
     esefSubsystem = new ESEFSubsystem();
     afiSubsystem = new AFISubsystem();
     climberSubsystem = new ClimberSubsystem();
-    blinkySubsystem = new BlinkySubsystem();
+
     visionSubsystem = new VisionSubsystem();
     
     // need to create healthSubsystem LAST!!!!!!!
