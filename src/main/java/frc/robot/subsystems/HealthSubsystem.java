@@ -30,8 +30,7 @@ public class HealthSubsystem extends SubsystemBase {
 
   // watch the power distribution system
   PDWatcher pdWatcher;
-  Alert pdStickyFaults = new Alert(HARDWARE_ALERT_GROUP_NAME, "", AlertType.kWarning);
-  // Alert pdFaults = new Alert(HARDWARE_ALERT_GROUP_NAME, "", AlertType.kError);
+  Alert pdStickyFaultAlert = new Alert(HARDWARE_ALERT_GROUP_NAME, "", AlertType.kWarning);
 
   Timer timer_2s = new Timer();
 
@@ -41,7 +40,6 @@ public class HealthSubsystem extends SubsystemBase {
 
     if (RobotContainer.swerveSubsystem != null) {
       swerveMotorWatcher = new MotorWatcher("SmartDashboard/frc3620/health/swerve");
-
       for (var mapEntry : RobotContainer.swerveSubsystem.getSwerveDrive().getModuleMap().entrySet()) {
         var name = mapEntry.getKey();
 
@@ -59,11 +57,8 @@ public class HealthSubsystem extends SubsystemBase {
       }
     }
 
-    encoderWatcher.update();
-
     if (RobotContainer.powerDistribution != null) {
       pdWatcher = new PDWatcher(RobotContainer.powerDistribution);
-      pdWatcher.update();
     }
 
     timer_2s.reset();
@@ -81,6 +76,7 @@ public class HealthSubsystem extends SubsystemBase {
 
     if (encoderWatcher != null) {
       processWatcher(encoderWatcher,
+          disconnectedEncodersAlert,
           "Absolute encoder(s) disconnected: {}",
           "Absolute encoder(s) disconnected: {}",
           "Absolute encoder(s) broken: ");
@@ -97,14 +93,15 @@ public class HealthSubsystem extends SubsystemBase {
 
   void periodic_2s() {
     if (pdWatcher != null) {
-      processWatcher(encoderWatcher,
+      processWatcher(pdWatcher,
+          pdStickyFaultAlert,
           "New sticky PD faults: {}",
           "Cleared sticky PD faults: {}",
           "PD Sticky Faults: ");
     }
   }
 
-  void processWatcher(Watcher w, String justBrokenLogMessage, String justFixedLogMessage,
+  void processWatcher(Watcher w, Alert alert, String justBrokenLogMessage, String justFixedLogMessage,
       String currentBrokenMessagePrefix) {
     w.update();
 
@@ -119,11 +116,11 @@ public class HealthSubsystem extends SubsystemBase {
     }
     if (changed) {
       if (w.broken.isEmpty()) {
-        disconnectedEncodersAlert.set(false);
-        disconnectedEncodersAlert.setText("");
+        alert.set(false);
+        alert.setText("");
       } else {
-        disconnectedEncodersAlert.set(false);
-        disconnectedEncodersAlert.setText(currentBrokenMessagePrefix + w.broken);
+        alert.set(true);
+        alert.setText(currentBrokenMessagePrefix + w.broken);
       }
     }
 
@@ -147,7 +144,7 @@ public class HealthSubsystem extends SubsystemBase {
         justBroken = new TreeSet<>(broken);
         justBroken.removeAll(previouslyBroken);
         justFixed = new TreeSet<>(previouslyBroken);
-        justBroken.removeAll(broken);
+        justFixed.removeAll(broken);
       } else {
         justBroken = empty;
         justFixed = empty;
@@ -162,7 +159,6 @@ public class HealthSubsystem extends SubsystemBase {
 
     PDWatcher(PowerDistribution pd) {
       this.pd = pd;
-
     }
 
     void collect() {
