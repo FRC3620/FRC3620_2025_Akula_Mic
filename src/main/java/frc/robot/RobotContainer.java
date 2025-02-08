@@ -26,7 +26,6 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.esefcommands.SetElevatorPositionCommand;
 import frc.robot.commands.esefcommands.SetEndEffectorSpeedCommand;
 import frc.robot.commands.esefcommands.SetShoulderPositionCommand;
-import frc.robot.commands.swervedrive.drivebase.ContinuousSetIMUFromMegaTag1Command;
 import frc.robot.subsystems.AFISubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.HealthSubsystem;
@@ -34,9 +33,10 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.esefsubsystem.ESEFSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveInputStream;
-
+import frc.robot.commands.ContinuousSetIMUFromMegaTag1Command;
 import frc.robot.commands.SetClimberPostionCommand;
 import frc.robot.commands.SetIMUFromMegaTag1Command;
+import frc.robot.commands.ContinuousSetIMUFromMegaTag1Command;
 import frc.robot.commands.SetPivotPositionCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -102,11 +102,13 @@ public class RobotContainer {
       logger.warn("this is a test chassis, will try to deal with missing hardware!");
     }
 
+    /*
     if (canDeviceFinder.isDevicePresent(CANDeviceType.REV_PH, 1, "REV PH") || iAmACompetitionRobot) {
       pneumaticModuleType = PneumaticsModuleType.REVPH;
     } else if (canDeviceFinder.isDevicePresent(CANDeviceType.CTRE_PCM, 0, "CTRE PCM")) {
       pneumaticModuleType = PneumaticsModuleType.CTREPCM;
     }
+    */
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.REV_PDH, 1) || iAmACompetitionRobot) {
       powerDistribution = new PowerDistribution();
@@ -136,6 +138,14 @@ public class RobotContainer {
 
   private void makeSubsystems() {
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 1, "Swerve Drive 1") || shouldMakeAllCANDevices()) {
+      canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 3, "Swerve Drive 3");
+      canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 5, "Swerve Drive 5");
+      canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 7, "Swerve Drive 7");
+      canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 2, "Swerve Drive 2");
+      canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 4, "Swerve Drive 4");
+      canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 6, "Swerve Drive 6");
+      canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 8, "Swerve Drive 8");
+
       String swerveFolder = robotParameters.getSwerveDirectoryName();
 
       SmartDashboard.putString("swerveFolder", swerveFolder);

@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.swervedrive.drivebase;
+package frc.robot.commands;
 
 import org.tinylog.TaggedLogger;
 import org.usfirst.frc3620.logger.LoggingMaster;
@@ -38,7 +38,7 @@ public class ContinuousSetIMUFromMegaTag1Command extends Command {
     String used = null;
     for (var cameraData : RobotContainer.visionSubsystem.getAllCameraData()) {
       PoseEstimate pe = cameraData.megaTag1.getPoseEstimate();
-      if (pe.tagCount > mostTargets) {
+      if (pe != null && pe.tagCount > mostTargets) {
         mostTargets = pe.tagCount;
         pose = pe.pose;
         used = cameraData.getLimelightName();
