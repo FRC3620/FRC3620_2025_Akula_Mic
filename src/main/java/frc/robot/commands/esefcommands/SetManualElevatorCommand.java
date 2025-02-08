@@ -27,7 +27,7 @@ public class SetManualElevatorCommand extends Command {
 
     // We need to read the data from SmartDashboard before we set the intiial Speed and Angle
 
-    double elevatorPos = SmartDashboard.getNumber("Elevator.ManualPosition", 0);
+    double elevatorPos = SmartDashboard.getNumber("Elevator.ManualPosition", 5);
 
     esef.setElevatorPosition(elevatorPos);
 
@@ -41,7 +41,7 @@ public class SetManualElevatorCommand extends Command {
         // We need to read the data from SmartDashboard before we set the intiial Speed and Angle
 
 
-        double elevatorPos = SmartDashboard.getNumber("Elevator.ManualPosition", 0);
+        double elevatorPos = SmartDashboard.getNumber("Elevator.ManualPosition", 5);
 
         esef.setElevatorPosition(elevatorPos);
 

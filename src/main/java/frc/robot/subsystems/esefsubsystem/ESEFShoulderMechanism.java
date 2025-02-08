@@ -4,23 +4,50 @@
 package frc.robot.subsystems.esefsubsystem;
 
 import org.usfirst.frc3620.CANDeviceType;
+import org.usfirst.frc3620.RobotMode;
 
+import com.ctre.phoenix.sensors.AbsoluteSensorRange;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 //import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.spark.config.EncoderConfig;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DutyCycleSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
 /** Add your docs here. */
 public class ESEFShoulderMechanism {
 
+    private final double positionConversion = 3.075;
+
+    CANcoder shoulderEncoder = new CANcoder(11);
+    
     TalonFXConfiguration shoulderConfig = new TalonFXConfiguration();
+
+
+    boolean encoderCalibrated = false;
+    Timer calibrationTimer;
+
     public TalonFX shoulder;
     final int SHOULDER_MOTOR_ID = 11;
+
+    double shoulderCalibratedPosition = 95; //degrees
+
+    // to save a requested position if encoder is not calibrated
+    Double requestedPositionWhileCalibrating = null;
+
     //public CANcoder shoulderEncoder;
     // public final VelocityVoltage -- Do I need this?
 
@@ -39,14 +66,31 @@ public class ESEFShoulderMechanism {
                 || RobotContainer.shouldMakeAllCANDevices()) {
             this.shoulder = new TalonFX(SHOULDER_MOTOR_ID);
             // this.shoulderEncoder = new CANcoder(10);
-            Slot0Configs slot0Configs = new Slot0Configs();
-            slot0Configs.kG = 0; // Gravity FeedForward
-            slot0Configs.kS = 0; // Friction FeedForward
-            slot0Configs.kP = 1; // an error of 1 rotation results in x Volt output
-            slot0Configs.kI = 0;
-            slot0Configs.kD = 0;
+            TalonFXConfiguration shoulderConfigs = new TalonFXConfiguration();
 
-            shoulder.getConfigurator().apply(slot0Configs); // Applies the Config to the shoulder motor
+            shoulderConfigs.Slot0.kG = 0.5; // Gravity FeedForward
+            shoulderConfigs.Slot0.kS = 0; // Friction FeedForward
+            shoulderConfigs.Slot0.kP = 0.5; // an error of 1 rotation results in x Volt output
+            shoulderConfigs.Slot0.kI = 0;
+            shoulderConfigs.Slot0.kD = 0;
+
+            shoulderConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
+
+            shoulderConfigs.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);
+            shoulderConfigs.MotorOutput.withPeakForwardDutyCycle(0.1);
+            shoulderConfigs.MotorOutput.withPeakReverseDutyCycle(-0.05);
+            shoulderConfigs.Voltage.withPeakForwardVoltage(12 * 0.1);
+            shoulderConfigs.Voltage.withPeakReverseVoltage(-12 * 0.05);
+            shoulder.getConfigurator().apply(shoulderConfigs); // Applies the Config to the shoulder motor
+
+             
+            // This CANcoder should report absolute position from [-0.5, 0.5) rotations,
+            // with a 0.26 rotation offset, with clockwise being positive
+ 
+            CANcoderConfiguration canCoderConfigs = new CANcoderConfiguration();
+                    
+            canCoderConfigs.MagnetSensor.withAbsoluteSensorDiscontinuityPoint(0.5).withMagnetOffset(0.19).withSensorDirection(SensorDirectionValue.Clockwise_Positive);
+            shoulderEncoder.getConfigurator().apply(canCoderConfigs);
         }
 
     }
@@ -56,19 +100,72 @@ public class ESEFShoulderMechanism {
      * ShoulderPosition currentShoulderPosition;
      */
 
+
+
     public void periodic() {
+
+        SmartDashboard.putBoolean("frc3620/Shoulder/IsCalibrated", encoderCalibrated);
+
+    
+
+        SmartDashboard.putNumber("frc3620/Shoulder/AbsolutePosition", shoulderEncoder.getAbsolutePosition().getValueAsDouble());
+
+         // only do something if we actually have a motor
+   /*  if (shoulder != null) {
+        if (Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS) {
+          if (!encoderCalibrated) {
+            // If the robot is running, and the encoder is "not calibrated," run motor very
+            // slowly towards the switch
+            shoulder.set(0.03); 
+            if (calibrationTimer == null) {
+              // we need to calibrate and we have no timer. make one and start it
+              calibrationTimer = new Timer();
+              calibrationTimer.reset();
+              calibrationTimer.start();
+            } else {
+              // we have a timer, has the motor had power long enough to spin up
+              if (calibrationTimer.get() > 0.2) {
+                if (Math.abs(shoulder.getVelocity().getValueAsDouble()) < 0.4) {
+                  // motor is not moving, hopefully it's against the stop
+                  encoderCalibrated = true;
+                  shoulder.set(0);
+                  shoulder.setPosition(shoulderCalibratedPosition / positionConversion);
+                  
+                  setShoulderPositionDegrees(shoulderCalibratedPosition);
+
+
+
+                  // If there was a requested position while we were calibrating, go there
+                  if (requestedPositionWhileCalibrating != null) {
+                    setShoulderPositionDegrees(requestedPositionWhileCalibrating);
+                    requestedPositionWhileCalibrating = null;
+                  }
+
+                }
+              }
+            }
+          }
+        }
+    }*/
         if (shoulder != null) {
-            SmartDashboard.putNumber("frc3620/Shoulder/ActualPosition", shoulder.getPosition().getValueAsDouble());
+            SmartDashboard.putNumber("frc3620/Shoulder/ActualPosition", getShoulderPositionInDegrees());
         }
     }
 
-    public void setShoulderPosition(double position) {
+    public void setShoulderPositionDegrees(double position) {
         // set the shoulder to the desired position Cat
         SmartDashboard.putNumber("frc3620/Shoulder/RequestedPosition", position);
+        SmartDashboard.putNumber("frc3620/Shoulder/MotorAppliedOutput", shoulder.get());
 
         if (shoulder != null) {
-            shoulder.setControl(shoulderRequest.withPosition(position));
+            shoulder.setControl(shoulderRequest.withPosition(position / positionConversion));
         }
+    }
+
+    public double getShoulderPositionInDegrees(){
+
+        return shoulder.getPosition().getValueAsDouble() * positionConversion;
+
     }
 
 }
