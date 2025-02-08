@@ -145,10 +145,13 @@ public class VisionSubsystem extends SubsystemBase {
       {
         doRejectUpdate = true;
       }
-      if (cameraData.megaTag2.poseEstimate.tagCount == 0) {
+      else if (cameraData.megaTag2.poseEstimate == null) {
         doRejectUpdate = true;
       }
-      if(sd == null){
+      else if (cameraData.megaTag2.poseEstimate.tagCount == 0) {
+        doRejectUpdate = true;
+      }
+      else if(sd == null){
         doRejectUpdate = true;
       }
       if (!doRejectUpdate) {
