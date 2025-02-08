@@ -275,6 +275,7 @@ public class RobotContainer {
     SmartDashboard.putData("ShoulderSetPosition2", new SetShoulderPositionCommand(5.0, esefSubsystem));
     SmartDashboard.putData("ElevatorSetPosition1", new SetElevatorPositionCommand(12.0, esefSubsystem));
     SmartDashboard.putData("ElevatorSetPosition2", new SetElevatorPositionCommand(5.0, esefSubsystem));
+    SmartDashboard.putData("ElevatorSetPositionHome", new SetElevatorPositionCommand(0.0, esefSubsystem));
     SmartDashboard.putData("move End Effector", new SetEndEffectorSpeedCommand(0.5, esefSubsystem));
 
     SmartDashboard.putNumber("Elevator.ManualPosition", 5);
