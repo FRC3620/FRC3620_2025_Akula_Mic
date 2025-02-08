@@ -315,7 +315,8 @@ public class RobotContainer {
     SmartDashboard.putData("Reset IMU from Limelight data", new SetIMUFromMegaTag1Command());
 
     SmartDashboard.putData("Drive 10 feet", swerveSubsystem.driveToDistanceCommand(Units.feetToMeters(10), 0.5));
-    
+    SmartDashboard.putData("Test Drive To Pose", swerveSubsystem.pathFinderCommand());
+
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
