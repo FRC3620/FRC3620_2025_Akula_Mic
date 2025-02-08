@@ -55,15 +55,15 @@ public class Robot extends TimedRobot {
 
     // whenever a command initializes, the function declared below will run.
     CommandScheduler.getInstance().onCommandInitialize(command ->
-            logger.info("Initialized {}", command.getClass().getSimpleName()));
+            logger.info("Initialized command '{}'", command.getName()));
 
     // whenever a command ends, the function declared below will run.
     CommandScheduler.getInstance().onCommandFinish(command ->
-            logger.info("Ended {}", command.getClass().getSimpleName()));
+            logger.info("Ended command '{}'", command.getName()));
 
     // whenever a command ends, the function declared below will run.
     CommandScheduler.getInstance().onCommandInterrupt(command ->
-            logger.info("Interrupted {}", command.getClass().getSimpleName()));
+            logger.info("Interrupted command '{}'", command.getName()));
     
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
