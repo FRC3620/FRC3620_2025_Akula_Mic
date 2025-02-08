@@ -6,26 +6,16 @@ package frc.robot.subsystems.esefsubsystem;
 
 import org.usfirst.frc3620.CANDeviceType;
 
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.PositionVoltage;
 //import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkMaxConfig;
-
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
-import edu.wpi.first.wpilibj.simulation.DutyCycleSim;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotContainer;
 
 /** Add your docs here. */
 public class ESEFEndEffectorMechanism {
 
-    SparkMax endEff;
-    SparkMaxConfig clawConfig = new SparkMaxConfig();
+    TalonFX endEff;
+    //SparkMaxConfig clawConfig = new SparkMaxConfig();
 
     final DutyCycleOut endEffControl = new DutyCycleOut(0);
 
@@ -33,9 +23,9 @@ public class ESEFEndEffectorMechanism {
 
     public ESEFEndEffectorMechanism() {
         // constructor
-        if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, ENDEFFECTORMOTORID, "End Effector")
+        if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, ENDEFFECTORMOTORID, "End Effector")
                 || RobotContainer.shouldMakeAllCANDevices()) {
-            endEff = new SparkMax(ENDEFFECTORMOTORID, MotorType.kBrushless);
+            endEff = new TalonFX(ENDEFFECTORMOTORID);
         }
 
     }
