@@ -10,9 +10,6 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,8 +22,8 @@ public class AFISubsystem extends SubsystemBase {
     final PositionVoltage pivotRequest = new PositionVoltage(0).withSlot(0);
 
 
-    SparkMaxConfig rollerConfig = new SparkMaxConfig();
-    public SparkMax roller;
+    //SparkMaxConfig rollerConfig = new SparkMaxConfig();
+    public TalonFX roller;
 
     final int AFIPIVOTMOTORID = 14;
     final int AFIROLLERMOTORID = 15;
@@ -53,9 +50,9 @@ public class AFISubsystem extends SubsystemBase {
           } // Applies the Config to the shoulder motor
 
       //Roller
-      if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, AFIROLLERMOTORID, "AFIRoller")
+      if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, AFIROLLERMOTORID, "AFIRoller")
                 || RobotContainer.shouldMakeAllCANDevices()) {
-            this.roller = new SparkMax(AFIROLLERMOTORID, MotorType.kBrushless);
+            this.roller = new TalonFX(AFIROLLERMOTORID);
           } 
           
   }
