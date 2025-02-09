@@ -29,6 +29,7 @@ import frc.robot.commands.esefcommands.SetEndEffectorSpeedCommand;
 import frc.robot.commands.esefcommands.SetManualElevatorCommand;
 import frc.robot.commands.esefcommands.SetShoulderPositionCommand;
 import frc.robot.subsystems.AFISubsystem;
+import frc.robot.subsystems.BlinkySubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.HealthSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
@@ -78,6 +79,7 @@ public class RobotContainer {
   public static SwerveSubsystem swerveSubsystem;
   public static HealthSubsystem healthSubsystem;
   ClimberSubsystem climberSubsystem;
+  public static BlinkySubsystem blinkySubsystem;
   public static VisionSubsystem visionSubsystem;
 
 
@@ -159,7 +161,7 @@ public class RobotContainer {
     esefSubsystem = new ESEFSubsystem();
     afiSubsystem = new AFISubsystem();
     climberSubsystem = new ClimberSubsystem();
-
+    blinkySubsystem = new BlinkySubsystem();
     visionSubsystem = new VisionSubsystem();
     
     // need to create healthSubsystem LAST!!!!!!!
