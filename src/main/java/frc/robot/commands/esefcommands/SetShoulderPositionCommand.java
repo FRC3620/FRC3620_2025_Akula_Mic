@@ -4,6 +4,9 @@
 
 package frc.robot.commands.esefcommands;
 
+import static edu.wpi.first.units.Units.Degrees;
+
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.esefsubsystem.ESEFSubsystem;
 
@@ -11,13 +14,19 @@ import frc.robot.subsystems.esefsubsystem.ESEFSubsystem;
 public class SetShoulderPositionCommand extends Command {
   /** Creates a new SetShoulderPositionCommand. */
   ESEFSubsystem esefSubsystem;
-  Double position;
-  public SetShoulderPositionCommand(Double _position, ESEFSubsystem _esefSubsystem) {
+  Angle position;
+  public SetShoulderPositionCommand(Angle _position, ESEFSubsystem _esefSubsystem) {
     position = _position;
     esefSubsystem = _esefSubsystem;
 
+    setName(getName() + "[" + position.in(Degrees) + "]");
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(esefSubsystem);
+  }
+
+  public SetShoulderPositionCommand(double positionInDegrees, ESEFSubsystem _esefSubsystem) {
+    this(Degrees.of(positionInDegrees), _esefSubsystem);
   }
 
   // Called when the command is initially scheduled.
