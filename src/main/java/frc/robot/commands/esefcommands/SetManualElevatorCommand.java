@@ -3,6 +3,8 @@ package frc.robot.commands.esefcommands;
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+import static edu.wpi.first.units.Units.Inches;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /* This command will read inputs from ShuffleBoard and set the shooter speed and angle appropriately. The command will be initiated/ended from the Dashboard  */
@@ -29,7 +31,7 @@ public class SetManualElevatorCommand extends Command {
 
     double elevatorPos = SmartDashboard.getNumber("Elevator.ManualPosition", 5);
 
-    esef.setElevatorPosition(elevatorPos);
+    esef.setElevatorPosition(Inches.of(elevatorPos));
 
 
   }
@@ -43,7 +45,7 @@ public class SetManualElevatorCommand extends Command {
 
         double elevatorPos = SmartDashboard.getNumber("Elevator.ManualPosition", 5);
 
-        esef.setElevatorPosition(elevatorPos);
+        esef.setElevatorPosition(Inches.of(elevatorPos));
 
 
   }

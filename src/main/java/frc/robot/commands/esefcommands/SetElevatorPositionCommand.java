@@ -4,6 +4,8 @@
 
 package frc.robot.commands.esefcommands;
 
+import static edu.wpi.first.units.Units.Inches;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.esefsubsystem.ESEFSubsystem;
 
@@ -23,7 +25,7 @@ public class SetElevatorPositionCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    esefSubsystem.setElevatorPosition(position);
+    esefSubsystem.setElevatorPosition(Inches.of(position));
   }
 
   // Called every time the scheduler runs while the command is scheduled.

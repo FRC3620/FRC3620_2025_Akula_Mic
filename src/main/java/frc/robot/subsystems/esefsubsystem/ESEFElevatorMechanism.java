@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.esefsubsystem;
 
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Volts;
 
 import org.usfirst.frc3620.CANDeviceType;
@@ -20,6 +21,7 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -34,7 +36,7 @@ public class ESEFElevatorMechanism {
     boolean encoderCalibrated = false;
     Timer calibrationTimer;
     // to save a requested position if encoder is not calibrated
-    Double requestedPositionWhileCalibrating = null;
+    Distance requestedPositionWhileCalibrating = null;
 
     DigitalInput homeLimitSwitch = new DigitalInput(7);
 
@@ -112,7 +114,7 @@ public class ESEFElevatorMechanism {
                   encoderCalibrated = true;
                   elevatorA.set(0.0);
                   elevatorA.setPosition(0);
-                  setElevatorPosition(0);
+                  setElevatorPosition(Inches.of(0));
 
                   // If there was a requested position while we were calibrating, go there
                   if (requestedPositionWhileCalibrating != null) {
@@ -140,21 +142,25 @@ public class ESEFElevatorMechanism {
         
     }
 
-    public void setElevatorPosition(double position) {
+    public void setElevatorPosition(Distance position) {
+      double positionInInches = position.in(Inches);
 
         // set the shoulder to the desired position Cat
-        SmartDashboard.putNumber("frc3620/Elevator/RequestedPosition", position);
+        SmartDashboard.putNumber("frc3620/Elevator/RequestedPosition", positionInInches);
 
-        position = position / positionConversion;
-        MathUtil.clamp(position, 0, 35);
+        double motorPosition = positionInInches / positionConversion;
+
+        // TODO: should it be clamped before the conversion? and the return value
+        // needs to be used.
+        MathUtil.clamp(positionInInches, 0, 35);
         
         if (elevatorA != null) {
-            elevatorA.setControl(elevatorARequest.withPosition(position));
+            elevatorA.setControl(elevatorARequest.withPosition(motorPosition));
         }
     }
 
-    public double getElevatorPosition() {
-        return elevatorA.getPosition().getValueAsDouble() * positionConversion;
+    public Distance getElevatorPosition() {
+        return Inches.of(elevatorA.getPosition().getValueAsDouble() * positionConversion);
     }
 
     
