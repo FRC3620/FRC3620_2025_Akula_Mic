@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
 
 import java.io.File;
 
@@ -307,10 +308,10 @@ public class RobotContainer {
     SmartDashboard.putData("ShoulderSetPosition3", new SetShoulderPositionCommand(Degrees.of(60), esefSubsystem));
     SmartDashboard.putData("ShoulderSetPosition4", new SetShoulderPositionCommand(Degrees.of(90), esefSubsystem));
     
-    SmartDashboard.putData("ElevatorSetPosition1", new SetElevatorPositionCommand(8.0, esefSubsystem));
-    SmartDashboard.putData("ElevatorSetPosition2", new SetElevatorPositionCommand(12.0, esefSubsystem));
-    SmartDashboard.putData("ElevatorSetPosition3", new SetElevatorPositionCommand(20.0, esefSubsystem));
-    SmartDashboard.putData("ElevatorSetPositionHome", new SetElevatorPositionCommand(0.0, esefSubsystem));
+    SmartDashboard.putData("ElevatorSetPosition1", new SetElevatorPositionCommand(Inches.of(8.0), esefSubsystem));
+    SmartDashboard.putData("ElevatorSetPosition2", new SetElevatorPositionCommand(Inches.of(12.0), esefSubsystem));
+    SmartDashboard.putData("ElevatorSetPosition3", new SetElevatorPositionCommand(Inches.of(20.0), esefSubsystem));
+    SmartDashboard.putData("ElevatorSetPositionHome", new SetElevatorPositionCommand(Inches.of(0.0), esefSubsystem));
     SmartDashboard.putData("move End Effector", new SetEndEffectorSpeedCommand(0.5, esefSubsystem));
 
     SmartDashboard.putNumber("Elevator.ManualPosition", 5);
