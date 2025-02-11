@@ -144,7 +144,6 @@ public class Robot extends TimedRobot {
 
     setupDriverController();
 
-  up 
   }
 
   /** This function is called periodically during operator control. */
