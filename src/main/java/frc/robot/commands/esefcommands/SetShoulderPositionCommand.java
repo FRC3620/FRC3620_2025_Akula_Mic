@@ -4,6 +4,7 @@
 
 package frc.robot.commands.esefcommands;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.esefsubsystem.ESEFSubsystem;
 
@@ -11,8 +12,8 @@ import frc.robot.subsystems.esefsubsystem.ESEFSubsystem;
 public class SetShoulderPositionCommand extends Command {
   /** Creates a new SetShoulderPositionCommand. */
   ESEFSubsystem esefSubsystem;
-  Double position;
-  public SetShoulderPositionCommand(Double _position, ESEFSubsystem _esefSubsystem) {
+  Angle position;
+  public SetShoulderPositionCommand(Angle _position, ESEFSubsystem _esefSubsystem) {
     position = _position;
     esefSubsystem = _esefSubsystem;
 

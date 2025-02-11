@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import java.io.File;
 
 import org.tinylog.TaggedLogger;
@@ -300,10 +302,10 @@ public class RobotContainer {
   private void setupSmartDashboardCommands() {
     // SmartDashboard.putData("Shoulder.P1", new SetShoulderPositionCommand(null,
     // null));
-    SmartDashboard.putData("ShoulderSetPosition1", new SetShoulderPositionCommand(60.0, esefSubsystem));
-    SmartDashboard.putData("ShoulderSetPosition2", new SetShoulderPositionCommand(70.0, esefSubsystem));
-    SmartDashboard.putData("ShoulderSetPosition3", new SetShoulderPositionCommand(80.0, esefSubsystem));
-    SmartDashboard.putData("ShoulderSetPosition4", new SetShoulderPositionCommand(90.0, esefSubsystem));
+    SmartDashboard.putData("ShoulderSetPosition1", new SetShoulderPositionCommand(Degrees.of(60), esefSubsystem));
+    SmartDashboard.putData("ShoulderSetPosition2", new SetShoulderPositionCommand(Degrees.of(70), esefSubsystem));
+    SmartDashboard.putData("ShoulderSetPosition3", new SetShoulderPositionCommand(Degrees.of(80), esefSubsystem));
+    SmartDashboard.putData("ShoulderSetPosition4", new SetShoulderPositionCommand(Degrees.of(90), esefSubsystem));
     
     SmartDashboard.putData("ElevatorSetPosition1", new SetElevatorPositionCommand(12.0, esefSubsystem));
     SmartDashboard.putData("ElevatorSetPosition2", new SetElevatorPositionCommand(5.0, esefSubsystem));

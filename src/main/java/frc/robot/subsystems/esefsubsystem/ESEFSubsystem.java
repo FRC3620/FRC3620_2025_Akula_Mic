@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.esefsubsystem;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 /*import org.usfirst.frc3620.misc.CANDeviceFinder;
 import org.usfirst.frc3620.misc.CANDeviceType;
@@ -36,8 +37,8 @@ public class ESEFSubsystem extends SubsystemBase {
 
   }
 
-  public void setShoulderPosition(Double position){
-    shoulderMechanism.setShoulderPositionDegrees(position);
+  public void setShoulderPosition(Angle position){
+    shoulderMechanism.setShoulderPosition(position);
   }
   public void setElevatorPosition(Double position){
     elevatorMechanism.setElevatorPosition(position);
