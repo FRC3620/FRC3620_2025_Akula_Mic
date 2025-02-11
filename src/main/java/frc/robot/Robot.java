@@ -2,6 +2,7 @@ package frc.robot;
 
 import org.tinylog.TaggedLogger;
 import org.usfirst.frc3620.*;
+import org.usfirst.frc3620.ChameleonController.ControllerType;
 import org.usfirst.frc3620.logger.LoggingMaster;
 
 import dev.doglog.DogLog;
@@ -140,6 +141,9 @@ public class Robot extends TimedRobot {
 
     processRobotModeChange(RobotMode.TELEOP);
     logMatchInfo();
+
+    setupDriverController();
+
   }
 
   /** This function is called periodically during operator control. */
@@ -154,6 +158,10 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().cancelAll();
 
     processRobotModeChange(RobotMode.TEST);
+
+    
+
+
   }
 
   /** This function is called periodically during test mode. */
@@ -209,6 +217,16 @@ public class Robot extends TimedRobot {
         }
         hasCANBusBeenLogged = true;
       }
+    }
+  }
+
+   void setupDriverController() {
+    String driveControllerName = m_robotContainer.getDriverControllerName();
+    logger.info("Drive Controller Name: {}", driveControllerName);
+    if (driveControllerName.startsWith("FlySky")) {
+      m_robotContainer.setDriverControllerName(ControllerType.B);
+    } else {
+      m_robotContainer.setDriverControllerName(ControllerType.A);
     }
   }
 
