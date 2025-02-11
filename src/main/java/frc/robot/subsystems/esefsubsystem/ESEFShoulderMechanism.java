@@ -71,19 +71,19 @@ public class ESEFShoulderMechanism {
             // this.shoulderEncoder = new CANcoder(10);
             TalonFXConfiguration shoulderConfigs = new TalonFXConfiguration();
 
-            shoulderConfigs.Slot0.kG = 0.0; // Gravity FeedForward
+            shoulderConfigs.Slot0.kG = 0.02; // Gravity FeedForward
             shoulderConfigs.Slot0.kS = 0; // Friction FeedForward
-            shoulderConfigs.Slot0.kP = 500; // an error of 1 rotation results in x Volt output
+            shoulderConfigs.Slot0.kP = 25; // an error of 1 rotation results in x Volt output
             shoulderConfigs.Slot0.kI = 0;
             shoulderConfigs.Slot0.kD = 0;
 
             shoulderConfigs.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
             shoulderConfigs.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);
-            shoulderConfigs.MotorOutput.withPeakForwardDutyCycle(0.2);
-            shoulderConfigs.MotorOutput.withPeakReverseDutyCycle(-0.2);
-            shoulderConfigs.Voltage.withPeakForwardVoltage(12 * 0.2);
-            shoulderConfigs.Voltage.withPeakReverseVoltage(-12 * 0.2);
+            shoulderConfigs.MotorOutput.withPeakForwardDutyCycle(0.3);
+            shoulderConfigs.MotorOutput.withPeakReverseDutyCycle(-0.1);
+            shoulderConfigs.Voltage.withPeakForwardVoltage(12 * 0.3);
+            shoulderConfigs.Voltage.withPeakReverseVoltage(12 * -0.1);
             
             
             // This CANcoder should report absolute position from [-0.5, 0.5) rotations,

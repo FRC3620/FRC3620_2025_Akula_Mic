@@ -302,13 +302,14 @@ public class RobotContainer {
   private void setupSmartDashboardCommands() {
     // SmartDashboard.putData("Shoulder.P1", new SetShoulderPositionCommand(null,
     // null));
-    SmartDashboard.putData("ShoulderSetPosition1", new SetShoulderPositionCommand(Degrees.of(60), esefSubsystem));
-    SmartDashboard.putData("ShoulderSetPosition2", new SetShoulderPositionCommand(Degrees.of(70), esefSubsystem));
-    SmartDashboard.putData("ShoulderSetPosition3", new SetShoulderPositionCommand(Degrees.of(80), esefSubsystem));
+    SmartDashboard.putData("ShoulderSetPosition1", new SetShoulderPositionCommand(Degrees.of(0), esefSubsystem));
+    SmartDashboard.putData("ShoulderSetPosition2", new SetShoulderPositionCommand(Degrees.of(30), esefSubsystem));
+    SmartDashboard.putData("ShoulderSetPosition3", new SetShoulderPositionCommand(Degrees.of(60), esefSubsystem));
     SmartDashboard.putData("ShoulderSetPosition4", new SetShoulderPositionCommand(Degrees.of(90), esefSubsystem));
     
-    SmartDashboard.putData("ElevatorSetPosition1", new SetElevatorPositionCommand(12.0, esefSubsystem));
-    SmartDashboard.putData("ElevatorSetPosition2", new SetElevatorPositionCommand(5.0, esefSubsystem));
+    SmartDashboard.putData("ElevatorSetPosition1", new SetElevatorPositionCommand(8.0, esefSubsystem));
+    SmartDashboard.putData("ElevatorSetPosition2", new SetElevatorPositionCommand(12.0, esefSubsystem));
+    SmartDashboard.putData("ElevatorSetPosition3", new SetElevatorPositionCommand(20.0, esefSubsystem));
     SmartDashboard.putData("ElevatorSetPositionHome", new SetElevatorPositionCommand(0.0, esefSubsystem));
     SmartDashboard.putData("move End Effector", new SetEndEffectorSpeedCommand(0.5, esefSubsystem));
 

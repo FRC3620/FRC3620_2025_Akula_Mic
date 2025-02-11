@@ -105,7 +105,7 @@ public class ESEFElevatorMechanism {
           if (!encoderCalibrated) {
             // If the robot is running, and the encoder is "not calibrated," run motor very
             // slowly towards the switch
-            elevatorA.set(-0.01); 
+            elevatorA.set(-0.05); 
               // we have a timer, has the motor had power long enough to spin up
                 if (!homeLimitSwitch.get()) {
                   // motor is not moving, hopefully it's against the stop
