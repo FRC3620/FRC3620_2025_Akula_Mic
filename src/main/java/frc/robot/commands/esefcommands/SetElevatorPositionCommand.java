@@ -4,6 +4,7 @@
 
 package frc.robot.commands.esefcommands;
 
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.esefsubsystem.ESEFSubsystem;
 
@@ -11,8 +12,8 @@ import frc.robot.subsystems.esefsubsystem.ESEFSubsystem;
 public class SetElevatorPositionCommand extends Command {
   /** Creates a new SetShoulderPositionCommand. */
   ESEFSubsystem esefSubsystem;
-  Double position;
-  public SetElevatorPositionCommand(Double _position, ESEFSubsystem _esefSubsystem) {
+  Distance position;
+  public SetElevatorPositionCommand(Distance _position, ESEFSubsystem _esefSubsystem) {
     position = _position;
     esefSubsystem = _esefSubsystem;
     
