@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.esefsubsystem;
 
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Volts;
 
 import org.usfirst.frc3620.CANDeviceType;
@@ -20,6 +21,7 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -34,7 +36,7 @@ public class ESEFElevatorMechanism {
     boolean encoderCalibrated = false;
     Timer calibrationTimer;
     // to save a requested position if encoder is not calibrated
-    Double requestedPositionWhileCalibrating = null;
+    Distance requestedPositionWhileCalibrating = null;
 
     DigitalInput homeLimitSwitch = new DigitalInput(7);
 
@@ -45,7 +47,7 @@ public class ESEFElevatorMechanism {
     final int ELEVATORA_MOTORID = 9;
     final int ELEVATORB_MOTORID = 10;
 
-    private final double positionConversion = 9/(2 * Math.PI);
+    private final Distance positionConversion = Inches.of(9 / (2 * Math.PI));
 
     final PositionVoltage elevatorARequest = new PositionVoltage(0).withSlot(0); // check if update frequency to
                                                                                  // follower needs to be updated
@@ -112,7 +114,7 @@ public class ESEFElevatorMechanism {
                   encoderCalibrated = true;
                   elevatorA.set(0.0);
                   elevatorA.setPosition(0);
-                  setElevatorPosition(0);
+                  setElevatorPosition(Inches.of(0));
 
                   // If there was a requested position while we were calibrating, go there
                   if (requestedPositionWhileCalibrating != null) {
@@ -124,38 +126,38 @@ public class ESEFElevatorMechanism {
         }
       }
 
-        if (elevatorA != null) {
-            SmartDashboard.putNumber("frc3620/Elevator/AMotorActualPosition",
-                    elevatorA.getPosition().getValueAsDouble() * positionConversion);
-            SmartDashboard.putNumber("frc3620/Elevator/AMotorAppliedOutput", elevatorA.get());
-        }
-        if (elevatorB != null) {
-            SmartDashboard.putNumber("frc3620/Elevator/BMotorActualPosition",
-                    elevatorB.getPosition().getValueAsDouble() * positionConversion);
-            SmartDashboard.putNumber("frc3620/Elevator/BMotorAppliedOutput", elevatorB.get());
-
-        }
+      if (elevatorA != null) {
+        SmartDashboard.putNumber("frc3620/Elevator/AMotorActualPosition",
+                getElevatorPosition().in(Inches));
+      }
+      if (elevatorB != null) {
+        SmartDashboard.putNumber("frc3620/Elevator/BMotorActualPosition",
+                getElevatorPosition().in(Inches));
+      }
+    
         SmartDashboard.putBoolean("frc3620/Elevator/HomeLimitSwitchPressed", !homeLimitSwitch.get());
         SmartDashboard.putBoolean("frc3620/Elevator/Calibrated", encoderCalibrated);
         
     }
 
-    public void setElevatorPosition(double position) {
+    public void setElevatorPosition(Distance position) {
+      SmartDashboard.putNumber("frc3620/Elevator/RequestedPosition", position.in(Inches));
+  
+      double motorRotations = position.in(Inches) / positionConversion.in(Inches); // Convert inches to rotations
+      motorRotations = MathUtil.clamp(motorRotations, 0, 35);
+  
+      if (elevatorA != null) {
+          elevatorA.setControl(elevatorARequest.withPosition(motorRotations));
+      }
+  }
+  
+  
 
-        // set the shoulder to the desired position Cat
-        SmartDashboard.putNumber("frc3620/Elevator/RequestedPosition", position);
+  public Distance getElevatorPosition() {
+    return Inches.of(elevatorA.getPosition().getValueAsDouble() * positionConversion.in(Inches));
+  }
 
-        position = position / positionConversion;
-        MathUtil.clamp(position, 0, 35);
-        
-        if (elevatorA != null) {
-            elevatorA.setControl(elevatorARequest.withPosition(position));
-        }
-    }
 
-    public double getElevatorPosition() {
-        return elevatorA.getPosition().getValueAsDouble() * positionConversion;
-    }
 
     
 
