@@ -12,14 +12,12 @@ import org.usfirst.frc3620.CANDeviceType;
 import org.usfirst.frc3620.logger.LoggingMaster;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,7 +26,7 @@ import frc.robot.RobotContainer;
 public class AFISubsystem extends SubsystemBase {
   /** Creates a new AFISubsystem. */
   TaggedLogger logger = LoggingMaster.getLogger(getClass());
-  TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
+
   public TalonFX pivot;
   public DutyCycleEncoder frontEncoder;
   public DutyCycleEncoder rearEncoder;
@@ -40,13 +38,11 @@ public class AFISubsystem extends SubsystemBase {
   WhichEncoderToUse whichEncoderToUse = WhichEncoderToUse.FRONT;
 
   boolean relativeEncoderSet = false;
-
   Timer relativeEncoderTimer = new Timer();
 
   final PositionVoltage pivotRequest = new PositionVoltage(0).withSlot(0);
   final DutyCycleOut rollerRequest = new DutyCycleOut(0);
 
-  // SparkMaxConfig rollerConfig = new SparkMaxConfig();
   public TalonFX roller;
 
   final int AFIPIVOTMOTORID = 14;
@@ -57,8 +53,9 @@ public class AFISubsystem extends SubsystemBase {
 
   public AFISubsystem() {
     // constructor
-    this.frontEncoder = new DutyCycleEncoder(5); // Down is .292
+    this.frontEncoder = new DutyCycleEncoder(5);
     this.rearEncoder = new DutyCycleEncoder(6);
+    SmartDashboard.putString("frc3620/AFI/WhichAbsoluteEncoder", whichEncoderToUse.toString());
     relativeEncoderTimer.reset();
     relativeEncoderTimer.start();
 
@@ -106,7 +103,8 @@ public class AFISubsystem extends SubsystemBase {
 
     // This method will be called once per scheduler run
     if (pivot != null) {
-      SmartDashboard.putNumber("frc3620/AFI/PivotActualPosition", getAbsoluteIntakeAngle().in(Degrees));
+      SmartDashboard.putNumber("frc3620/AFI/PivotFrontAbsolutePosition", getFrontAbsoluteIntakeAngle().in(Degrees));
+      SmartDashboard.putNumber("frc3620/AFI/PivotRearAbsolutePosition", getRearAbsoluteIntakeAngle().in(Degrees));
       SmartDashboard.putNumber("frc3620/AFI/PivotRelativePosition",
           pivot.getPosition().getValue().div(MOTOR_TO_INTAKE_RATIO).in(Degrees));
     }
@@ -132,11 +130,19 @@ public class AFISubsystem extends SubsystemBase {
   Angle rearEncoderOffset = Degrees.of(200);
   Angle frontEncoderOffset = Degrees.of(-73);
 
+  Angle getFrontAbsoluteIntakeAngle() {
+    return Rotations.of(frontEncoder.get()).minus(frontEncoderOffset);
+  }
+
+  Angle getRearAbsoluteIntakeAngle() {
+    return Rotations.of(rearEncoder.get()).minus(rearEncoderOffset);
+  }
+
   public Angle getAbsoluteIntakeAngle() {
     if (whichEncoderToUse == WhichEncoderToUse.FRONT) {
-      return Rotations.of(frontEncoder.get()).minus(frontEncoderOffset);
+      return getFrontAbsoluteIntakeAngle();
     } else {
-      return Rotations.of(rearEncoder.get()).minus(rearEncoderOffset);
+      return getRearAbsoluteIntakeAngle();
     }
 
   }
