@@ -38,6 +38,9 @@ public class HealthSubsystem extends SubsystemBase {
   public HealthSubsystem() {
     encoderWatcher = new EncoderWatcher();
 
+    encoderWatcher.addEncoder("Intake Front Absolute", RobotContainer.afiSubsystem.frontEncoder);
+    encoderWatcher.addEncoder("Intake Rear Absolute", RobotContainer.afiSubsystem.rearEncoder);
+
     if (RobotContainer.swerveSubsystem != null) {
       swerveMotorWatcher = new MotorWatcher("SmartDashboard/frc3620/health/swerve");
       for (var mapEntry : RobotContainer.swerveSubsystem.getSwerveDrive().getModuleMap().entrySet()) {
@@ -184,6 +187,7 @@ public class HealthSubsystem extends SubsystemBase {
     Map<String, DutyCycleEncoder> encoders = new TreeMap<>();
 
     public void addEncoder(String name, DutyCycleEncoder encoder) {
+      name = name + " (" + encoder.getSourceChannel() + ")";
       encoders.put(name, encoder);
     }
 

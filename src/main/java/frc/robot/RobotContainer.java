@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import java.io.File;
 
 import org.tinylog.TaggedLogger;
@@ -43,6 +45,7 @@ import frc.robot.commands.SetClimberPostionCommand;
 import frc.robot.commands.SetIMUFromMegaTag1Command;
 import frc.robot.commands.ContinuousSetIMUFromMegaTag1Command;
 import frc.robot.commands.SetPivotPositionCommand;
+import frc.robot.commands.AFI.AFIRollerSetSpeedCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -320,8 +323,12 @@ public class RobotContainer {
     SmartDashboard.putData("ElevatorSetPosition2", new SetElevatorPositionCommand(5.0, esefSubsystem));
     SmartDashboard.putData("move End Effector", new SetEndEffectorSpeedCommand(0.5, esefSubsystem));
 
-    SmartDashboard.putData("PivotPosition2", new SetPivotPositionCommand(10.0, afiSubsystem));
-    SmartDashboard.putData("PivotPositionInit", new SetPivotPositionCommand(00., afiSubsystem));
+    SmartDashboard.putData("PivotPosition2", new SetPivotPositionCommand(Degrees.of(45), afiSubsystem));
+    SmartDashboard.putData("PivotPositionInit", new SetPivotPositionCommand(Degrees.of(0), afiSubsystem));
+
+    SmartDashboard.putData("AFISetRollerSpeed1", new AFIRollerSetSpeedCommand(0.1, afiSubsystem));
+    SmartDashboard.putData("AFISetRollerSpeed2", new AFIRollerSetSpeedCommand(0.5, afiSubsystem));
+    SmartDashboard.putData("AFIStopRoller", new AFIRollerSetSpeedCommand(0.0, afiSubsystem));
 
     // SmartDashboard.putData('CoralSpeed');
 
