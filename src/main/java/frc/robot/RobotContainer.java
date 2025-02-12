@@ -9,13 +9,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.io.File;
+import java.io.IOException;
 
+import org.json.simple.parser.ParseException;
 import org.tinylog.TaggedLogger;
 
 import org.usfirst.frc3620.logger.LogCommand;
 import org.usfirst.frc3620.logger.LoggingMaster;
 
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.util.FileVersionException;
 
 import org.usfirst.frc3620.CANDeviceFinder;
 import org.usfirst.frc3620.CANDeviceType;
@@ -30,6 +33,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.esefcommands.SetElevatorPositionCommand;
 import frc.robot.commands.esefcommands.SetEndEffectorSpeedCommand;
 import frc.robot.commands.esefcommands.SetShoulderPositionCommand;
+import frc.robot.commands.swervedrive.TestDriveToPoseCommand;
 import frc.robot.subsystems.AFISubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.HealthSubsystem;
@@ -46,6 +50,8 @@ import frc.robot.commands.SetPivotPositionCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -93,8 +99,11 @@ public class RobotContainer {
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
-  public RobotContainer() {
+      * @throws ParseException 
+      * @throws IOException 
+      * @throws FileVersionException 
+      */
+     public RobotContainer() throws FileVersionException, IOException, ParseException {
     canDeviceFinder = new CANDeviceFinder();
 
     robotParameters = RobotParametersContainer.getRobotParameters(RobotParameters.class);
@@ -306,12 +315,19 @@ public class RobotContainer {
     //driverJoystick = new Joystick(0);
     operatorJoystick = new Joystick(1);
 
+   driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH)
+      .onTrue( 
+        
+        swerveSubsystem.pathFinderCommand()
+
+      );
+
     //new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A)
     //    .onTrue(new LogCommand("'A' button hit"));
 
   }
 
-  private void setupSmartDashboardCommands() {
+  private void setupSmartDashboardCommands() throws FileVersionException, IOException, ParseException {
     // SmartDashboard.putData("Shoulder.P1", new SetShoulderPositionCommand(null,
     // null));
     SmartDashboard.putData("ShoulderSetPosition1", new SetShoulderPositionCommand(10.0, esefSubsystem));
@@ -331,7 +347,7 @@ public class RobotContainer {
 
     SmartDashboard.putData("Reset IMU from Limelight data", new SetIMUFromMegaTag1Command());
 
-    SmartDashboard.putData("Drive 10 feet", swerveSubsystem.driveToDistanceCommand(Units.feetToMeters(10), 0.5));
+    //SmartDashboard.putData("Drive 10 feet", swerveSubsystem.driveToDistanceCommand(Units.feetToMeters(10), 0.5));
     SmartDashboard.putData("Test Drive To Pose", swerveSubsystem.pathFinderCommand());
 
   }

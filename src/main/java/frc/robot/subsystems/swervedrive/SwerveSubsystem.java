@@ -15,6 +15,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.DriveFeedforwards;
+import com.pathplanner.lib.util.FileVersionException;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -131,11 +132,11 @@ public class SwerveSubsystem extends SubsystemBase {
 
   }
 
-  public Command pathFinderCommand() {
+  public Command pathFinderCommand(){
 
-    Pose2d targetPose = new Pose2d(3.96, 1.68, Rotation2d.fromDegrees(180));
+    Pose2d targetPose = new Pose2d(4.98, 2.9, Rotation2d.fromDegrees(121.5));
 
-    PathConstraints constraints = new PathConstraints(3.0, 4.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
+    PathConstraints constraints = new PathConstraints(1.0, 4.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
 
     Command testCommand = AutoBuilder.pathfindToPose(targetPose, constraints, 0);
 

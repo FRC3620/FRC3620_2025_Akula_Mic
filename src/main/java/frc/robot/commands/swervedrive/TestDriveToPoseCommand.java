@@ -4,6 +4,12 @@
 
 package frc.robot.commands.swervedrive;
 
+import java.io.IOException;
+
+import org.json.simple.parser.ParseException;
+
+import com.pathplanner.lib.util.FileVersionException;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -26,15 +32,17 @@ public class TestDriveToPoseCommand extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+
+      swerveSubsystem.pathFinderCommand();
+   
+
+  
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-
-    Pose2d targetPose = new Pose2d(3.96, 1.68, Rotation2d.fromDegrees(180));
-    
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
