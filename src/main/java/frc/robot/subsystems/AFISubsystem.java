@@ -30,6 +30,8 @@ public class AFISubsystem extends SubsystemBase {
   public TalonFX pivot;
   public DutyCycleEncoder frontEncoder;
   public DutyCycleEncoder rearEncoder;
+  Angle rearEncoderOffset;
+  Angle frontEncoderOffset;
 
   enum WhichEncoderToUse {
     FRONT, REAR
@@ -53,8 +55,11 @@ public class AFISubsystem extends SubsystemBase {
 
   public AFISubsystem() {
     // constructor
-    this.frontEncoder = new DutyCycleEncoder(5);
-    this.rearEncoder = new DutyCycleEncoder(6);
+    frontEncoder = new DutyCycleEncoder(5);
+    rearEncoder = new DutyCycleEncoder(6);
+    frontEncoderOffset = Degrees.of(RobotContainer.robotParameters.getIntakeFrontEncoderOffset());
+    rearEncoderOffset = Degrees.of(RobotContainer.robotParameters.getIntakeRearEncoderOffset());
+
     SmartDashboard.putString("frc3620/AFI/WhichAbsoluteEncoder", whichEncoderToUse.toString());
     relativeEncoderTimer.reset();
     relativeEncoderTimer.start();
@@ -126,9 +131,6 @@ public class AFISubsystem extends SubsystemBase {
       return rearEncoder.isConnected();
     }
   }
-
-  Angle rearEncoderOffset = Degrees.of(200);
-  Angle frontEncoderOffset = Degrees.of(-73);
 
   Angle getFrontAbsoluteIntakeAngle() {
     return Rotations.of(frontEncoder.get()).minus(frontEncoderOffset);
