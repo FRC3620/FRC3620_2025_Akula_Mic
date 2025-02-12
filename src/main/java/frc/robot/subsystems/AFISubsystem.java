@@ -37,7 +37,7 @@ public class AFISubsystem extends SubsystemBase {
     FRONT, REAR
   }
 
-  WhichEncoderToUse whichEncoderToUse = WhichEncoderToUse.REAR;
+  WhichEncoderToUse whichEncoderToUse = WhichEncoderToUse.FRONT;
 
   boolean relativeEncoderSet = false;
 
@@ -130,7 +130,7 @@ public class AFISubsystem extends SubsystemBase {
   }
 
   Angle rearEncoderOffset = Degrees.of(200);
-  Angle frontEncoderOffset = Degrees.of(0);
+  Angle frontEncoderOffset = Degrees.of(-73);
 
   public Angle getAbsoluteIntakeAngle() {
     if (whichEncoderToUse == WhichEncoderToUse.FRONT) {
