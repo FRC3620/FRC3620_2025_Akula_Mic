@@ -5,6 +5,9 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
+import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.math.geometry.Pose3d;
+import frc.robot.AprilTagDatabase;
 import org.usfirst.frc3620.NTPublisher;
 import org.usfirst.frc3620.NTStructs;
 
@@ -113,7 +116,14 @@ public class VisionSubsystem extends SubsystemBase {
             + "/";
         NTPublisher.putNumber(prefix + "targetCount", m.tagCount);
         NTStructs.publish(prefix + "poseEstimate", m.pose);
-      
+        List<Pose3d> targets = new ArrayList<>();
+        for (var fiducial : m.rawFiducials) {
+          AprilTag aprilTag = AprilTagDatabase.getTagById(fiducial.id);
+          if (aprilTag != null) {
+            targets.add(aprilTag.pose);
+          }
+        }
+        NTStructs.publish(prefix + "targets", targets.toArray(new Pose3d[0]));
       }
     }
   }
