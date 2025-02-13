@@ -1,18 +1,17 @@
 package frc.robot.subsystems;
 
-import java.nio.file.attribute.PosixFileAttributes;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
 import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
-import frc.robot.AprilTagDatabase;
 import org.usfirst.frc3620.NTPublisher;
 import org.usfirst.frc3620.NTStructs;
 
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.DoubleArrayEntry;
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -25,6 +24,8 @@ import swervelib.SwerveDrive;
 
 public class VisionSubsystem extends SubsystemBase {
   NetworkTableInstance inst = NetworkTableInstance.getDefault();
+
+  public static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
   public enum Camera {
     FRONT("limelight-front"), BACK("limelight-back");
@@ -116,14 +117,17 @@ public class VisionSubsystem extends SubsystemBase {
             + "/";
         NTPublisher.putNumber(prefix + "targetCount", m.tagCount);
         NTStructs.publish(prefix + "poseEstimate", m.pose);
-        List<Pose3d> targets = new ArrayList<>();
-        for (var fiducial : m.rawFiducials) {
-          AprilTag aprilTag = AprilTagDatabase.getTagById(fiducial.id);
-          if (aprilTag != null) {
-            targets.add(aprilTag.pose);
+
+        if (aprilTagFieldLayout != null) {
+          List<Pose3d> targetPoses = new ArrayList<>();
+          for (var fiducial : m.rawFiducials) {
+            Optional<Pose3d> aprilTagPose = aprilTagFieldLayout.getTagPose(fiducial.id);
+            if (aprilTagPose.isPresent()) {
+              targetPoses.add(aprilTagPose.get());
+            }
           }
+          NTStructs.publish(prefix + "targets", targetPoses.toArray(new Pose3d[0]));
         }
-        NTStructs.publish(prefix + "targets", targets.toArray(new Pose3d[0]));
       }
     }
   }
