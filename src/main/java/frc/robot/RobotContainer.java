@@ -81,6 +81,7 @@ public class RobotContainer {
   public static HealthSubsystem healthSubsystem;
   ClimberSubsystem climberSubsystem;
   public static VisionSubsystem visionSubsystem;
+  public static ShapeBoundary shapeBoundary;
 
 
   // joysticks here....
@@ -163,7 +164,7 @@ public class RobotContainer {
     climberSubsystem = new ClimberSubsystem();
 
     visionSubsystem = new VisionSubsystem();
-    
+    shapeBoundary = new ShapeBoundary();
     // need to create healthSubsystem LAST!!!!!!!
     healthSubsystem = new HealthSubsystem();
 
