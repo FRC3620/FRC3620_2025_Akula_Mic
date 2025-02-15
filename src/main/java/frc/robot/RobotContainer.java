@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -198,6 +199,10 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     driverJoystick = new ChameleonController(new Joystick(0));
+    operatorJoystick = new Joystick(1);
+
+
+    climberSubsystem.setDefaultCommand(climberSubsystem.makeSetClimberPowerCommand(() -> MathUtil.applyDeadband(operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y),0.1)));
 
 
     if (swerveSubsystem != null) {
@@ -304,12 +309,7 @@ public class RobotContainer {
         driverXbox.leftBumper().whileTrue(Commands.runOnce(swerveSubsystem::lock, swerveSubsystem).repeatedly());
         driverXbox.rightBumper().onTrue(Commands.none());
       }*/
-    }
-
-    //driverJoystick = new Joystick(0);
-    operatorJoystick = new Joystick(1);
-
-    //new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A)
+    }    //new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A)
     //    .onTrue(new LogCommand("'A' button hit"));
 
   }
