@@ -3,7 +3,9 @@
     "name": "simulator",
     "serialNumber": "(simulation)",
     "makeAllCANDevices": true,
-    "swerveDirectoryName": "swerve/simulation"
+    "swerveDirectoryName": "swerve/simulation",
+    "intakeFrontEncoderOffset": -1,
+    "intakeRearEncoderOffset": -1
   },
   {
     "name": "Joehann",
@@ -21,7 +23,9 @@
     "name": "Compbot",
     "serialNumber": "0326F30D",
     "makeAllCANDevices": true,
-    "swerveDirectoryName": "swerve/Compbot"
+    "swerveDirectoryName": "swerve/Compbot",
+    "intakeFrontEncoderOffset": -73,
+    "intakeRearEncoderOffset": -200
   },
   {
     "name": "unknown",

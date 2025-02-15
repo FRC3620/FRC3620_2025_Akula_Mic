@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -22,6 +24,9 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import org.usfirst.frc3620.CANDeviceFinder;
 import org.usfirst.frc3620.CANDeviceType;
+import org.usfirst.frc3620.ChameleonController;
+import org.usfirst.frc3620.ChameleonController.ControllerType;
+import org.usfirst.frc3620.FlySkyConstants;
 import org.usfirst.frc3620.RobotParametersContainer;
 import org.usfirst.frc3620.Utilities;
 import org.usfirst.frc3620.XBoxConstants;
@@ -45,6 +50,7 @@ import frc.robot.commands.SetClimberPostionCommand;
 import frc.robot.commands.SetIMUFromMegaTag1Command;
 import frc.robot.commands.ContinuousSetIMUFromMegaTag1Command;
 import frc.robot.commands.SetPivotPositionCommand;
+import frc.robot.commands.AFI.AFIRollerSetSpeedCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -87,11 +93,14 @@ public class RobotContainer {
 
 
   // joysticks here....
-  public static Joystick driverJoystick;
+  public static ChameleonController driverJoystick;
   public static Joystick operatorJoystick;
 
+  // We'll be using this
+  public static AprilTagFieldLayout aprilTagFieldLayout;
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  final CommandXboxController driverXbox = new CommandXboxController(0);
+  //final CommandXboxController driverXbox = new CommandXboxController(0);
   // The robot's subsystems and commands are defined here...
 
   /**
@@ -99,6 +108,8 @@ public class RobotContainer {
    */
   public RobotContainer() {
     canDeviceFinder = new CANDeviceFinder();
+
+    aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
     robotParameters = RobotParametersContainer.getRobotParameters(RobotParameters.class);
     logger.info("got parameters for chassis '{}'", robotParameters.getName());
@@ -173,6 +184,15 @@ public class RobotContainer {
     CommandScheduler.getInstance().schedule(new ContinuousSetIMUFromMegaTag1Command());
   }
 
+
+  public String getDriverControllerName() {
+    return driverJoystick.getName();
+  }
+
+  public void setDriverControllerName(ControllerType driveControllerType) {
+    driverJoystick.setCurrentControllerType(driveControllerType);
+  }
+  
   /**
    * Use this method to define your trigger->command mappings. Triggers can be
    * created via the
@@ -187,15 +207,19 @@ public class RobotContainer {
    * Flight joysticks}.
    */
   private void configureButtonBindings() {
+
+    driverJoystick = new ChameleonController(new Joystick(0));
+
+
     if (swerveSubsystem != null) {
       /*
         Converts driver input into a field-relative ChassisSpeeds that is controlled
         by angular velocity.
        */
       SwerveInputStream driveAngularVelocity = SwerveInputStream.of(swerveSubsystem.getSwerveDrive(),
-          () -> driverXbox.getLeftY() * -1,
-          () -> driverXbox.getLeftX() * -1)
-          .withControllerRotationAxis(() -> driverXbox.getRightX() * -1)
+          () -> getDriveVerticalJoystick() * -1,
+          () -> getDriveHorizontalJoystick() * -1)
+          .withControllerRotationAxis(() -> getDriveSpinJoystick() * -1)
           .deadband(OperatorConstants.DEADBAND)
           .scaleTranslation(0.8)
           .allianceRelativeControl(true);
@@ -204,8 +228,8 @@ public class RobotContainer {
         Clone's the angular velocity input stream and converts it to a fieldRelative
         input stream.()
        */
-      SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().withControllerHeadingAxis(driverXbox::getRightX,
-          driverXbox::getRightY)
+      SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().withControllerHeadingAxis(() -> getDriveHorizontalJoystick(),
+          () -> getDriveVerticalJoystick())
           .headingWhile(true);
 
       /*
@@ -216,14 +240,14 @@ public class RobotContainer {
           .allianceRelativeControl(false);
 
       SwerveInputStream driveAngularVelocityKeyboard = SwerveInputStream.of(swerveSubsystem.getSwerveDrive(),
-          () -> -driverXbox.getLeftY(),
-          () -> -driverXbox.getLeftX())
-          .withControllerRotationAxis(() -> driverXbox.getRawAxis(
-              2))
+          () -> -getDriveVerticalJoystick(),
+          () -> -getDriveHorizontalJoystick())
+          .withControllerRotationAxis(() -> getDriveSpinJoystick() * -1)
           .deadband(OperatorConstants.DEADBAND)
           .scaleTranslation(0.8)
           .allianceRelativeControl(true);
 
+      /*     
       // Derive the heading axis with math!
       SwerveInputStream driveDirectAngleKeyboard = driveAngularVelocityKeyboard.copy()
           .withControllerHeadingAxis(() -> Math.sin(
@@ -241,28 +265,28 @@ public class RobotContainer {
                   (Math.PI *
                       2))
           .headingWhile(true);
-
+      */
       Command driveFieldOrientedDirectAngle = swerveSubsystem.driveFieldOriented(driveDirectAngle);
       Command driveFieldOrientedAnglularVelocity = swerveSubsystem.driveFieldOriented(driveAngularVelocity);
       Command driveRobotOrientedAngularVelocity = swerveSubsystem.driveFieldOriented(driveRobotOriented);
       Command driveSetpointGen = swerveSubsystem.driveWithSetpointGeneratorFieldRelative(
           driveDirectAngle);
-      Command driveFieldOrientedDirectAngleKeyboard = swerveSubsystem.driveFieldOriented(driveDirectAngleKeyboard);
+      //Command driveFieldOrientedDirectAngleKeyboard = swerveSubsystem.driveFieldOriented(driveDirectAngleKeyboard);
       Command driveFieldOrientedAnglularVelocityKeyboard = swerveSubsystem
           .driveFieldOriented(driveAngularVelocityKeyboard);
-      Command driveSetpointGenKeyboard = swerveSubsystem.driveWithSetpointGeneratorFieldRelative(
-          driveDirectAngleKeyboard);
+     // Command driveSetpointGenKeyboard = swerveSubsystem.driveWithSetpointGeneratorFieldRelative(
+     //     driveDirectAngleKeyboard);
 
       if (RobotBase.isSimulation()) {
-        swerveSubsystem.setDefaultCommand(driveFieldOrientedDirectAngleKeyboard);
+        //swerveSubsystem.setDefaultCommand(driveFieldOrientedDirectAngleKeyboard);
       } else {
         swerveSubsystem.setDefaultCommand(driveFieldOrientedAnglularVelocity);
       }
 
       if (Robot.isSimulation()) {
-        driverXbox.start()
-            .onTrue(Commands.runOnce(() -> swerveSubsystem.resetOdometry(new Pose2d(3, 3, new Rotation2d()))));
-        driverXbox.button(1).whileTrue(swerveSubsystem.sysIdDriveMotorCommand());
+        //driverXbox.start()
+        //    .onTrue(Commands.runOnce(() -> swerveSubsystem.resetOdometry(new Pose2d(3, 3, new Rotation2d()))));
+        //driverXbox.button(1).whileTrue(swerveSubsystem.sysIdDriveMotorCommand());
       }
 
       /*
@@ -270,6 +294,7 @@ public class RobotContainer {
         this looks kind of incorrect; we will NEVER be in test mode when the robot is
         coming up
        */
+      /*
       if (DriverStation.isTest()) {
         swerveSubsystem.setDefaultCommand(driveFieldOrientedAnglularVelocity); // Overrides drive command above!
 
@@ -289,14 +314,14 @@ public class RobotContainer {
         driverXbox.back().whileTrue(Commands.none());
         driverXbox.leftBumper().whileTrue(Commands.runOnce(swerveSubsystem::lock, swerveSubsystem).repeatedly());
         driverXbox.rightBumper().onTrue(Commands.none());
-      }
+      }*/
     }
 
-    driverJoystick = new Joystick(0);
+    //driverJoystick = new Joystick(0);
     operatorJoystick = new Joystick(1);
 
-    new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A)
-        .onTrue(new LogCommand("'A' button hit"));
+    //new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A)
+    //    .onTrue(new LogCommand("'A' button hit"));
 
   }
 
@@ -314,11 +339,17 @@ public class RobotContainer {
     SmartDashboard.putData("ElevatorSetPositionHome", new SetElevatorPositionCommand(Inches.of(0.0), esefSubsystem));
     SmartDashboard.putData("move End Effector", new SetEndEffectorSpeedCommand(0.5, esefSubsystem));
 
+    SmartDashboard.putData("PivotPosition2", new SetPivotPositionCommand(Degrees.of(45), afiSubsystem));
+    SmartDashboard.putData("PivotPositionInit", new SetPivotPositionCommand(Degrees.of(0), afiSubsystem));
     SmartDashboard.putNumber("Elevator.ManualPosition", 5);
     SmartDashboard.putData("Elevator.ManualControl", new SetManualElevatorCommand());
 
     SmartDashboard.putData("PivotPosition2", new SetPivotPositionCommand(10.0, afiSubsystem));
     SmartDashboard.putData("PivotPositionInit", new SetPivotPositionCommand(00., afiSubsystem));
+
+    SmartDashboard.putData("AFISetRollerSpeed1", new AFIRollerSetSpeedCommand(0.1, afiSubsystem));
+    SmartDashboard.putData("AFISetRollerSpeed2", new AFIRollerSetSpeedCommand(0.5, afiSubsystem));
+    SmartDashboard.putData("AFIStopRoller", new AFIRollerSetSpeedCommand(0.0, afiSubsystem));
 
     // SmartDashboard.putData('CoralSpeed');
 
@@ -417,6 +448,56 @@ public class RobotContainer {
     }
 
     return false;
+  }
+
+  public static double getDriveVerticalJoystick() {
+    double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y, FlySkyConstants.AXIS_LEFT_Y);
+    double deadzone = 0.1;
+    if (driverJoystick.getCurrentControllerType() == ControllerType.B) {
+      deadzone = 0.02;
+    }
+    SmartDashboard.putNumber("driver.y.raw", axisValue);
+    if (Math.abs(axisValue) < deadzone) {
+      return 0;
+    }
+    return axisValue;
+  }
+
+  public static double getDriveHorizontalJoystick() {
+    double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X, FlySkyConstants.AXIS_LEFT_X);
+    double deadzone = 0.05;
+    if (driverJoystick.getCurrentControllerType() == ControllerType.B) {
+      deadzone = 0.02;
+    }
+    SmartDashboard.putNumber("driver.x.raw", axisValue);
+    if (Math.abs(axisValue) < deadzone) {
+      return 0;
+    }
+    if (axisValue < 0) {
+      return -(axisValue * axisValue);
+    }
+    return axisValue * axisValue;
+  }
+
+  public static double getDriveSpinJoystick() {
+    double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X, FlySkyConstants.AXIS_RIGHT_X);
+    double deadzone = 0.05;
+    if (driverJoystick.getCurrentControllerType() == ControllerType.B) {
+      deadzone = 0.02;
+    }
+    
+    SmartDashboard.putNumber("driver.spin.raw", axisValue);
+
+    //axisValue = 0;
+
+    double rv = 0;
+    if (Math.abs(axisValue) >= deadzone) {
+      rv = axisValue * axisValue;
+      if (axisValue < 0) {
+        rv = -rv;
+      }
+    }
+    return axisValue;
   }
 
 }
