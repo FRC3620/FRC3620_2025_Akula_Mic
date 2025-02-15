@@ -25,8 +25,6 @@ import swervelib.SwerveDrive;
 public class VisionSubsystem extends SubsystemBase {
   NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
-  public static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-
   public enum Camera {
     FRONT("limelight-front"), BACK("limelight-back");
 
@@ -118,10 +116,10 @@ public class VisionSubsystem extends SubsystemBase {
         NTPublisher.putNumber(prefix + "targetCount", m.tagCount);
         NTStructs.publish(prefix + "poseEstimate", m.pose);
 
-        if (aprilTagFieldLayout != null) {
+        if (RobotContainer.aprilTagFieldLayout != null) {
           List<Pose3d> targetPoses = new ArrayList<>();
           for (var fiducial : m.rawFiducials) {
-            Optional<Pose3d> aprilTagPose = aprilTagFieldLayout.getTagPose(fiducial.id);
+            Optional<Pose3d> aprilTagPose = RobotContainer.aprilTagFieldLayout.getTagPose(fiducial.id);
             if (aprilTagPose.isPresent()) {
               targetPoses.add(aprilTagPose.get());
             }

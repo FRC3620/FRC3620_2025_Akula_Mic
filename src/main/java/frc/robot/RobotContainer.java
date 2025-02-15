@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -90,6 +92,9 @@ public class RobotContainer {
   public static ChameleonController driverJoystick;
   public static Joystick operatorJoystick;
 
+  // We'll be using this
+  public static AprilTagFieldLayout aprilTagFieldLayout;
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   //final CommandXboxController driverXbox = new CommandXboxController(0);
   // The robot's subsystems and commands are defined here...
@@ -99,6 +104,8 @@ public class RobotContainer {
    */
   public RobotContainer() {
     canDeviceFinder = new CANDeviceFinder();
+
+    aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
     robotParameters = RobotParametersContainer.getRobotParameters(RobotParameters.class);
     logger.info("got parameters for chassis '{}'", robotParameters.getName());
