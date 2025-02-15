@@ -34,12 +34,16 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.esefcommands.SetElevatorPositionCommand;
 import frc.robot.commands.esefcommands.SetEndEffectorSpeedCommand;
 import frc.robot.commands.esefcommands.SetShoulderPositionCommand;
+import frc.robot.commands.swervedrive.DriveToClosestStickCommand;
+import frc.robot.commands.swervedrive.DriveToClosestStickCommand.WhichStick;
 import frc.robot.subsystems.AFISubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.HealthSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.VisionSubsystem.WhichBlueStick;
 import frc.robot.subsystems.esefsubsystem.ESEFSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.subsystems.swervedrive.Vision;
 import swervelib.SwerveInputStream;
 import swervelib.imu.SwerveIMU;
 import frc.robot.commands.ContinuousSetIMUFromMegaTag1Command;
@@ -51,6 +55,7 @@ import frc.robot.commands.AFI.AFIRollerSetSpeedCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -337,6 +342,11 @@ public class RobotContainer {
     SmartDashboard.putData("AFISetRollerSpeed2", new AFIRollerSetSpeedCommand(0.5, afiSubsystem));
     SmartDashboard.putData("AFIStopRoller", new AFIRollerSetSpeedCommand(0.0, afiSubsystem));
 
+    SmartDashboard.putData("Drive To Nearest Tag LEFT", new DriveToClosestStickCommand(WhichStick.LEFT));
+    SmartDashboard.putData("Drive To Nearest Tag RIGHT", new DriveToClosestStickCommand(WhichStick.RIGHT));
+
+    Pose2d testPose = new Pose2d(5.1,3.09, Rotation2d.fromDegrees(120));
+    SmartDashboard.putData("Drive To TEST", swerveSubsystem.driveToPoseSlow(testPose));
     // SmartDashboard.putData('CoralSpeed');
 
     // SmartDashboard.putData(new xxxxCommand());

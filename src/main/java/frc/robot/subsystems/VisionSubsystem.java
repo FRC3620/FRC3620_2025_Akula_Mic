@@ -7,7 +7,12 @@ import java.util.function.Supplier;
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+
+import org.dyn4j.geometry.Rotatable;
 import org.usfirst.frc3620.NTPublisher;
 import org.usfirst.frc3620.NTStructs;
 
@@ -15,23 +20,64 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.networktables.DoubleArrayEntry;
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 import frc.robot.RobotContainer;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.VisionSubsystem.CameraData.MegaTagData;
+import frc.robot.subsystems.swervedrive.Vision;
 import swervelib.SwerveDrive;
 
 public class VisionSubsystem extends SubsystemBase {
   NetworkTableInstance inst = NetworkTableInstance.getDefault();
+
+  public static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+
+  private Map <Translation2d, Integer> translationToTagMap = new HashMap<>();
+
+  private Map <Integer, Translation2d> tagToTranslationMap = new HashMap<>();
+
+  private Map <Integer, Pose2d> tagToStickPose2dLeft = new HashMap<>();
+
+  private Map <Integer, Pose2d> tagToStickPose2dRight = new HashMap<>();
+
+  private Translation2d centerBlueReef;
+
+  private List<Translation2d> tagTranslations = new ArrayList<>();
+
+  double maxDistanceFromCenterToBeClose = 3;//Distance in meters
 
   public enum Camera {
     FRONT("limelight-front"), BACK("limelight-back");
 
     public final String limelightName;
 
+
     Camera(String limelightName) {
       this.limelightName = limelightName;
+    }
+  }
+
+  
+
+  public enum WhichBlueStick{
+    BSTICKA(5.71,3.80,Rotation2d.fromDegrees(-180)), 
+    BSTICKB(5.71,4.26, Rotation2d.fromDegrees(-180)), 
+    BSTICKC(5.17,5.2, Rotation2d.fromDegrees(-120)), 
+    BSTICKD(5.1,5.5, Rotation2d.fromDegrees(-120)), 
+    BSTICKE(4,5.35, Rotation2d.fromDegrees(-60)), 
+    BSTICKF(3.6,5.18, Rotation2d.fromDegrees(-60)), 
+    BSTICKG(3.26,4.2, Rotation2d.fromDegrees(0)), 
+    BSTICKH(3.26,3.84, Rotation2d.fromDegrees(0)),
+    BSTICKI(3.85,3,Rotation2d.fromDegrees(60)), 
+    BSTICKJ(3.96,2.9, Rotation2d.fromDegrees(60)), 
+    BSTICKK(4.98,2.9, Rotation2d.fromDegrees(120)),
+    BSTICKL(5.1,3.09, Rotation2d.fromDegrees(120));
+    public final Pose2d pose;
+
+    WhichBlueStick (double x, double y, Rotation2d rotation){
+      pose = new Pose2d(x,y,rotation);
     }
   }
 
@@ -102,6 +148,8 @@ public class VisionSubsystem extends SubsystemBase {
     allCameraData.put(Camera.BACK, new CameraData(Camera.BACK));
     allCameraData = Map.copyOf(allCameraData); // make immutable
     allCameraDataAsSet = Set.copyOf(allCameraData.values());
+
+    setUpTagMaps();
   }
 
   void processMegaTag(MegaTagData megaTagData, Supplier<PoseEstimate> supplier) {
@@ -116,10 +164,10 @@ public class VisionSubsystem extends SubsystemBase {
         NTPublisher.putNumber(prefix + "targetCount", m.tagCount);
         NTStructs.publish(prefix + "poseEstimate", m.pose);
 
-        if (RobotContainer.aprilTagFieldLayout != null) {
+        if (aprilTagFieldLayout != null) {
           List<Pose3d> targetPoses = new ArrayList<>();
           for (var fiducial : m.rawFiducials) {
-            Optional<Pose3d> aprilTagPose = RobotContainer.aprilTagFieldLayout.getTagPose(fiducial.id);
+            Optional<Pose3d> aprilTagPose = aprilTagFieldLayout.getTagPose(fiducial.id);
             if (aprilTagPose.isPresent()) {
               targetPoses.add(aprilTagPose.get());
             }
@@ -129,6 +177,39 @@ public class VisionSubsystem extends SubsystemBase {
       }
     }
   }
+
+  void setUpTagMaps(){
+
+    for (int tagID = 17; tagID  <= 22; tagID++){
+
+      Translation2d translation = RobotContainer.aprilTagFieldLayout.getTagPose(tagID).get().getTranslation().toTranslation2d();
+
+      translationToTagMap.put(translation, tagID);
+      tagToTranslationMap.put(tagID, translation);
+
+      tagTranslations.add(translation);
+
+    }
+
+    tagToStickPose2dLeft.put(17, WhichBlueStick.BSTICKI.pose);
+    tagToStickPose2dLeft.put(18, WhichBlueStick.BSTICKG.pose);
+    tagToStickPose2dLeft.put(19, WhichBlueStick.BSTICKE.pose);
+    tagToStickPose2dLeft.put(20, WhichBlueStick.BSTICKC.pose);
+    tagToStickPose2dLeft.put(21, WhichBlueStick.BSTICKA.pose);
+    tagToStickPose2dLeft.put(22, WhichBlueStick.BSTICKK.pose);
+
+    tagToStickPose2dRight.put(17, WhichBlueStick.BSTICKJ.pose);
+    tagToStickPose2dRight.put(18, WhichBlueStick.BSTICKH.pose);
+    tagToStickPose2dRight.put(19, WhichBlueStick.BSTICKF.pose);
+    tagToStickPose2dRight.put(20, WhichBlueStick.BSTICKD.pose);
+    tagToStickPose2dRight.put(21, WhichBlueStick.BSTICKB.pose);
+    tagToStickPose2dRight.put(22, WhichBlueStick.BSTICKL.pose);
+
+    centerBlueReef = tagToTranslationMap.get(17).plus(tagToTranslationMap.get(20)).div(2);
+
+
+  }
+
 
   @Override
   public void periodic() {
@@ -172,6 +253,8 @@ public class VisionSubsystem extends SubsystemBase {
       }
     }
 
+    SmartDashboard.putNumber("frc3620/vision/nearestTagID", getNearestTagID(RobotContainer.swerveSubsystem.getPose()));
+
   }
 
   public CameraData getCameraData(Camera camera) {
@@ -180,6 +263,37 @@ public class VisionSubsystem extends SubsystemBase {
 
   public Set<CameraData> getAllCameraData() {
     return allCameraDataAsSet;
+  }
+
+  public int getNearestTagID(Pose2d pose){
+    Translation2d translation = pose.getTranslation();
+    Translation2d nearestTagTranslation = translation.nearest(tagTranslations);
+
+    if(translation.getDistance(centerBlueReef) < maxDistanceFromCenterToBeClose){
+      return translationToTagMap.get(nearestTagTranslation);
+    }else{
+      return -1;
+    }
+  }
+
+  public Pose2d getNearestLeftStickPose(int tagID){
+    if(tagID == -1){
+      return RobotContainer.swerveSubsystem.getPose();
+    }else{
+
+      return tagToStickPose2dLeft.get(tagID);
+
+    }
+  }
+
+  public Pose2d getNearestRightStickPose(int tagID){
+    if(tagID == -1){
+      return RobotContainer.swerveSubsystem.getPose();
+    }else{
+
+      return tagToStickPose2dRight.get(tagID);
+      
+    }
   }
 
 }
