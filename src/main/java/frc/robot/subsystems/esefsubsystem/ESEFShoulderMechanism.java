@@ -47,6 +47,7 @@ public class ESEFShoulderMechanism {
             slot0Configs.kD = 0;
 
             shoulder.getConfigurator().apply(slot0Configs); // Applies the Config to the shoulder motor
+            
         }
 
     }
