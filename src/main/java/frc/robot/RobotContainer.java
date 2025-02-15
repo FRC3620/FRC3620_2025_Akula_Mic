@@ -17,6 +17,7 @@ import org.tinylog.TaggedLogger;
 import org.usfirst.frc3620.logger.LogCommand;
 import org.usfirst.frc3620.logger.LoggingMaster;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.FileVersionException;
 
@@ -66,6 +67,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
+  private final SendableChooser<Command> autoChooser;
+
   public final static TaggedLogger logger = LoggingMaster.getLogger(RobotContainer.class);
 
   // need this
@@ -104,6 +108,8 @@ public class RobotContainer {
       * @throws FileVersionException 
       */
      public RobotContainer() throws FileVersionException, IOException, ParseException {
+
+
     canDeviceFinder = new CANDeviceFinder();
 
     robotParameters = RobotParametersContainer.getRobotParameters(RobotParameters.class);
@@ -137,12 +143,14 @@ public class RobotContainer {
       missingDevicesAlert.setText("Missing from CAN bus: " + canDeviceFinder.getMissingDeviceSet());
     }
 
+    autoChooser = AutoBuilder.buildAutoChooser();
     // Configure the button bindings
     configureButtonBindings();
 
     setupSmartDashboardCommands();
 
     setupAutonomousCommands();
+
 
     DriverStation.silenceJoystickConnectionWarning(true);
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
@@ -352,10 +360,8 @@ public class RobotContainer {
 
   }
 
-  SendableChooser<Command> chooser = new SendableChooser<>();
-
   public void setupAutonomousCommands() {
-    SmartDashboard.putData("Auto mode", chooser);
+    SmartDashboard.putData("Auto mode", autoChooser);
 
     // chooser.addOption("Example Command", new ExampleCommand(exampleSubsystem));
   }
@@ -369,7 +375,7 @@ public class RobotContainer {
     // An ExampleCommand will run in autonomous
     // return new GoldenAutoCommand(driveSubsystem, shooterSubsystem,
     // VisionSubsystem, intakeSubsystem);
-    return chooser.getSelected();
+    return autoChooser.getSelected();
   }
 
   /**
