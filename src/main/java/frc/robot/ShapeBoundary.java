@@ -4,31 +4,28 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.util.ArrayList;
 import java.util.List;
-import edu.wpi.first.math.geometry.Translation2d;
 
 /** Add your docs here. */
 public class ShapeBoundary {
 
-        //https://chat.deepseek.com/a/chat/s/b83653a5-875b-4310-a834-81804759d1cb
+    // https://chat.deepseek.com/a/chat/s/b83653a5-875b-4310-a834-81804759d1cb
 
     private List<Translation2d> vertices;
 
     public ShapeBoundary() {
         vertices = new ArrayList<>();
         // Define the vertices of the rectangle
-        vertices.add(new Translation2d(0, 0));       // Bottom-left corner
-        vertices.add(new Translation2d(0, 5));       // Top-left corner
-        vertices.add(new Translation2d(10, 5));       // Top-right corner
-        vertices.add(new Translation2d(10, 0));      // Bottom-right corner
+        vertices.add(new Translation2d(0, 0)); // Bottom-left corner
+        vertices.add(new Translation2d(0, 5)); // Top-left corner
+        vertices.add(new Translation2d(10, 5)); // Top-right corner
+        vertices.add(new Translation2d(10, 0)); // Bottom-right corner
     }
 
-    
     public List<Translation2d> getVertices() {
         return vertices;
     }
@@ -45,14 +42,12 @@ public class ShapeBoundary {
 
             // Check if the point is within the y-range of the edge
             if (((vertex1.getY() > point.getY()) != (vertex2.getY() > point.getY())) &&
-                // Check if the point is to the left of the edge's intersection with the ray
-                (point.getX() < (vertex2.getX() - vertex1.getX()) * (point.getY() - vertex1.getY()) / (vertex2.getY() - vertex1.getY()) + vertex1.getX())) {
-                inside = true; 
+            // Check if the point is to the left of the edge's intersection with the ray
+                    (point.getX() < (vertex2.getX() - vertex1.getX()) * (point.getY() - vertex1.getY())
+                            / (vertex2.getY() - vertex1.getY()) + vertex1.getX())) {
+                inside = true;
             }
         }
-            SmartDashboard.putBoolean("Inside Shape", inside);
-    return inside;
+        return inside;
+    }
 }
-}
-
-
