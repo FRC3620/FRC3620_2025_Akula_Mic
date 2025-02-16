@@ -4,6 +4,9 @@
 
 package org.usfirst.frc3620;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Radians;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
@@ -11,7 +14,9 @@ import java.util.function.Consumer;
 import org.tinylog.TaggedLogger;
 import org.usfirst.frc3620.logger.LoggingMaster;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
@@ -31,24 +36,16 @@ public class Utilities {
    * This method makes sure the angle difference calculated falls between -180
    * degrees and 180 degrees
    * 
-   * @param angle angle to be normalized (degrees)
-   * @return normalized angle (-180..180)
+   * @param angle angle to be normalized
+   * @return normalized angle (-180..180 degrees)
    */
-  public static double normalizeAngle(double angle) {
-    angle = angle % 360;
-
-    if (angle > 180) {
-      angle = -360 + angle;
-    }
-    if (angle <= -180) {
-      angle = 360 + angle;
-    }
-
-    if (angle == -0) {
-      angle = 0;
-    }
-
-    return angle;
+  public static Angle normalizeAngle(Angle angle) {
+    double degrees = angle.in(Degrees);
+    degrees = MathUtil.inputModulus(degrees, -180, 180);
+    // it would be nice if the returned value had the same 
+    // base unit as the input value, but I'm not that smart,
+    // and this *is* correct.
+    return Degrees.of(degrees);
   }
 
   public static void dumpSendables(String label, String subsystemName) {
@@ -80,8 +77,9 @@ public class Utilities {
 
     double mean;
     double stdDev;
-
     int flyers;
+
+    boolean dirty = true;
 
     public SlidingWindowStats(int maxSize) {
       this.maxSize = maxSize;
@@ -104,21 +102,17 @@ public class Utilities {
       values.addLast(v);
       size++;
 
-      updateStats();
+      dirty = true;
     }
 
     void updateStats() {
-      double sum = 0;
-      for (var v : values) {
-        sum += v;
-      }
-      mean = sum / values.size();
+      mean = sum(values) / values.size();
 
-      sum = 0;
+      double sumOfSquaredDifferences = 0;
       for (var v : values) {
-        sum += (v - mean) * (v - mean);
+        sumOfSquaredDifferences += (v - mean) * (v - mean);
       }
-      stdDev = sum / values.size();
+      stdDev = sumOfSquaredDifferences / values.size();
 
       flyers = 0;
       for (var v : values) {
@@ -126,26 +120,35 @@ public class Utilities {
           flyers++;
         }
       }
+
+      dirty = false;
     }
 
+
+
     public int getSize() {
+      if (dirty) updateStats();
       return size;
     }
 
     public double getMean() {
+      if (dirty) updateStats();
       return mean;
     }
 
     public double getStdDev() {
+      if (dirty) updateStats();
       return stdDev;
     }
 
     public int getFlyers() {
+      if (dirty) updateStats();
       return flyers;
     }
 
     @Override
     public String toString() {
+      if (dirty) updateStats();
       return "SlidingWindowStats [size=" + size + ", mean=" + mean
           + ", stdDev=" + stdDev + ", flyers=" + flyers + "]";
     }

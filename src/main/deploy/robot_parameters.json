@@ -25,7 +25,7 @@
     "makeAllCANDevices": true,
     "swerveDirectoryName": "swerve/Compbot",
     "intakeFrontEncoderOffset": -73,
-    "intakeRearEncoderOffset": -200
+    "intakeRearEncoderOffset": 207
   },
   {
     "name": "unknown",

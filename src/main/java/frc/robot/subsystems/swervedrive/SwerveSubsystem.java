@@ -39,10 +39,16 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.swervedrive.Vision.Cameras;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
@@ -72,10 +78,6 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   private final SwerveDrive swerveDrive;
   /**
-   * AprilTag field layout.
-   */
-  private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
-  /**
    * Enable vision odometry updates while driving.
    */
   private final boolean visionDriveTest = false;
@@ -85,6 +87,15 @@ public class SwerveSubsystem extends SubsystemBase {
   private Vision vision;
 
   TaggedLogger logger = LoggingMaster.getLogger(getClass());
+  private Map <Translation2d, Integer> translationToTagMap = new HashMap<>();
+
+  private Map <Integer, Translation2d> tagToTranslationMap = new HashMap<>();
+
+  private Translation2d centerBlueReef;
+
+  private List<Translation2d> tagTranslations = new ArrayList<>();
+
+  double maxDistanceFromCenterToBeClose = 3;//Distance in meters
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
    *
@@ -128,7 +139,23 @@ public class SwerveSubsystem extends SubsystemBase {
     }
     setupPathPlanner();
 
-    
+    setUpTagMaps();
+  }
+
+  void setUpTagMaps(){
+
+    for (int tagID = 17; tagID  <= 22; tagID++){
+
+      Translation2d translation = RobotContainer.aprilTagFieldLayout.getTagPose(tagID).get().getTranslation().toTranslation2d();
+
+      translationToTagMap.put(translation, tagID);
+      tagToTranslationMap.put(tagID, translation);
+
+      tagTranslations.add(translation);
+
+    }
+
+    centerBlueReef = tagToTranslationMap.get(17).plus(tagToTranslationMap.get(20)).div(2);
 
   }
 
@@ -149,14 +176,14 @@ public class SwerveSubsystem extends SubsystemBase {
    *
    * @param driveCfg      SwerveDriveConfiguration for the swerve.
    * @param controllerCfg Swerve Controller.
-   */
+   *//* 
   public SwerveSubsystem(SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg) {
     swerveDrive = new SwerveDrive(driveCfg,
         controllerCfg,
         Constants.MAX_SPEED,
         new Pose2d(new Translation2d(Meter.of(2), Meter.of(0)),
             Rotation2d.fromDegrees(0)));
-  }
+  }*/
 
   /**
    * Setup the photon vision class.
@@ -179,6 +206,7 @@ public class SwerveSubsystem extends SubsystemBase {
     NTStructs.publish("SmartDashboard/frc3620/swerve/pose" , swerveDrive.getPose());
 
     SmartDashboard.putNumber("frc3620/swerve/yaw", swerveDrive.getYaw().getDegrees());
+    SmartDashboard.putNumber("frc3620/swerve/nearestTagID", getNearestTag(swerveDrive.getPose()));
   }
 
   @Override
@@ -757,4 +785,16 @@ public class SwerveSubsystem extends SubsystemBase {
   public SwerveDrive getSwerveDrive() {
     return swerveDrive;
   }
+
+  public int getNearestTag(Pose2d pose){
+    Translation2d translation = pose.getTranslation();
+    Translation2d nearestTagTranslation = translation.nearest(tagTranslations);
+
+    if(translation.getDistance(centerBlueReef) < maxDistanceFromCenterToBeClose){
+      return translationToTagMap.get(nearestTagTranslation);
+    }else{
+      return -1;
+    }
+  }
+
 }
