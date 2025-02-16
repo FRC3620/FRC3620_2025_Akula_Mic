@@ -105,7 +105,11 @@ public class ESEFShoulderMechanism {
     }
 
     public Angle getShoulderPosition(){
-        return shoulderEncoder.getAbsolutePosition().getValue();
+        if (shoulderEncoder != null) {
+            return shoulderEncoder.getAbsolutePosition().getValue();
+        } else {
+            return Degrees.of(0);
+        }
     }
 
 }
