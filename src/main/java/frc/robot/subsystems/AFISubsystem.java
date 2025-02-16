@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Radian;
 import static edu.wpi.first.units.Units.Rotations;
 
 import org.tinylog.TaggedLogger;
@@ -60,6 +61,9 @@ public class AFISubsystem extends SubsystemBase {
   // this is the ratio of motor rotations to intake arm rotations
   final static double MOTOR_TO_INTAKE_RATIO = 5 * 5 * (3.0 / 2.0);
 
+
+  final double ffg = 0.02;
+
   public AFISubsystem() {
     // constructor
     frontEncoder = new DutyCycleEncoder(5);
@@ -68,7 +72,7 @@ public class AFISubsystem extends SubsystemBase {
     rearEncoderOffset = Degrees.of(RobotContainer.robotParameters.getIntakeRearEncoderOffset());
 
     pid = new PIDController(
-      2,
+      1,
       0,
       0
     );
@@ -98,13 +102,13 @@ public class AFISubsystem extends SubsystemBase {
             //configs.Voltage.withPeakForwardVoltage(12 * 0.1);
             //configs.Voltage.withPeakReverseVoltage(12 * -0.1);
     } // Applies the Config to the shoulder motor
+    setPivotPosition(Degrees.of(45));
 
     // Roller
     if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, AFIROLLERMOTORID, "AFIRoller")
         || RobotContainer.shouldMakeAllCANDevices()) {
       this.roller = new TalonFX(AFIROLLERMOTORID);
     }
-
   }
 
   @Override
@@ -123,12 +127,15 @@ public class AFISubsystem extends SubsystemBase {
         }
       }
     }
+    double ffoutput = ffg*Math.cos(getAbsoluteIntakeAngle().in(Radian));
+    double pidoutput = pid.calculate(getAbsoluteIntakeAngle().in(Rotations));
+    pivot.set(MathUtil.clamp(pidoutput+ffoutput, -0.5, 0.1));
 
-    double output = pid.calculate(getAbsoluteIntakeAngle().in(Rotations));
-    pivot.set(MathUtil.clamp(output, -0.1, 0.1));
-
-    SmartDashboard.putNumber("frc3620/AFI/pivotOutput", output);
-
+    SmartDashboard.putNumber("frc3620/AFI/pivotpidOutput", pidoutput);
+    SmartDashboard.putNumber("frc3620/AFI/pivotffOutput", ffoutput);
+    SmartDashboard.putNumber("frc3620/AFI/pivotOutput", ffoutput+pidoutput);
+    SmartDashboard.putNumber("frc3620/AFI/pivotOutput", MathUtil.clamp(pidoutput+ffoutput, -0.1, 0.1));
+    
     SmartDashboard.putNumber("frc3620/AFI/PivotFrontAbsolutePositionRaw", Rotations.of(frontEncoder.get()).in(Degrees));
     SmartDashboard.putNumber("frc3620/AFI/PivotRearAbsolutePositionRaw", Rotations.of(rearEncoder.get()).in(Degrees));
 
