@@ -1,15 +1,17 @@
 package frc.robot.subsystems;
 
-import java.nio.file.attribute.PosixFileAttributes;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 
 import org.usfirst.frc3620.NTPublisher;
 import org.usfirst.frc3620.NTStructs;
 
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.DoubleArrayEntry;
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -28,8 +30,29 @@ public class VisionSubsystem extends SubsystemBase {
 
     public final String limelightName;
 
+
     Camera(String limelightName) {
       this.limelightName = limelightName;
+    }
+  }
+
+  public enum WhichBlueStick{
+    BSTICKA(5.71,3.83,Rotation2d.fromDegrees(120)), 
+    BSTICKB(5.71,4.26, Rotation2d.fromDegrees(-180)), 
+    BSTICKC(5.17,5.2, Rotation2d.fromDegrees(-120)), 
+    BSTICKD(5.1,5.5, Rotation2d.fromDegrees(-120)), 
+    BSTICKE(4,5.35, Rotation2d.fromDegrees(-60)), 
+    BSTICKF(3.6,5.18, Rotation2d.fromDegrees(-60)), 
+    BSTICKG(3.26,4.2, Rotation2d.fromDegrees(0)), 
+    BSTICKH(3.26,3.84, Rotation2d.fromDegrees(0)),
+    BSTICKI(3.85,3,Rotation2d.fromDegrees(60)), 
+    BSTICKJ(3.96,2.9, Rotation2d.fromDegrees(60)), 
+    BSTICKK(4.98,2.9, Rotation2d.fromDegrees(120)),
+    BSTICKL(5.17,3.16, Rotation2d.fromDegrees(120));
+    public final Pose2d pose;
+
+    WhichBlueStick (double x, double y, Rotation2d rotation){
+      pose = new Pose2d(x,y,rotation);
     }
   }
 
@@ -113,7 +136,17 @@ public class VisionSubsystem extends SubsystemBase {
             + "/";
         NTPublisher.putNumber(prefix + "targetCount", m.tagCount);
         NTStructs.publish(prefix + "poseEstimate", m.pose);
-      
+
+        if (RobotContainer.aprilTagFieldLayout != null) {
+          List<Pose3d> targetPoses = new ArrayList<>();
+          for (var fiducial : m.rawFiducials) {
+            Optional<Pose3d> aprilTagPose = RobotContainer.aprilTagFieldLayout.getTagPose(fiducial.id);
+            if (aprilTagPose.isPresent()) {
+              targetPoses.add(aprilTagPose.get());
+            }
+          }
+          NTStructs.publish(prefix + "targets", targetPoses.toArray(new Pose3d[0]));
+        }
       }
     }
   }
