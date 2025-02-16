@@ -367,13 +367,11 @@ public class RobotContainer {
     SmartDashboard.putData("ElevatorSetPositionHome", new SetElevatorPositionCommand(Inches.of(0.0), esefSubsystem));
     SmartDashboard.putData("move End Effector", new SetEndEffectorSpeedCommand(0.5, esefSubsystem));
 
-    SmartDashboard.putData("PivotPosition2", new SetPivotPositionCommand(Degrees.of(45), afiSubsystem));
-    SmartDashboard.putData("PivotPositionInit", new SetPivotPositionCommand(Degrees.of(0), afiSubsystem));
+    SmartDashboard.putData("PivotPositionUp", new SetPivotPositionCommand(Degrees.of(80), afiSubsystem));
+    SmartDashboard.putData("PivotPosition2", new SetPivotPositionCommand(Degrees.of(10), afiSubsystem));
+    SmartDashboard.putData("PivotPositionDown", new SetPivotPositionCommand(Degrees.of(0), afiSubsystem));
     SmartDashboard.putNumber("Elevator.ManualPosition", 5);
     SmartDashboard.putData("Elevator.ManualControl", new SetManualElevatorCommand());
-
-    SmartDashboard.putData("PivotPosition2", new SetPivotPositionCommand(Degrees.of(10.0), afiSubsystem));
-    SmartDashboard.putData("PivotPositionInit", new SetPivotPositionCommand(Degrees.of(00.), afiSubsystem));
 
     SmartDashboard.putData("AFISetRollerSpeed1", new AFIRollerSetSpeedCommand(0.1, afiSubsystem));
     SmartDashboard.putData("AFISetRollerSpeed2", new AFIRollerSetSpeedCommand(0.5, afiSubsystem));
