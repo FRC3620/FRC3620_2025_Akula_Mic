@@ -86,7 +86,7 @@ public class RobotContainer {
   Alert missingDevicesAlert = new Alert(HealthSubsystem.HARDWARE_ALERT_GROUP_NAME, "", Alert.AlertType.kError);
 
   // hardware here...
-  private static DigitalInput practiceBotJumper;
+  // private static DigitalInput practiceBotJumper;
 
   public static PowerDistribution powerDistribution = null;
   public static PneumaticsModuleType pneumaticModuleType = null;
@@ -129,7 +129,7 @@ public class RobotContainer {
     logger.info("got parameters for chassis '{}'", robotParameters.getName());
     Utilities.logMetadataToDataLog("Robot", robotParameters.getName());
 
-    practiceBotJumper = new DigitalInput(0);
+    // practiceBotJumper = new DigitalInput(0);
     boolean iAmACompetitionRobot = amIACompBot();
     if (!iAmACompetitionRobot) {
       logger.warn("this is a test chassis, will try to deal with missing hardware!");
@@ -429,11 +429,17 @@ public class RobotContainer {
       return true;
     }
 
+    /*
     if (practiceBotJumper.get() == true) {
+      return true;
+    }*/
+
+    if (robotParameters.isCompetitionRobot()) {
       return true;
     }
 
-    if (robotParameters.isCompetitionRobot()) {
+    // right now, we only put roboRIO2s on a competition bot. This could change
+    if (RobotBase.getRuntimeType() == RuntimeType.kRoboRIO2) {
       return true;
     }
 
