@@ -29,8 +29,8 @@ public class ESEFEndEffectorMechanism {
 
     DigitalInput beambreak = new DigitalInput(8);
 
-    SparkMax endEff;
-    SparkMaxConfig clawConfig = new SparkMaxConfig();
+    TalonFX endEff;
+    TalonFXConfiguration clawConfig = new TalonFXConfiguration();
 
     final DutyCycleOut endEffControl = new DutyCycleOut(0);
 
@@ -38,9 +38,9 @@ public class ESEFEndEffectorMechanism {
 
     public ESEFEndEffectorMechanism() {
         // constructor
-        if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, ENDEFFECTORMOTORID, "End Effector")
+        if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, ENDEFFECTORMOTORID, "End Effector")
                 || RobotContainer.shouldMakeAllCANDevices()) {
-            endEff = new SparkMax(ENDEFFECTORMOTORID, MotorType.kBrushless);
+            endEff = new TalonFX(ENDEFFECTORMOTORID);
         }
 
     }
