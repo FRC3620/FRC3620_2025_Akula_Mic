@@ -15,6 +15,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.DriveFeedforwards;
+import com.pathplanner.lib.util.FileVersionException;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -28,6 +29,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -45,9 +47,13 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
+
 import org.json.simple.parser.ParseException;
 import org.photonvision.targeting.PhotonPipelineResult;
+import org.tinylog.TaggedLogger;
 import org.usfirst.frc3620.NTStructs;
+import org.usfirst.frc3620.logger.LoggingMaster;
 
 import swervelib.SwerveController;
 import swervelib.SwerveDrive;
@@ -78,6 +84,7 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   private Vision vision;
 
+  TaggedLogger logger = LoggingMaster.getLogger(getClass());
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
    *
@@ -120,6 +127,21 @@ public class SwerveSubsystem extends SubsystemBase {
       swerveDrive.stopOdometryThread();
     }
     setupPathPlanner();
+
+    
+
+  }
+
+  public Command pathFinderCommand(){
+
+    Pose2d targetPose = new Pose2d(4.98, 2.9, Rotation2d.fromDegrees(121.5));
+
+    PathConstraints constraints = new PathConstraints(1.0, 4.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
+
+    Command testCommand = AutoBuilder.pathfindToPose(targetPose, constraints, 0);
+
+    return testCommand;
+
   }
 
   /**
@@ -197,9 +219,11 @@ public class SwerveSubsystem extends SubsystemBase {
           new PPHolonomicDriveController(
               // PPHolonomicController is the built in path following controller for holonomic
               // drive trains
+              //Original PIDs 5,0,0.
               new PIDConstants(5.0, 0.0, 0.0),
               // Translation PID constants
-              new PIDConstants(5.0, 0.0, 0.0)
+              new PIDConstants(7.5, 0.0, 1.2
+              )
           // Rotation PID constants
           ),
           config,
@@ -384,8 +408,13 @@ public class SwerveSubsystem extends SubsystemBase {
    *         given speed
    */
   public Command driveToDistanceCommand(double distanceInMeters, double speedInMetersPerSecond) {
+
+    Translation2d initialTranslation = swerveDrive.getPose().getTranslation();
+    logger.info("Initial Translation = {}", initialTranslation);
+
     return run(() -> drive(new ChassisSpeeds(speedInMetersPerSecond, 0, 0)))
-        .until(() -> swerveDrive.getPose().getTranslation().getDistance(new Translation2d(0, 0)) > distanceInMeters);
+        .until(() -> swerveDrive.getPose().getTranslation().getDistance(initialTranslation) > distanceInMeters);
+
   }
 
   /**
