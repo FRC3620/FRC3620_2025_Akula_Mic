@@ -95,6 +95,9 @@ public class SwerveSubsystem extends SubsystemBase {
 
   private List<Translation2d> tagTranslations = new ArrayList<>();
 
+  private Pose2d targetPose;
+
+
   double maxDistanceFromCenterToBeClose = 3;//Distance in meters
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -207,6 +210,11 @@ public class SwerveSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("frc3620/swerve/yaw", swerveDrive.getYaw().getDegrees());
     SmartDashboard.putNumber("frc3620/swerve/nearestTagID", getNearestTag(swerveDrive.getPose()));
+    if(targetPose!=null){
+       SmartDashboard.putNumber("frc3620/swerve/targetPose",
+       swerveDrive.getPose().getTranslation().getDistance(targetPose.getTranslation()));
+    }
+
   }
 
   @Override
@@ -338,7 +346,7 @@ public class SwerveSubsystem extends SubsystemBase {
   public Command driveToPoseSlow(Pose2d pose) {
     // Create the constraints to use while pathfinding
     PathConstraints constraints = new PathConstraints(
-      swerveDrive.getMaximumChassisVelocity() * .25, 4.0,
+      swerveDrive.getMaximumChassisVelocity() * .25, 2.0,
         swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720));
 
     // Since AutoBuilder is configured, we can use it to build pathfinding commands
@@ -811,4 +819,12 @@ public class SwerveSubsystem extends SubsystemBase {
     }
   }
 
+
+  public void setTargetPose(Pose2d pose){
+    targetPose=pose;
+  }
+
+  public Pose2d getTargetPose(){
+    return targetPose;
+  }
 }

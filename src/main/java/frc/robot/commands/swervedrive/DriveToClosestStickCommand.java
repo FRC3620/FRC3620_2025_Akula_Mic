@@ -8,6 +8,7 @@ import org.tinylog.TaggedLogger;
 import org.usfirst.frc3620.logger.LoggingMaster;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Robot;
@@ -23,6 +24,7 @@ public class DriveToClosestStickCommand extends InstantCommand {
 
   WhichStick whichStick;
 
+
   TaggedLogger logger = LoggingMaster.getLogger(getClass());
   
   /** Creates a new DriveToPoseSlowCommand. */
@@ -37,6 +39,7 @@ public class DriveToClosestStickCommand extends InstantCommand {
   public void initialize() {
       int tagID = RobotContainer.visionSubsystem.getNearestTagID(RobotContainer.swerveSubsystem.getPose());
 
+
       logger.info("Saw ID = {}", tagID);
 
       if(tagID > 0){
@@ -48,11 +51,14 @@ public class DriveToClosestStickCommand extends InstantCommand {
         }else{
           pose = RobotContainer.visionSubsystem.getNearestRightStickPose(tagID);
         } 
-
+        RobotContainer.swerveSubsystem.setTargetPose(pose);
         logger.info("Target Pose = {}", pose);
 
         CommandScheduler.getInstance().schedule(RobotContainer.swerveSubsystem.driveToPoseSlow(pose));
+
+
       }
 
   }
+
 }
