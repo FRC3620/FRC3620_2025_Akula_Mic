@@ -1,9 +1,14 @@
 package frc.robot;
 
+import java.io.IOException;
+
+import org.json.simple.parser.ParseException;
 import org.tinylog.TaggedLogger;
 import org.usfirst.frc3620.*;
 import org.usfirst.frc3620.ChameleonController.ControllerType;
 import org.usfirst.frc3620.logger.LoggingMaster;
+
+import com.pathplanner.lib.util.FileVersionException;
 
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
@@ -68,7 +73,18 @@ public class Robot extends TimedRobot {
     
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
+    try {
+      m_robotContainer = new RobotContainer();
+    } catch (FileVersionException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (ParseException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
 
     FileSaver.add("networktables.json");
 

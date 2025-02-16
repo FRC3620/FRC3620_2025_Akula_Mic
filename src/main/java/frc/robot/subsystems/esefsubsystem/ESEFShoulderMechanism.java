@@ -7,11 +7,8 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Rotations;
 
 import org.usfirst.frc3620.CANDeviceType;
-import org.usfirst.frc3620.RobotMode;
 
-import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
@@ -21,15 +18,10 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.spark.config.EncoderConfig;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.simulation.DutyCycleSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
 /** Add your docs here. */
@@ -47,17 +39,6 @@ public class ESEFShoulderMechanism {
 
     // to save a requested position if encoder is not calibrated
     Double requestedPositionWhileCalibrating = null;
-
-    //public CANcoder shoulderEncoder;
-    // public final VelocityVoltage -- Do I need this?
-
-    /*
-     * public static double shoulderL4;
-     * public static double shoulderL3;
-     * public static double shoulderL2;
-     * public static double shoulderL1;
-     * public static double shoulderFunnel;
-     */
 
     final PositionVoltage shoulderRequest = new PositionVoltage(0).withSlot(0);
 
@@ -105,53 +86,7 @@ public class ESEFShoulderMechanism {
 
     }
 
-    /*
-     * public enum ShoulderPosition {};
-     * ShoulderPosition currentShoulderPosition;
-     */
-
-
-
     public void periodic() {
-    
-        
-         // only do something if we actually have a motor
-   /*  if (shoulder != null) {
-        if (Robot.getCurrentRobotMode() == RobotMode.TELEOP || Robot.getCurrentRobotMode() == RobotMode.AUTONOMOUS) {
-          if (!encoderCalibrated) {
-            // If the robot is running, and the encoder is "not calibrated," run motor very
-            // slowly towards the switch
-            shoulder.set(0.03); 
-            if (calibrationTimer == null) {
-              // we need to calibrate and we have no timer. make one and start it
-              calibrationTimer = new Timer();
-              calibrationTimer.reset();
-              calibrationTimer.start();
-            } else {
-              // we have a timer, has the motor had power long enough to spin up
-              if (calibrationTimer.get() > 0.2) {
-                if (Math.abs(shoulder.getVelocity().getValueAsDouble()) < 0.4) {
-                  // motor is not moving, hopefully it's against the stop
-                  encoderCalibrated = true;
-                  shoulder.set(0);
-                  shoulder.setPosition(shoulderCalibratedPosition / positionConversion);
-                  
-                  setShoulderPositionDegrees(shoulderCalibratedPosition);
-
-
-
-                  // If there was a requested position while we were calibrating, go there
-                  if (requestedPositionWhileCalibrating != null) {
-                    setShoulderPositionDegrees(requestedPositionWhileCalibrating);
-                    requestedPositionWhileCalibrating = null;
-                  }
-
-                }
-              }
-            }
-          }
-        }
-    }*/
         if (shoulder != null) {
             SmartDashboard.putNumber("frc3620/Shoulder/MotorAppliedOutput", shoulder.get());
             SmartDashboard.putNumber("frc3620/Shoulder/AbsolutePosition", shoulderEncoder.getAbsolutePosition().getValue().in(Rotations));
@@ -170,9 +105,7 @@ public class ESEFShoulderMechanism {
     }
 
     public Angle getShoulderPosition(){
-
         return shoulderEncoder.getAbsolutePosition().getValue();
-
     }
 
 }
