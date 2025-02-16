@@ -33,6 +33,7 @@ public class ESEFSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     shoulderMechanism.periodic();
     elevatorMechanism.periodic();
+    endEffectorMechanism.periodic();
 
   }
 
@@ -44,6 +45,9 @@ public class ESEFSubsystem extends SubsystemBase {
   }
   public void setEndEffSpeed(double speed){
     endEffectorMechanism.setEndEffSpeed(speed);
+  }
+  public boolean hasCoral(){
+      return endEffectorMechanism.hasCoral();
   }
 
 }

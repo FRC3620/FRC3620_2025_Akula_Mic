@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.esefsubsystem;
 
+import java.time.Period;
+
 import org.usfirst.frc3620.CANDeviceType;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -16,6 +18,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.simulation.DutyCycleSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,6 +26,8 @@ import frc.robot.RobotContainer;
 
 /** Add your docs here. */
 public class ESEFEndEffectorMechanism {
+
+    DigitalInput beambreak = new DigitalInput(8);
 
     SparkMax endEff;
     SparkMaxConfig clawConfig = new SparkMaxConfig();
@@ -40,10 +45,20 @@ public class ESEFEndEffectorMechanism {
 
     }
 
+    public void periodic() 
+    {
+        SmartDashboard.putBoolean("frc3620/EndEffector/hasCoral", hasCoral());
+    }
+
     public void setEndEffSpeed(double speed) {
         if (endEff != null) {
             endEff.set(speed);
         }
     }
+
+    public boolean hasCoral()
+    {
+        return !beambreak.get();
+    }   
 
 }

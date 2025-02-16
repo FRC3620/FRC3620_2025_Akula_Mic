@@ -25,6 +25,8 @@ import org.usfirst.frc3620.XBoxConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.esefcommands.SetElevatorPositionCommand;
 import frc.robot.commands.esefcommands.SetEndEffectorSpeedCommand;
+import frc.robot.commands.esefcommands.RunEndEffectorUntilCoralGone;
+import frc.robot.commands.esefcommands.RunEndEffectorUntilHasCoral;
 import frc.robot.commands.esefcommands.SetShoulderPositionCommand;
 import frc.robot.subsystems.AFISubsystem;
 import frc.robot.subsystems.BlinkySubsystem;
@@ -274,7 +276,9 @@ public class RobotContainer {
     SmartDashboard.putData("ShoulderSetPosition2", new SetShoulderPositionCommand(5.0, esefSubsystem));
     SmartDashboard.putData("ElevatorSetPosition1", new SetElevatorPositionCommand(10.0, esefSubsystem));
     SmartDashboard.putData("ElevatorSetPosition2", new SetElevatorPositionCommand(5.0, esefSubsystem));
-    SmartDashboard.putData("move End Effector", new SetEndEffectorSpeedCommand(0.5, esefSubsystem));
+    SmartDashboard.putData("Move End Effector", new SetEndEffectorSpeedCommand(0.5, esefSubsystem));
+    SmartDashboard.putData("Run EndEffector until has coral", new RunEndEffectorUntilHasCoral(0.4, esefSubsystem));
+    SmartDashboard.putData("Run EndEffector until coral gone", new RunEndEffectorUntilCoralGone(0.4, esefSubsystem));
 
     SmartDashboard.putData("PivotPosition2", new SetPivotPositionCommand(10.0, afiSubsystem));
     SmartDashboard.putData("PivotPositionInit", new SetPivotPositionCommand(00., afiSubsystem));
