@@ -4,18 +4,9 @@
 
 package frc.robot.subsystems.esefsubsystem;
 
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-/*import org.usfirst.frc3620.misc.CANDeviceFinder;
-import org.usfirst.frc3620.misc.CANDeviceType;
-import org.usfirst.frc3620.misc.CANSparkMaxSendable;
-import org.usfirst.frc3620.misc.MotorSetup;
-
-import com.revrobotics.SparkLimitSwitch;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;*/
-
 
 public class ESEFSubsystem extends SubsystemBase {
   /** Creates a new ESEFSubsystem. */
@@ -33,13 +24,12 @@ public class ESEFSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     shoulderMechanism.periodic();
     elevatorMechanism.periodic();
-
   }
 
-  public void setShoulderPosition(Double position){
+  public void setShoulderPosition(Angle position){
     shoulderMechanism.setShoulderPosition(position);
   }
-  public void setElevatorPosition(Double position){
+  public void setElevatorPosition(Distance position){
     elevatorMechanism.setElevatorPosition(position);
   }
   public void setEndEffSpeed(double speed){

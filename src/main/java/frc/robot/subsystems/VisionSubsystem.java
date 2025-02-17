@@ -4,14 +4,10 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
-import edu.wpi.first.apriltag.AprilTag;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 
-import org.dyn4j.geometry.Rotatable;
 import org.usfirst.frc3620.NTPublisher;
 import org.usfirst.frc3620.NTStructs;
 
@@ -29,8 +25,6 @@ import swervelib.SwerveDrive;
 public class VisionSubsystem extends SubsystemBase {
   NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
-  public static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-
   public enum Camera {
     FRONT("limelight-front"), BACK("limelight-back");
 
@@ -41,8 +35,6 @@ public class VisionSubsystem extends SubsystemBase {
       this.limelightName = limelightName;
     }
   }
-
-  
 
   public enum WhichBlueStick{
     BSTICKA(5.71,3.83,Rotation2d.fromDegrees(120)), 
@@ -145,10 +137,10 @@ public class VisionSubsystem extends SubsystemBase {
         NTPublisher.putNumber(prefix + "targetCount", m.tagCount);
         NTStructs.publish(prefix + "poseEstimate", m.pose);
 
-        if (aprilTagFieldLayout != null) {
+        if (RobotContainer.aprilTagFieldLayout != null) {
           List<Pose3d> targetPoses = new ArrayList<>();
           for (var fiducial : m.rawFiducials) {
-            Optional<Pose3d> aprilTagPose = aprilTagFieldLayout.getTagPose(fiducial.id);
+            Optional<Pose3d> aprilTagPose = RobotContainer.aprilTagFieldLayout.getTagPose(fiducial.id);
             if (aprilTagPose.isPresent()) {
               targetPoses.add(aprilTagPose.get());
             }

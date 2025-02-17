@@ -1,5 +1,8 @@
 package frc.robot;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -9,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,9 +39,11 @@ import org.usfirst.frc3620.XBoxConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.esefcommands.SetElevatorPositionCommand;
 import frc.robot.commands.esefcommands.SetEndEffectorSpeedCommand;
+import frc.robot.commands.esefcommands.SetManualElevatorCommand;
 import frc.robot.commands.esefcommands.SetShoulderPositionCommand;
 import frc.robot.commands.swervedrive.TestDriveToPoseCommand;
 import frc.robot.subsystems.AFISubsystem;
+import frc.robot.subsystems.BlinkySubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.HealthSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
@@ -48,7 +54,6 @@ import swervelib.imu.SwerveIMU;
 import frc.robot.commands.ContinuousSetIMUFromMegaTag1Command;
 import frc.robot.commands.SetClimberPostionCommand;
 import frc.robot.commands.SetIMUFromMegaTag1Command;
-import frc.robot.commands.ContinuousSetIMUFromMegaTag1Command;
 import frc.robot.commands.SetPivotPositionCommand;
 import frc.robot.commands.AFI.AFIRollerSetSpeedCommand;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -93,12 +98,16 @@ public class RobotContainer {
   public static SwerveSubsystem swerveSubsystem;
   public static HealthSubsystem healthSubsystem;
   ClimberSubsystem climberSubsystem;
+  public static BlinkySubsystem blinkySubsystem;
   public static VisionSubsystem visionSubsystem;
 
 
   // joysticks here....
   public static ChameleonController driverJoystick;
   public static Joystick operatorJoystick;
+
+  // We'll be using this
+  public static AprilTagFieldLayout aprilTagFieldLayout;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   //final CommandXboxController driverXbox = new CommandXboxController(0);
@@ -114,6 +123,8 @@ public class RobotContainer {
 
 
     canDeviceFinder = new CANDeviceFinder();
+
+    aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
     robotParameters = RobotParametersContainer.getRobotParameters(RobotParameters.class);
     logger.info("got parameters for chassis '{}'", robotParameters.getName());
@@ -181,7 +192,7 @@ public class RobotContainer {
     esefSubsystem = new ESEFSubsystem();
     afiSubsystem = new AFISubsystem();
     climberSubsystem = new ClimberSubsystem();
-
+    blinkySubsystem = new BlinkySubsystem();
     visionSubsystem = new VisionSubsystem();
     
     // need to create healthSubsystem LAST!!!!!!!
@@ -215,6 +226,10 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
     driverJoystick = new ChameleonController(new Joystick(0));
+    operatorJoystick = new Joystick(1);
+
+
+    climberSubsystem.setDefaultCommand(climberSubsystem.makeSetClimberPowerCommand(() -> MathUtil.applyDeadband(operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y),0.1)));
 
 
     if (swerveSubsystem != null) {
@@ -341,14 +356,22 @@ public class RobotContainer {
   private void setupSmartDashboardCommands() throws FileVersionException, IOException, ParseException {
     // SmartDashboard.putData("Shoulder.P1", new SetShoulderPositionCommand(null,
     // null));
-    SmartDashboard.putData("ShoulderSetPosition1", new SetShoulderPositionCommand(10.0, esefSubsystem));
-    SmartDashboard.putData("ShoulderSetPosition2", new SetShoulderPositionCommand(5.0, esefSubsystem));
-    SmartDashboard.putData("ElevatorSetPosition1", new SetElevatorPositionCommand(10.0, esefSubsystem));
-    SmartDashboard.putData("ElevatorSetPosition2", new SetElevatorPositionCommand(5.0, esefSubsystem));
+    SmartDashboard.putData("ShoulderSetPosition1", new SetShoulderPositionCommand(Degrees.of(0), esefSubsystem));
+    SmartDashboard.putData("ShoulderSetPosition2", new SetShoulderPositionCommand(Degrees.of(30), esefSubsystem));
+    SmartDashboard.putData("ShoulderSetPosition3", new SetShoulderPositionCommand(Degrees.of(60), esefSubsystem));
+    SmartDashboard.putData("ShoulderSetPosition4", new SetShoulderPositionCommand(Degrees.of(90), esefSubsystem));
+    
+    SmartDashboard.putData("ElevatorSetPosition1", new SetElevatorPositionCommand(Inches.of(8.0), esefSubsystem));
+    SmartDashboard.putData("ElevatorSetPosition2", new SetElevatorPositionCommand(Inches.of(12.0), esefSubsystem));
+    SmartDashboard.putData("ElevatorSetPosition3", new SetElevatorPositionCommand(Inches.of(20.0), esefSubsystem));
+    SmartDashboard.putData("ElevatorSetPositionHome", new SetElevatorPositionCommand(Inches.of(0.0), esefSubsystem));
     SmartDashboard.putData("move End Effector", new SetEndEffectorSpeedCommand(0.5, esefSubsystem));
 
-    SmartDashboard.putData("PivotPosition2", new SetPivotPositionCommand(Degrees.of(45), afiSubsystem));
-    SmartDashboard.putData("PivotPositionInit", new SetPivotPositionCommand(Degrees.of(0), afiSubsystem));
+    SmartDashboard.putData("PivotPositionUp", new SetPivotPositionCommand(Degrees.of(70), afiSubsystem));
+    SmartDashboard.putData("PivotPosition2", new SetPivotPositionCommand(Degrees.of(20), afiSubsystem));
+    SmartDashboard.putData("PivotPositionDown", new SetPivotPositionCommand(Degrees.of(10), afiSubsystem));
+    SmartDashboard.putNumber("Elevator.ManualPosition", 5);
+    SmartDashboard.putData("Elevator.ManualControl", new SetManualElevatorCommand());
 
     SmartDashboard.putData("AFISetRollerSpeed1", new AFIRollerSetSpeedCommand(0.1, afiSubsystem));
     SmartDashboard.putData("AFISetRollerSpeed2", new AFIRollerSetSpeedCommand(0.5, afiSubsystem));
