@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -87,7 +88,7 @@ public class RobotContainer {
   Alert missingDevicesAlert = new Alert(HealthSubsystem.HARDWARE_ALERT_GROUP_NAME, "", Alert.AlertType.kError);
 
   // hardware here...
-  private static DigitalInput practiceBotJumper;
+  // private static DigitalInput practiceBotJumper;
 
   public static PowerDistribution powerDistribution = null;
   public static PneumaticsModuleType pneumaticModuleType = null;
@@ -130,7 +131,7 @@ public class RobotContainer {
     logger.info("got parameters for chassis '{}'", robotParameters.getName());
     Utilities.logMetadataToDataLog("Robot", robotParameters.getName());
 
-    practiceBotJumper = new DigitalInput(0);
+    // practiceBotJumper = new DigitalInput(0);
     boolean iAmACompetitionRobot = amIACompBot();
     if (!iAmACompetitionRobot) {
       logger.warn("this is a test chassis, will try to deal with missing hardware!");
@@ -432,11 +433,17 @@ public class RobotContainer {
       return true;
     }
 
+    /*
     if (practiceBotJumper.get() == true) {
+      return true;
+    }*/
+
+    if (robotParameters.isCompetitionRobot()) {
       return true;
     }
 
-    if (robotParameters.isCompetitionRobot()) {
+    // right now, we only put roboRIO2s on a competition bot. This could change
+    if (RobotBase.getRuntimeType() == RuntimeType.kRoboRIO2) {
       return true;
     }
 
@@ -477,52 +484,37 @@ public class RobotContainer {
 
   public static double getDriveVerticalJoystick() {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_Y, FlySkyConstants.AXIS_LEFT_Y);
-    double deadzone = 0.1;
+    double deadband = 0.1;
     if (driverJoystick.getCurrentControllerType() == ControllerType.B) {
-      deadzone = 0.02;
+      deadband = 0.02;
     }
     SmartDashboard.putNumber("driver.y.raw", axisValue);
-    if (Math.abs(axisValue) < deadzone) {
-      return 0;
-    }
+    axisValue = MathUtil.applyDeadband(axisValue, deadband);
     return axisValue;
   }
 
   public static double getDriveHorizontalJoystick() {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_LEFT_X, FlySkyConstants.AXIS_LEFT_X);
-    double deadzone = 0.05;
+    double deadband = 0.05;
     if (driverJoystick.getCurrentControllerType() == ControllerType.B) {
-      deadzone = 0.02;
+      deadband = 0.02;
     }
     SmartDashboard.putNumber("driver.x.raw", axisValue);
-    if (Math.abs(axisValue) < deadzone) {
-      return 0;
-    }
-    if (axisValue < 0) {
-      return -(axisValue * axisValue);
-    }
-    return axisValue * axisValue;
+    axisValue = MathUtil.applyDeadband(axisValue, deadband);
+    return axisValue * axisValue * Math.signum(axisValue);
   }
 
   public static double getDriveSpinJoystick() {
     double axisValue = driverJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_X, FlySkyConstants.AXIS_RIGHT_X);
-    double deadzone = 0.05;
+    double deadband = 0.05;
     if (driverJoystick.getCurrentControllerType() == ControllerType.B) {
-      deadzone = 0.02;
+      deadband = 0.02;
     }
     
     SmartDashboard.putNumber("driver.spin.raw", axisValue);
 
-    //axisValue = 0;
-
-    double rv = 0;
-    if (Math.abs(axisValue) >= deadzone) {
-      rv = axisValue * axisValue;
-      if (axisValue < 0) {
-        rv = -rv;
-      }
-    }
-    return axisValue;
+    axisValue = MathUtil.applyDeadband(axisValue, deadband);
+    return axisValue * axisValue * Math.signum(axisValue);
   }
 
 }
