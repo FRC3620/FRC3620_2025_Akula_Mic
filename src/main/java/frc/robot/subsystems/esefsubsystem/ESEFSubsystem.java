@@ -27,10 +27,10 @@ public class ESEFSubsystem extends SubsystemBase {
   }
 
   public void setShoulderPosition(Angle position){
-    shoulderMechanism.setShoulderPosition(position);
+    shoulderMechanism.setSetpoint(position);
   }
   public void setElevatorPosition(Distance position){
-    elevatorMechanism.setElevatorPosition(position);
+    elevatorMechanism.setSetpoint(position);
   }
   public void setEndEffSpeed(double speed){
     endEffectorMechanism.setEndEffSpeed(speed);

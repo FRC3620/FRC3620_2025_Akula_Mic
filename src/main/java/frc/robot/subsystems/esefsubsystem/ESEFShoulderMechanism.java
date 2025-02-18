@@ -26,6 +26,7 @@ import frc.robot.RobotContainer;
 
 /** Add your docs here. */
 public class ESEFShoulderMechanism {
+    public static final double kShoulderDefaultSetpointDegrees = 75.0;
 
     CANcoder shoulderEncoder;
 
@@ -91,11 +92,11 @@ public class ESEFShoulderMechanism {
             SmartDashboard.putNumber("frc3620/Shoulder/MotorAppliedOutput", shoulder.get());
             SmartDashboard.putNumber("frc3620/Shoulder/AbsolutePosition", shoulderEncoder.getAbsolutePosition().getValue().in(Rotations));
 
-            SmartDashboard.putNumber("frc3620/Shoulder/ActualPositionDegrees", getShoulderPosition().in(Degrees));
+            SmartDashboard.putNumber("frc3620/Shoulder/ActualPositionDegrees", getCurrentAngle().in(Degrees));
         }
     }
 
-    public void setShoulderPosition(Angle position) {
+    public void setSetpoint(Angle position) {
         // set the shoulder to the desired position Cat
         SmartDashboard.putNumber("frc3620/Shoulder/RequestedPosition", position.in(Degrees));
 
@@ -104,7 +105,7 @@ public class ESEFShoulderMechanism {
         }
     }
 
-    public Angle getShoulderPosition(){
+    public Angle getCurrentAngle(){
         if (shoulderEncoder != null) {
             return shoulderEncoder.getAbsolutePosition().getValue();
         } else {

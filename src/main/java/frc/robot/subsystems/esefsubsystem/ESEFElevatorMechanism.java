@@ -27,6 +27,9 @@ import frc.robot.RobotContainer;
 
 /** Add your docs here. */
 public class ESEFElevatorMechanism {
+  public static final double kElevatorMinHeightMeters = 0.0;
+  public static final double kElevatorMaxHeightMeters = 2.0;
+
   boolean encoderCalibrated = false;
   Timer calibrationTimer;
   // to save a requested position if encoder is not calibrated
@@ -108,11 +111,11 @@ public class ESEFElevatorMechanism {
             encoderCalibrated = true;
             elevatorA.set(0.0);
             elevatorA.setPosition(0);
-            setElevatorPosition(Inches.of(0));
+            setSetpoint(Inches.of(0));
 
             // If there was a requested position while we were calibrating, go there
             if (requestedPositionWhileCalibrating != null) {
-              setElevatorPosition(requestedPositionWhileCalibrating);
+              setSetpoint(requestedPositionWhileCalibrating);
               requestedPositionWhileCalibrating = null;
             }
           }
@@ -122,11 +125,11 @@ public class ESEFElevatorMechanism {
 
     if (elevatorA != null) {
       SmartDashboard.putNumber("frc3620/Elevator/AMotorActualPosition",
-          getElevatorPosition().in(Inches));
+          getCurrentHeight().in(Inches));
     }
     if (elevatorB != null) {
       SmartDashboard.putNumber("frc3620/Elevator/BMotorActualPosition",
-          getElevatorPosition().in(Inches));
+          getCurrentHeight().in(Inches));
     }
 
     SmartDashboard.putBoolean("frc3620/Elevator/HomeLimitSwitchPressed", !homeLimitSwitch.get());
@@ -134,7 +137,7 @@ public class ESEFElevatorMechanism {
 
   }
 
-  public void setElevatorPosition(Distance position) {
+  public void setSetpoint(Distance position) {
     SmartDashboard.putNumber("frc3620/Elevator/RequestedPosition", position.in(Inches));
 
     double motorRotations = position.in(Inches) / positionConversion.in(Inches); // Convert inches to rotations
@@ -145,7 +148,7 @@ public class ESEFElevatorMechanism {
     }
   }
 
-  public Distance getElevatorPosition() {
+  public Distance getCurrentHeight() {
     return Inches.of(elevatorA.getPosition().getValueAsDouble() * positionConversion.in(Inches));
   }
 
