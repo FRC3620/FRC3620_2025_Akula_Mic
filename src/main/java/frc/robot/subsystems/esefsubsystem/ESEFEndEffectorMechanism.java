@@ -14,6 +14,8 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 //import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -30,23 +32,40 @@ public class ESEFEndEffectorMechanism {
     DigitalInput beambreak = new DigitalInput(8);
 
     TalonFX endEff;
-    TalonFXConfiguration clawConfig = new TalonFXConfiguration();
 
-    final DutyCycleOut endEffControl = new DutyCycleOut(0);
+    //final DutyCycleOut endEffControl = new DutyCycleOut(0);
 
     final int ENDEFFECTORMOTORID = 12;
 
     public ESEFEndEffectorMechanism() {
         // constructor
-        if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, ENDEFFECTORMOTORID, "End Effector")
+        if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, ENDEFFECTORMOTORID,
+                "End Effector")
                 || RobotContainer.shouldMakeAllCANDevices()) {
             endEff = new TalonFX(ENDEFFECTORMOTORID);
+
+            TalonFXConfiguration endEffConfigs = new TalonFXConfiguration();
+
+            endEffConfigs.MotorOutput.withInverted(InvertedValue.CounterClockwise_Positive);
+            endEffConfigs.MotorOutput.withPeakForwardDutyCycle(0.8);
+            endEffConfigs.MotorOutput.withPeakReverseDutyCycle(-0.8);
+            endEffConfigs.Voltage.withPeakForwardVoltage(12 * 0.8);
+            endEffConfigs.Voltage.withPeakReverseVoltage(-12 * 0.8);
+
+            // elevatorAConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+            // elevatorAConfigs.MotorOutput.PeakForwardDutyCycle = 0.05;
+            // elevatorAConfigs.MotorOutput.PeakReverseDutyCycle = 0.025;
+            // elevatorAConfigs.Voltage.PeakForwardVoltage = (0.05 * 12);
+            // elevatorAConfigs.Voltage.PeakReverseVoltage = (0.025 * 12);
+
+            // elevatorA.setPosition(0);
+
+            endEff.getConfigurator().apply(endEffConfigs);
         }
 
     }
 
-    public void periodic() 
-    {
+    public void periodic() {
         SmartDashboard.putBoolean("frc3620/EndEffector/hasCoral", hasCoral());
     }
 
@@ -56,9 +75,8 @@ public class ESEFEndEffectorMechanism {
         }
     }
 
-    public boolean hasCoral()
-    {
+    public boolean hasCoral() {
         return !beambreak.get();
-    }   
+    }
 
 }
