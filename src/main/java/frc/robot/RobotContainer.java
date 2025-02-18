@@ -374,12 +374,12 @@ public class RobotContainer {
     SmartDashboard.putNumber("Elevator.ManualPosition", 5);
     SmartDashboard.putData("Elevator.ManualControl", new SetManualElevatorCommand());
 
-    SmartDashboard.putData("AFISetRollerSpeed1", new AFIRollerSetSpeedCommand(0.1, afiSubsystem));
-    SmartDashboard.putNumber("AFIPivotSlider",0);
-    SmartDashboard.putData("AFISetRollerSpeedContinuous", new AFIRollerSetSpeedContinuousCommand(()-> { return SmartDashboard.getNumber("AFIPivotSlider",0); }, afiSubsystem));
+    SmartDashboard.putData("AFISetRollerSpeed1", new AFIRollerSetSpeedCommand(0.3, afiSubsystem));
+    SmartDashboard.putNumber("AFIPivotSlider",0.2);
+    SmartDashboard.putData("AFISetRollerSpeedContinuous", new AFIRollerSetSpeedContinuousCommand(()-> { return SmartDashboard.getNumber("AFIPivotSlider",-0.1); }, afiSubsystem));
     SmartDashboard.putData("AFISetRollerSpeedContinuous0.1", new AFIRollerSetSpeedContinuousCommand(()->{ return 0.1; }, afiSubsystem));
 
-    SmartDashboard.putData("AFISetRollerSpeed2", new AFIRollerSetSpeedCommand(0.3, afiSubsystem));
+    SmartDashboard.putData("AFISetRollerSpeed2", new AFIRollerSetSpeedCommand(0.5, afiSubsystem));
     SmartDashboard.putData("AFIStopRoller", new AFIRollerSetSpeedCommand(0.0, afiSubsystem));
 
     // SmartDashboard.putData('CoralSpeed');
