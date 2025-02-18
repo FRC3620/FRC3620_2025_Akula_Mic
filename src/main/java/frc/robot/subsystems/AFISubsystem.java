@@ -44,6 +44,8 @@ public class AFISubsystem extends SubsystemBase {
   enum WhichEncoderToUse {
     FRONT, REAR
   }
+
+  public double measuredRollerSpeed;
 //Front Encoder is backwards use rear until fixed.
   WhichEncoderToUse whichEncoderToUse = WhichEncoderToUse.REAR;
 
@@ -70,6 +72,7 @@ public class AFISubsystem extends SubsystemBase {
     // constructor
     frontEncoder = new DutyCycleEncoder(5);
     rearEncoder = new DutyCycleEncoder(6);
+    frontEncoder.setInverted(true);
     frontEncoderOffset = Degrees.of(RobotContainer.robotParameters.getIntakeFrontEncoderOffset());
     rearEncoderOffset = Degrees.of(RobotContainer.robotParameters.getIntakeRearEncoderOffset());
 
@@ -135,6 +138,9 @@ public class AFISubsystem extends SubsystemBase {
         }
       }
     }
+
+    measuredRollerSpeed = roller.getVelocity().getValueAsDouble();
+
     double ffoutput = ffg*Math.cos(getAbsoluteIntakeAngle().in(Radian));
     double pidoutput = pid.calculate(getAbsoluteIntakeAngle().in(Rotations));
     pivot.set(MathUtil.clamp(pidoutput+ffoutput, -0.5, 0.1));
@@ -143,6 +149,7 @@ public class AFISubsystem extends SubsystemBase {
     SmartDashboard.putNumber("frc3620/AFI/pivotffOutput", ffoutput);
     SmartDashboard.putNumber("frc3620/AFI/pivotOutput", ffoutput+pidoutput);
     SmartDashboard.putNumber("frc3620/AFI/pivotOutput", MathUtil.clamp(pidoutput+ffoutput, -0.1, 0.1));
+    SmartDashboard.putNumber("frc3620/AFI/measureRollerVelocity", measuredRollerSpeed);
     
     SmartDashboard.putNumber("frc3620/AFI/PivotFrontAbsolutePositionRaw", Rotations.of(frontEncoder.get()).in(Degrees));
     SmartDashboard.putNumber("frc3620/AFI/PivotRearAbsolutePositionRaw", Rotations.of(rearEncoder.get()).in(Degrees));
