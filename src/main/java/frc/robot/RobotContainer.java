@@ -88,7 +88,7 @@ public class RobotContainer {
   Alert missingDevicesAlert = new Alert(HealthSubsystem.HARDWARE_ALERT_GROUP_NAME, "", Alert.AlertType.kError);
 
   // hardware here...
-  private static DigitalInput practiceBotJumper;
+  // private static DigitalInput practiceBotJumper;
 
   public static PowerDistribution powerDistribution = null;
   public static PneumaticsModuleType pneumaticModuleType = null;
@@ -131,7 +131,7 @@ public class RobotContainer {
     logger.info("got parameters for chassis '{}'", robotParameters.getName());
     Utilities.logMetadataToDataLog("Robot", robotParameters.getName());
 
-    practiceBotJumper = new DigitalInput(0);
+    // practiceBotJumper = new DigitalInput(0);
     boolean iAmACompetitionRobot = amIACompBot();
     if (!iAmACompetitionRobot) {
       logger.warn("this is a test chassis, will try to deal with missing hardware!");
@@ -158,7 +158,6 @@ public class RobotContainer {
       missingDevicesAlert.setText("Missing from CAN bus: " + canDeviceFinder.getMissingDeviceSet());
     }
 
-    autoChooser = AutoBuilder.buildAutoChooser();
     // Configure the button bindings
     configureButtonBindings();
 
@@ -166,6 +165,11 @@ public class RobotContainer {
 
     setupAutonomousCommands();
 
+    if (swerveSubsystem != null) {
+      autoChooser = AutoBuilder.buildAutoChooser();
+    } else {
+      autoChooser = null;
+    }
 
     DriverStation.silenceJoystickConnectionWarning(true);
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
@@ -184,6 +188,7 @@ public class RobotContainer {
       canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 8, "Swerve Drive 8");
 
       String swerveFolder = robotParameters.getSwerveDirectoryName();
+      if (swerveFolder == null) swerveFolder = "swerve/simulation";
 
       SmartDashboard.putString("swerveFolder", swerveFolder);
       logger.info("using swerveFolder '{}'", swerveFolder);
@@ -192,6 +197,7 @@ public class RobotContainer {
 
     esefSubsystem = new ESEFSubsystem();
     afiSubsystem = new AFISubsystem();
+    SmartDashboard.putData(afiSubsystem);
     climberSubsystem = new ClimberSubsystem();
     blinkySubsystem = new BlinkySubsystem();
     visionSubsystem = new VisionSubsystem();
@@ -337,17 +343,20 @@ public class RobotContainer {
         driverXbox.leftBumper().whileTrue(Commands.runOnce(swerveSubsystem::lock, swerveSubsystem).repeatedly());
         driverXbox.rightBumper().onTrue(Commands.none());
       }*/
-    }
 
-    //driverJoystick = new Joystick(0);
-    operatorJoystick = new Joystick(1);
-
-   driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH)
+      driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH)
       .onTrue( 
         
         swerveSubsystem.pathFinderCommand()
 
       );
+
+
+
+
+
+    }
+
 
     //new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A)
     //    .onTrue(new LogCommand("'A' button hit"));
@@ -376,8 +385,8 @@ public class RobotContainer {
 
     SmartDashboard.putData("AFISetRollerSpeed1", new AFIRollerSetSpeedCommand(0.1, afiSubsystem));
     SmartDashboard.putNumber("AFIPivotSlider",0);
-    SmartDashboard.putData("AFISetRollerSpeedContinuous", new AFIRollerSetSpeedContinuousCommand(()-> { return SmartDashboard.getNumber("AFIPivotSlider",0); }, afiSubsystem));
-    SmartDashboard.putData("AFISetRollerSpeedContinuous0.1", new AFIRollerSetSpeedContinuousCommand(()->{ return 0.1; }, afiSubsystem));
+    SmartDashboard.putData("AFISetRollerSpeedContinuous", new AFIRollerSetSpeedContinuousCommand(()-> { return SmartDashboard.getNumber("AFIPivotSlider",0); }, afiSubsystem).withName("ContinuousFromSlider"));
+    SmartDashboard.putData("AFISetRollerSpeedContinuous0.1", new AFIRollerSetSpeedContinuousCommand(()->{ return 0.1; }, afiSubsystem).withName("Continuous0.1"));
 
     SmartDashboard.putData("AFISetRollerSpeed2", new AFIRollerSetSpeedCommand(0.3, afiSubsystem));
     SmartDashboard.putData("AFIStopRoller", new AFIRollerSetSpeedCommand(0.0, afiSubsystem));
@@ -388,15 +397,18 @@ public class RobotContainer {
     SmartDashboard.putData("climber:p1", new SetClimberPostionCommand(ClimberSubsystem.pos1, climberSubsystem));
     SmartDashboard.putData("climber:p2", new SetClimberPostionCommand(ClimberSubsystem.pos2, climberSubsystem));
 
-    SmartDashboard.putData("Reset IMU from Limelight data", new SetIMUFromMegaTag1Command());
-
-    //SmartDashboard.putData("Drive 10 feet", swerveSubsystem.driveToDistanceCommand(Units.feetToMeters(10), 0.5));
-    SmartDashboard.putData("Test Drive To Pose", swerveSubsystem.pathFinderCommand());
+    if (swerveSubsystem != null) {
+      SmartDashboard.putData("Reset IMU from Limelight data", new SetIMUFromMegaTag1Command());
+      //SmartDashboard.putData("Drive 10 feet", swerveSubsystem.driveToDistanceCommand(Units.feetToMeters(10), 0.5));
+      SmartDashboard.putData("Test Drive To Pose", swerveSubsystem.pathFinderCommand());
+    }
 
   }
 
   public void setupAutonomousCommands() {
-    SmartDashboard.putData("Auto mode", autoChooser);
+    if (autoChooser != null) {
+      SmartDashboard.putData("Auto mode", autoChooser);
+    }
 
     // chooser.addOption("Example Command", new ExampleCommand(exampleSubsystem));
   }
@@ -437,11 +449,17 @@ public class RobotContainer {
       return true;
     }
 
+    /*
     if (practiceBotJumper.get() == true) {
+      return true;
+    }*/
+
+    if (robotParameters.isCompetitionRobot()) {
       return true;
     }
 
-    if (robotParameters.isCompetitionRobot()) {
+    // right now, we only put roboRIO2s on a competition bot. This could change
+    if (RobotBase.getRuntimeType() == RuntimeType.kRoboRIO2) {
       return true;
     }
 

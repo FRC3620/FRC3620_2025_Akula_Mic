@@ -13,13 +13,10 @@ import org.usfirst.frc3620.CANDeviceType;
 import org.usfirst.frc3620.logger.LoggingMaster;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.GravityTypeValue;
-import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -47,9 +44,6 @@ public class AFISubsystem extends SubsystemBase {
 //Front Encoder is backwards use rear until fixed.
   WhichEncoderToUse whichEncoderToUse = WhichEncoderToUse.REAR;
 
-  boolean relativeEncoderSet = false;
-  Timer relativeEncoderTimer = new Timer();
-
   final PositionVoltage pivotRequest = new PositionVoltage(0).withSlot(0);
   final DutyCycleOut rollerRequest = new DutyCycleOut(0);
 
@@ -62,7 +56,6 @@ public class AFISubsystem extends SubsystemBase {
 
   // this is the ratio of motor rotations to intake arm rotations
   final static double MOTOR_TO_INTAKE_RATIO = 5 * 5 * (3.0 / 2.0);
-
 
   final double ffg = 0.02;
 
@@ -80,8 +73,6 @@ public class AFISubsystem extends SubsystemBase {
     );
 
     SmartDashboard.putString("frc3620/AFI/WhichAbsoluteEncoder", whichEncoderToUse.toString());
-    relativeEncoderTimer.reset();
-    relativeEncoderTimer.start();
 
     // Pivot
     if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, AFIPIVOTMOTORID, "AFIPivot")
@@ -104,7 +95,6 @@ public class AFISubsystem extends SubsystemBase {
             //configs.Voltage.withPeakForwardVoltage(12 * 0.1);
             //configs.Voltage.withPeakReverseVoltage(12 * -0.1);
     } // Applies the Config to the shoulder motor
-    setPivotPosition(Degrees.of(45));
 
     // Roller
     if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, AFIROLLERMOTORID, "AFIRoller")
@@ -117,27 +107,17 @@ public class AFISubsystem extends SubsystemBase {
 
       roller.getConfigurator().apply(afiRollerLimit);
     }
+
+    setPivotPosition(Degrees.of(45));
   }
 
   @Override
   public void periodic() {
-    if (!relativeEncoderSet) {
-      if (relativeEncoderTimer.hasElapsed(5)) {
-        if (isEncoderConnected()) {
-          logger.info("AFI absolute angle is {}", getAbsoluteIntakeAngle().in(Degrees));
-          logger.info("AFI relative angle is before {}", pivot.getPosition().getValue().in(Degrees));
-          logger.info("setting the posistion {}", getAbsoluteIntakeAngle().times(MOTOR_TO_INTAKE_RATIO).in(Degrees));
-          pivot.setPosition(getAbsoluteIntakeAngle().times(MOTOR_TO_INTAKE_RATIO));
-          logger.info("AFI relative angle is after {}", pivot.getPosition().getValue().in(Degrees));
-
-          relativeEncoderSet = true;
-
-        }
-      }
-    }
     double ffoutput = ffg*Math.cos(getAbsoluteIntakeAngle().in(Radian));
     double pidoutput = pid.calculate(getAbsoluteIntakeAngle().in(Rotations));
-    pivot.set(MathUtil.clamp(pidoutput+ffoutput, -0.5, 0.1));
+    if (pivot != null) {
+      pivot.set(MathUtil.clamp(pidoutput+ffoutput, -0.5, 0.1));
+    }
 
     SmartDashboard.putNumber("frc3620/AFI/pivotpidOutput", pidoutput);
     SmartDashboard.putNumber("frc3620/AFI/pivotffOutput", ffoutput);
@@ -196,6 +176,8 @@ public class AFISubsystem extends SubsystemBase {
   }
 
   public void setAFIRollerSpeed(double speed) {
-    roller.setControl(rollerRequest.withOutput(speed));
+    if (roller != null) {
+      roller.setControl(rollerRequest.withOutput(speed));
+    }
   }
 }
