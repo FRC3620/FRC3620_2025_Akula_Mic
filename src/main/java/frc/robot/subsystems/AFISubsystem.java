@@ -12,6 +12,7 @@ import org.tinylog.TaggedLogger;
 import org.usfirst.frc3620.CANDeviceType;
 import org.usfirst.frc3620.logger.LoggingMaster;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
@@ -36,6 +37,7 @@ public class AFISubsystem extends SubsystemBase {
   public TalonFX pivot;
   public DutyCycleEncoder frontEncoder;
   public DutyCycleEncoder rearEncoder;
+
   Angle rearEncoderOffset;
   Angle frontEncoderOffset;
 
@@ -108,6 +110,12 @@ public class AFISubsystem extends SubsystemBase {
     if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, AFIROLLERMOTORID, "AFIRoller")
         || RobotContainer.shouldMakeAllCANDevices()) {
       this.roller = new TalonFX(AFIROLLERMOTORID);
+
+      CurrentLimitsConfigs afiRollerLimit = new CurrentLimitsConfigs();
+      afiRollerLimit.SupplyCurrentLimit = 10;
+      afiRollerLimit.SupplyCurrentLimitEnable = true;
+
+      roller.getConfigurator().apply(afiRollerLimit);
     }
   }
 

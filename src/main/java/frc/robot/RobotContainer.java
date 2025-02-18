@@ -56,6 +56,7 @@ import frc.robot.commands.SetClimberPostionCommand;
 import frc.robot.commands.SetIMUFromMegaTag1Command;
 import frc.robot.commands.SetPivotPositionCommand;
 import frc.robot.commands.AFI.AFIRollerSetSpeedCommand;
+import frc.robot.commands.AFI.AFIRollerSetSpeedContinuousCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -369,12 +370,16 @@ public class RobotContainer {
 
     SmartDashboard.putData("PivotPositionUp", new SetPivotPositionCommand(Degrees.of(70), afiSubsystem));
     SmartDashboard.putData("PivotPosition2", new SetPivotPositionCommand(Degrees.of(20), afiSubsystem));
-    SmartDashboard.putData("PivotPositionDown", new SetPivotPositionCommand(Degrees.of(10), afiSubsystem));
+    SmartDashboard.putData("PivotPositionGroundPickup", new SetPivotPositionCommand(Degrees.of(20), afiSubsystem));
     SmartDashboard.putNumber("Elevator.ManualPosition", 5);
     SmartDashboard.putData("Elevator.ManualControl", new SetManualElevatorCommand());
 
     SmartDashboard.putData("AFISetRollerSpeed1", new AFIRollerSetSpeedCommand(0.1, afiSubsystem));
-    SmartDashboard.putData("AFISetRollerSpeed2", new AFIRollerSetSpeedCommand(0.5, afiSubsystem));
+    SmartDashboard.putNumber("AFIPivotSlider",0);
+    SmartDashboard.putData("AFISetRollerSpeedContinuous", new AFIRollerSetSpeedContinuousCommand(()-> { return SmartDashboard.getNumber("AFIPivotSlider",0); }, afiSubsystem));
+    SmartDashboard.putData("AFISetRollerSpeedContinuous0.1", new AFIRollerSetSpeedContinuousCommand(()->{ return 0.1; }, afiSubsystem));
+
+    SmartDashboard.putData("AFISetRollerSpeed2", new AFIRollerSetSpeedCommand(0.3, afiSubsystem));
     SmartDashboard.putData("AFIStopRoller", new AFIRollerSetSpeedCommand(0.0, afiSubsystem));
 
     // SmartDashboard.putData('CoralSpeed');
