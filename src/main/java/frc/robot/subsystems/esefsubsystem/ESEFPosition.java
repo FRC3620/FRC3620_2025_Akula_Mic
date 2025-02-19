@@ -28,7 +28,7 @@ public class ESEFPosition {
   }
 
   public String toString() {
-    return elevatorHeight + "m, " + shoulderAngle + "d";
+    return elevatorHeight.in(Inches) + "in, " + shoulderAngle.in(Degrees) + "d";
   }
 
 }

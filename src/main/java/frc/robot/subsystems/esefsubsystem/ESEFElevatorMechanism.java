@@ -12,7 +12,6 @@ import org.usfirst.frc3620.RobotMode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
-//import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -21,7 +20,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
@@ -33,7 +31,7 @@ public class ESEFElevatorMechanism {
   public static final Distance kElevatorMaxHeight = Inches.of(52);
 
   boolean encoderCalibrated = false;
-  Timer calibrationTimer;
+
   // to save a requested position if encoder is not calibrated
   Distance requestedPositionWhileCalibrating = null;
 
@@ -110,9 +108,8 @@ public class ESEFElevatorMechanism {
           // If the robot is running, and the encoder is "not calibrated," run motor very
           // slowly towards the switch
           elevatorA.set(-0.05);
-          // we have a timer, has the motor had power long enough to spin up
           if (homeSwitchHit()) {
-            // motor is not moving, hopefully it's against the stop
+            // we are home
             encoderCalibrated = true;
             elevatorA.set(0.0);
             elevatorA.setPosition(0);
@@ -160,7 +157,11 @@ public class ESEFElevatorMechanism {
   }
 
   public Distance getCurrentHeight() {
-    return Inches.of(elevatorA.getPosition().getValueAsDouble() * positionConversion.in(Inches));
+    if (elevatorA != null) {
+      return Inches.of(elevatorA.getPosition().getValueAsDouble() * positionConversion.in(Inches));
+    } else {
+      return Inches.of(0);
+    }
   }
 
 }
