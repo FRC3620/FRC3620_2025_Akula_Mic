@@ -28,6 +28,14 @@
     "intakeRearEncoderOffset": 207
   },
   {
+    "name": "Muleboard",
+    "serialNumber": "0305ccbf",
+    "makeAllCANDevices": false,
+    "swerveDirectoryName": "swerve/Compbot",
+    "intakeFrontEncoderOffset": -73,
+    "intakeRearEncoderOffset": 207
+  },
+  {
     "name": "unknown",
     "serialNumber": "(unknown)",
     "makeAllCANDevices": true,
