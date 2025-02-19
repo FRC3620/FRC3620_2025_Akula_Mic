@@ -40,7 +40,9 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.esefcommands.SetESEFPositionCommand;
 import frc.robot.commands.esefcommands.SetElevatorPositionCommand;
 import frc.robot.commands.esefcommands.SetEndEffectorSpeedCommand;
+import frc.robot.commands.esefcommands.RunEndEffectorUntilCoralGone;
 import frc.robot.commands.esefcommands.SetManualElevatorCommand;
+import frc.robot.commands.esefcommands.RunEndEffectorUntilHasCoral;
 import frc.robot.commands.esefcommands.SetShoulderPositionCommand;
 import frc.robot.commands.swervedrive.TestDriveToPoseCommand;
 import frc.robot.subsystems.AFISubsystem;
@@ -377,7 +379,10 @@ public class RobotContainer {
     SmartDashboard.putData("Elevator Set Position 12", new SetElevatorPositionCommand(Inches.of(12.0), esefSubsystem));
     SmartDashboard.putData("Elevator Set Position 20", new SetElevatorPositionCommand(Inches.of(20.0), esefSubsystem));
     SmartDashboard.putData("Elevator Set Position 0", new SetElevatorPositionCommand(Inches.of(0.0), esefSubsystem));
-    SmartDashboard.putData("move End Effector", new SetEndEffectorSpeedCommand(0.5, esefSubsystem));
+    SmartDashboard.putData("Move End Effector", new SetEndEffectorSpeedCommand(0.7
+    , esefSubsystem));
+    SmartDashboard.putData("Run EndEffector until has coral", new RunEndEffectorUntilHasCoral(0.7, esefSubsystem));
+    SmartDashboard.putData("Run EndEffector until coral gone", new RunEndEffectorUntilCoralGone(0.7, esefSubsystem));
 
     SmartDashboard.putData("ESEF 0 height, 90 shoulder", new SetESEFPositionCommand(new ESEFPosition(0, 90), esefSubsystem));
     SmartDashboard.putData("ESEF 21 height, 90 shoulder", new SetESEFPositionCommand(new ESEFPosition(21, 90), esefSubsystem));
