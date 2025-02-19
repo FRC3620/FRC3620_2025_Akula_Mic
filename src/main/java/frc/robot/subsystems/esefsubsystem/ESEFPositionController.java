@@ -31,8 +31,8 @@ public class ESEFPositionController {
   ESEFMech actualPositionMech = new ESEFMech();
 
   Distance height_breakpoint = Inches.of(21);
-  Angle shoulder_breakpoint_low = Degrees.of(80);
-  Angle shoulder_breakpoint_high = Degrees.of(110);
+  Angle shoulder_breakpoint_low = Degrees.of(75);
+  Angle shoulder_breakpoint_high = Degrees.of(100);
 
   public ESEFPositionController(ESEFElevatorMechanism elevatorMechanism, ESEFShoulderMechanism shoulderMechanism) {
     this.elevatorMechanism = elevatorMechanism;

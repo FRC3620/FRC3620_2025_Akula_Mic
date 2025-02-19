@@ -385,7 +385,7 @@ public class RobotContainer {
     SmartDashboard.putData("ESEF 21 height, 120 shoulder", new SetESEFPositionCommand(new ESEFPosition(21, 120), esefSubsystem));
     SmartDashboard.putData("ESEF 48 height, 0 shoulder", new SetESEFPositionCommand(new ESEFPosition(48, 0), esefSubsystem));
     SmartDashboard.putData("ESEF 48 height, 120 shoulder", new SetESEFPositionCommand(new ESEFPosition(48, 120), esefSubsystem));
-    SmartDashboard.putData(new SetESEFPositionCommand(new ESEFPosition(33, 90), esefSubsystem));
+    SmartDashboard.putData("ESEF 33 height, 90 shoulder", new SetESEFPositionCommand(new ESEFPosition(33, 90), esefSubsystem));
 
     SmartDashboard.putNumber("Elevator.ManualPosition", 5);
     SmartDashboard.putData("Elevator.ManualControl", new SetManualElevatorCommand());
