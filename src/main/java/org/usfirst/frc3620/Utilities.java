@@ -16,7 +16,10 @@ import org.usfirst.frc3620.logger.LoggingMaster;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
@@ -42,7 +45,7 @@ public class Utilities {
   public static Angle normalizeAngle(Angle angle) {
     double degrees = angle.in(Degrees);
     degrees = MathUtil.inputModulus(degrees, -180, 180);
-    // it would be nice if the returned value had the same 
+    // it would be nice if the returned value had the same
     // base unit as the input value, but I'm not that smart,
     // and this *is* correct.
     return Degrees.of(degrees);
@@ -124,92 +127,138 @@ public class Utilities {
       dirty = false;
     }
 
-
-
     public int getSize() {
-      if (dirty) updateStats();
+      if (dirty)
+        updateStats();
       return size;
     }
 
     public double getMean() {
-      if (dirty) updateStats();
+      if (dirty)
+        updateStats();
       return mean;
     }
 
     public double getStdDev() {
-      if (dirty) updateStats();
+      if (dirty)
+        updateStats();
       return stdDev;
     }
 
     public int getFlyers() {
-      if (dirty) updateStats();
+      if (dirty)
+        updateStats();
       return flyers;
     }
 
     @Override
     public String toString() {
-      if (dirty) updateStats();
+      if (dirty)
+        updateStats();
       return "SlidingWindowStats [size=" + size + ", mean=" + mean
           + ", stdDev=" + stdDev + ", flyers=" + flyers + "]";
     }
 
   }
 
-  public static double sum (List<Double> l) {
+  public static double sum(List<Double> l) {
     double rv = 0;
-    for (double v : l) rv += v;
+    for (double v : l)
+      rv += v;
     return rv;
   }
 
-  public static void addDataLogForNT (String prefix) {
+  public static void addDataLogForNT(String prefix) {
     String s = "/" + removeLeadingAndTrailingSlashes(prefix);
     int handle = NetworkTableInstance.getDefault().startEntryDataLog(DataLogManager.getLog(), s, s);
   }
 
-  public static String removeLeadingAndTrailingSlashes (String s) {
+  public static String removeLeadingAndTrailingSlashes(String s) {
     String rv = s.replaceFirst("/+$", "");
     rv = rv.replaceFirst("^/+", "");
     return rv;
   }
 
-  public static void logMetadataToDataLog () {
+  public static void logMetadataToDataLog() {
     DataLog l = DataLogManager.getLog();
     String s;
 
     s = GitNess.getBuildTime();
-    if (s != null) logMetadataToDataLog(l, "BuildDate", s);
+    if (s != null)
+      logMetadataToDataLog(l, "BuildDate", s);
 
     s = GitNess.getBuildHost();
-    if (s != null) logMetadataToDataLog(l, "BuildHost", s);
+    if (s != null)
+      logMetadataToDataLog(l, "BuildHost", s);
 
     s = GitNess.getBranch(null);
-    if (s != null) logMetadataToDataLog(l, "GitBranch", s);
+    if (s != null)
+      logMetadataToDataLog(l, "GitBranch", s);
 
     s = GitNess.getCommitDate();
-    if (s != null) logMetadataToDataLog(l, "GitDate", s);
+    if (s != null)
+      logMetadataToDataLog(l, "GitDate", s);
 
     Boolean dirty = GitNess.getDirty();
-    if (dirty != null) logMetadataToDataLog(l, "GitDirty", dirty ? "Uncommitted changes" : "All changes committed");
+    if (dirty != null)
+      logMetadataToDataLog(l, "GitDirty", dirty ? "Uncommitted changes" : "All changes committed");
 
     s = GitNess.getCommitId();
-    if (s != null) logMetadataToDataLog(l, "GitSHA", s);
+    if (s != null)
+      logMetadataToDataLog(l, "GitSHA", s);
 
     s = GitNess.getProject(null);
-    if (s != null) logMetadataToDataLog(l, "ProjectName" ,s);
+    if (s != null)
+      logMetadataToDataLog(l, "ProjectName", s);
 
     RuntimeType rt = RobotBase.getRuntimeType();
-    if (s != null) logMetadataToDataLog(l, "RuntimeType", rt.name());
+    if (s != null)
+      logMetadataToDataLog(l, "RuntimeType", rt.name());
 
     s = RobotController.getSerialNumber();
-    if (s != null && !s.equals("")) logMetadataToDataLog(l, "SerialNumber", s);
+    if (s != null && !s.equals(""))
+      logMetadataToDataLog(l, "SerialNumber", s);
   }
 
-  public static void logMetadataToDataLog (String name, String value) {
+  public static void logMetadataToDataLog(String name, String value) {
     new StringLogEntry(DataLogManager.getLog(), "/Metadata/" + name).append(value);
   }
 
-  static void logMetadataToDataLog (DataLog l, String name, String value) {
+  static void logMetadataToDataLog(DataLog l, String name, String value) {
     new StringLogEntry(l, "/Metadata/" + name).append(value);
   }
 
+  /*
+   * DW: I should be able to figure out how to do both Distance and Angle at once
+   * with generics, but I ain't that smart. This works!
+   * 
+   */
+
+  public static Distance clamp(Distance v, Distance min, Distance max) {
+    if (v.lt(min)) {
+      return fixup(min, v.unit());
+    } else if (v.gt(max)) {
+      return fixup(max, v.unit());
+    }
+    return v;
+  }
+
+  private static Distance fixup(Distance v, DistanceUnit u) {
+    if (v.unit() == u) return v;
+    return u.of(v.in(u));
+  }
+
+  public static Angle clamp(Angle v, Angle min, Angle max) {
+    if (v.lt(min)) {
+      return fixup(min, v.unit());
+    } else if (v.gt(max)) {
+      return fixup(max, v.unit());
+    }
+    return v;
+  }
+
+  private static Angle fixup(Angle v, AngleUnit u) {
+    if (v.unit() == u) return v;
+    return u.of(v.in(u));
+  }
 }

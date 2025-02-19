@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
 import org.tinylog.TaggedLogger;
+import org.usfirst.frc3620.Utilities;
 import org.usfirst.frc3620.logger.LoggingMaster;
 
 import edu.wpi.first.math.MathUtil;
@@ -30,8 +31,8 @@ public class ESEFPositionController {
   ESEFMech actualPositionMech = new ESEFMech();
 
   Distance height_breakpoint = Inches.of(21);
-  double shoulder_breakpoint_in_degrees_low = 80;
-  double shoulder_breakpoint_in_degrees_high = 110;
+  Angle shoulder_breakpoint_low = Degrees.of(80);
+  Angle shoulder_breakpoint_high = Degrees.of(110);
 
   public ESEFPositionController(ESEFElevatorMechanism elevatorMechanism, ESEFShoulderMechanism shoulderMechanism) {
     this.elevatorMechanism = elevatorMechanism;
@@ -48,13 +49,11 @@ public class ESEFPositionController {
   }
 
   ESEFPosition limitedESEFPosition(Distance d, Angle a) {
-    double d_inches = d.in(Inches);
-    double a_degrees = a.in(Degrees);
-    if (d_inches < height_breakpoint.in(Inches)) {
-      a_degrees = MathUtil.clamp(a_degrees, 80, 100);
+    if (d.lt(height_breakpoint)) {
+      a = Utilities.clamp(a, Degrees.of(80), Degrees.of(100));
     }
-    d_inches = MathUtil.clamp (d_inches, ESEFElevatorMechanism.kElevatorMinHeight.in(Inches), ESEFElevatorMechanism.kElevatorMaxHeight.in(Inches));
-    return new ESEFPosition(Inches.of(d_inches), Degrees.of(a_degrees));
+    d = Utilities.clamp (d, ESEFElevatorMechanism.kElevatorMinHeight, ESEFElevatorMechanism.kElevatorMaxHeight);
+    return new ESEFPosition(d, a);
   }
 
   void updateDashboardForUltimate() {
@@ -68,9 +67,7 @@ public class ESEFPositionController {
   }
 
   public void setPosition (ESEFPosition position) {
-    logger.info("position before limit = {}", position);
     ultimateSetpoint = limitedESEFPosition(position.elevatorHeight, position.shoulderAngle);
-    logger.info("position after limit = {}", ultimateSetpoint);
     updateDashboardForUltimate();
     ultimateSetpointMech.setShoulderAngle(ultimateSetpoint.shoulderAngle);
     ultimateSetpointMech.setElevatorHeight(ultimateSetpoint.elevatorHeight);
@@ -124,7 +121,7 @@ public class ESEFPositionController {
    * This is called whenever we have a new setPoint.
    */
   void recalculate() {
-
+    // TODO: are we ok with doing this?
     setElevatorHeightSetpoint(ultimateSetpoint.getElevatorHeight());
     setShoulderAngleSetpoint(ultimateSetpoint.getShoulderAngle());
   }
@@ -133,34 +130,21 @@ public class ESEFPositionController {
    * look at current mechanism positions and change individual mechanism setpoints if necessary.
    */
   void tweakIntermediateSetpoints(Distance currentHeight, Angle currentShoulderAngle) {
-    double elevatorMeters = currentHeight.in(Meters);
-    double shoulderDegrees = currentShoulderAngle.in(Degrees);
-    double targetShoulderDegrees = ultimateSetpoint.getShoulderAngle().in(Degrees);
-    double targetElevatorMeters = ultimateSetpoint.getElevatorHeight().in(Meters);
-
-    if (elevatorMeters < height_breakpoint.in(Meters)) {
-        // If the elevator is below the limit, restrict the shoulder
-        targetShoulderDegrees = MathUtil.clamp(targetShoulderDegrees, 80, 100);
-    } 
-    // If the elevator is above the breakpoint, let the shoulder move to the original target
-    else {
-        targetShoulderDegrees = ultimateSetpoint.getShoulderAngle().in(Degrees);
+    Angle targetShoulderAngle = ultimateSetpoint.shoulderAngle;
+    if (currentHeight.lt(height_breakpoint)) {
+      // If the elevator is below the limit, restrict the shoulder
+      targetShoulderAngle = Utilities.clamp(ultimateSetpoint.shoulderAngle, Degrees.of(80), Degrees.of(100));
     }
 
-    // If the shoulder is outside the limit, restrict the elevator
-    if (shoulderDegrees > shoulder_breakpoint_in_degrees_high || shoulderDegrees < shoulder_breakpoint_in_degrees_low) {
-      targetElevatorMeters = MathUtil.clamp(targetElevatorMeters, height_breakpoint.in(Meters), ESEFElevatorMechanism.kElevatorMaxHeight.in(Meters));
-    }
-    // If the shoulder is within the limits, let elevator loose
-    else {
-      targetElevatorMeters = ultimateSetpoint.getElevatorHeight().in(Meters);
+    Distance targetElevatorHeight = ultimateSetpoint.elevatorHeight;
+    if (currentShoulderAngle.gt(shoulder_breakpoint_high) || currentShoulderAngle.lt(shoulder_breakpoint_low)) {
+      // If the shoulder is outside the limit, restrict the elevator
+      targetElevatorHeight = Utilities.clamp(targetElevatorHeight, height_breakpoint, ESEFElevatorMechanism.kElevatorMaxHeight);
     }
 
     // Actually set the intermediate shoulder setpoint
-    setShoulderAngleSetpoint(Degrees.of(targetShoulderDegrees));
-    setElevatorHeightSetpoint(Meters.of(targetElevatorMeters));
-}
-
-
+    setShoulderAngleSetpoint(targetShoulderAngle);
+    setElevatorHeightSetpoint(targetElevatorHeight);
+  }
 
 }
