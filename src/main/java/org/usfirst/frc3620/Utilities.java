@@ -43,12 +43,9 @@ public class Utilities {
    * @return normalized angle (-180..180 degrees)
    */
   public static Angle normalizeAngle(Angle angle) {
-    double degrees = angle.in(Degrees);
-    degrees = MathUtil.inputModulus(degrees, -180, 180);
-    // it would be nice if the returned value had the same
-    // base unit as the input value, but I'm not that smart,
-    // and this *is* correct.
-    return Degrees.of(degrees);
+    double radians = angle.in(Radians);
+    radians = MathUtil.angleModulus(radians);
+    return changeValuesUnitsTo(Radians.of(radians), angle.unit());
   }
 
   public static void dumpSendables(String label, String subsystemName) {
@@ -229,35 +226,35 @@ public class Utilities {
   }
 
   /*
-   * DW: I should be able to figure out how to do both Distance and Angle at once
-   * with generics, but I ain't that smart. This works!
+   * DW: I should be able to figure out how to do both Distance and Angle with 
+   * one method using generics, but I ain't that smart. This works!
    * 
    */
 
   public static Distance clamp(Distance v, Distance min, Distance max) {
     if (v.lt(min)) {
-      return fixup(min, v.unit());
+      return changeValuesUnitsTo(min, v.unit());
     } else if (v.gt(max)) {
-      return fixup(max, v.unit());
+      return changeValuesUnitsTo(max, v.unit());
     }
     return v;
   }
 
-  private static Distance fixup(Distance v, DistanceUnit u) {
+  public static Distance changeValuesUnitsTo(Distance v, DistanceUnit u) {
     if (v.unit() == u) return v;
     return u.of(v.in(u));
   }
 
   public static Angle clamp(Angle v, Angle min, Angle max) {
     if (v.lt(min)) {
-      return fixup(min, v.unit());
+      return changeValuesUnitsTo(min, v.unit());
     } else if (v.gt(max)) {
-      return fixup(max, v.unit());
+      return changeValuesUnitsTo(max, v.unit());
     }
     return v;
   }
 
-  private static Angle fixup(Angle v, AngleUnit u) {
+  private static Angle changeValuesUnitsTo(Angle v, AngleUnit u) {
     if (v.unit() == u) return v;
     return u.of(v.in(u));
   }
