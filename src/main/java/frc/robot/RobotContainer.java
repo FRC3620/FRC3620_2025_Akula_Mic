@@ -37,6 +37,7 @@ import org.usfirst.frc3620.Utilities;
 import org.usfirst.frc3620.XBoxConstants;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.esefcommands.SetESEFPositionCommand;
 import frc.robot.commands.esefcommands.SetElevatorPositionCommand;
 import frc.robot.commands.esefcommands.SetEndEffectorSpeedCommand;
 import frc.robot.commands.esefcommands.SetManualElevatorCommand;
@@ -47,6 +48,7 @@ import frc.robot.subsystems.BlinkySubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.HealthSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.esefsubsystem.ESEFPosition;
 import frc.robot.subsystems.esefsubsystem.ESEFSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveInputStream;
@@ -364,24 +366,34 @@ public class RobotContainer {
   }
 
   private void setupSmartDashboardCommands() throws FileVersionException, IOException, ParseException {
-    // SmartDashboard.putData("Shoulder.P1", new SetShoulderPositionCommand(null,
-    // null));
-    SmartDashboard.putData("ShoulderSetPosition1", new SetShoulderPositionCommand(Degrees.of(0), esefSubsystem));
-    SmartDashboard.putData("ShoulderSetPosition2", new SetShoulderPositionCommand(Degrees.of(30), esefSubsystem));
-    SmartDashboard.putData("ShoulderSetPosition3", new SetShoulderPositionCommand(Degrees.of(60), esefSubsystem));
-    SmartDashboard.putData("ShoulderSetPosition4", new SetShoulderPositionCommand(Degrees.of(90), esefSubsystem));
+    // ESEF commands
+    SmartDashboard.putData("Shoulder Set Position 0", new SetShoulderPositionCommand(Degrees.of(0), esefSubsystem));
+    SmartDashboard.putData("Shoulder Set Position 30", new SetShoulderPositionCommand(Degrees.of(30), esefSubsystem));
+    SmartDashboard.putData("Shoulder Set Position 60", new SetShoulderPositionCommand(Degrees.of(60), esefSubsystem));
+    SmartDashboard.putData("Shoulder Set Position 90", new SetShoulderPositionCommand(Degrees.of(90), esefSubsystem));
+    SmartDashboard.putData("Shoulder Set Position 120", new SetShoulderPositionCommand(Degrees.of(120), esefSubsystem));
     
-    SmartDashboard.putData("ElevatorSetPosition1", new SetElevatorPositionCommand(Inches.of(8.0), esefSubsystem));
-    SmartDashboard.putData("ElevatorSetPosition2", new SetElevatorPositionCommand(Inches.of(12.0), esefSubsystem));
-    SmartDashboard.putData("ElevatorSetPosition3", new SetElevatorPositionCommand(Inches.of(20.0), esefSubsystem));
-    SmartDashboard.putData("ElevatorSetPositionHome", new SetElevatorPositionCommand(Inches.of(0.0), esefSubsystem));
+    SmartDashboard.putData("Elevator Set Position 8", new SetElevatorPositionCommand(Inches.of(8.0), esefSubsystem));
+    SmartDashboard.putData("Elevator Set Position 12", new SetElevatorPositionCommand(Inches.of(12.0), esefSubsystem));
+    SmartDashboard.putData("Elevator Set Position 20", new SetElevatorPositionCommand(Inches.of(20.0), esefSubsystem));
+    SmartDashboard.putData("Elevator Set Position 0", new SetElevatorPositionCommand(Inches.of(0.0), esefSubsystem));
     SmartDashboard.putData("move End Effector", new SetEndEffectorSpeedCommand(0.5, esefSubsystem));
 
+    SmartDashboard.putData("ESEF 0 height, 90 shoulder", new SetESEFPositionCommand(new ESEFPosition(0, 90), esefSubsystem));
+    SmartDashboard.putData("ESEF 21 height, 90 shoulder", new SetESEFPositionCommand(new ESEFPosition(21, 90), esefSubsystem));
+    SmartDashboard.putData("ESEF 21 height, 60 shoulder", new SetESEFPositionCommand(new ESEFPosition(21, 60), esefSubsystem));
+    SmartDashboard.putData("ESEF 21 height, 120 shoulder", new SetESEFPositionCommand(new ESEFPosition(21, 120), esefSubsystem));
+    SmartDashboard.putData("ESEF 48 height, 0 shoulder", new SetESEFPositionCommand(new ESEFPosition(48, 0), esefSubsystem));
+    SmartDashboard.putData("ESEF 48 height, 120 shoulder", new SetESEFPositionCommand(new ESEFPosition(48, 120), esefSubsystem));
+
+    SmartDashboard.putNumber("Elevator.ManualPosition", 5);
+    SmartDashboard.putData("Elevator.ManualControl", new SetManualElevatorCommand());
+
+    // AFI commands
     SmartDashboard.putData("PivotPositionUp", new SetPivotPositionCommand(Degrees.of(70), afiSubsystem));
     SmartDashboard.putData("PivotPosition2", new SetPivotPositionCommand(Degrees.of(20), afiSubsystem));
     SmartDashboard.putData("PivotPositionGroundPickup", new SetPivotPositionCommand(Degrees.of(20), afiSubsystem));
-    SmartDashboard.putNumber("Elevator.ManualPosition", 5);
-    SmartDashboard.putData("Elevator.ManualControl", new SetManualElevatorCommand());
+
 
     SmartDashboard.putData("AFISetRollerSpeed1", new AFIRollerSetSpeedCommand(0.1, afiSubsystem));
     SmartDashboard.putNumber("AFIPivotSlider",0);

@@ -16,9 +16,11 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,15 +29,15 @@ import frc.robot.RobotContainer;
 
 /** Add your docs here. */
 public class ESEFElevatorMechanism {
-  public static final double kElevatorMinHeightMeters = 0.0;
-  public static final double kElevatorMaxHeightMeters = 2.0;
+  public static final Distance kElevatorMinHeight = Inches.of(0.0);
+  public static final Distance kElevatorMaxHeight = Inches.of(52);
 
   boolean encoderCalibrated = false;
   Timer calibrationTimer;
   // to save a requested position if encoder is not calibrated
   Distance requestedPositionWhileCalibrating = null;
 
-  DigitalInput homeLimitSwitch = new DigitalInput(7);
+  AnalogInput homeLimitSwitch = new AnalogInput(0);
 
   TalonFXConfiguration elevatorAConfig = new TalonFXConfiguration();
   TalonFXConfiguration elevatorBConfig = new TalonFXConfiguration();
@@ -73,6 +75,8 @@ public class ESEFElevatorMechanism {
       elevatorAConfigs.Voltage.withPeakForwardVoltage(12 * 0.1);
       elevatorAConfigs.Voltage.withPeakReverseVoltage(-12 * 0.025);
 
+      elevatorAConfigs.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
+
       // elevatorAConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
       // elevatorAConfigs.MotorOutput.PeakForwardDutyCycle = 0.05;
       // elevatorAConfigs.MotorOutput.PeakReverseDutyCycle = 0.025;
@@ -97,6 +101,7 @@ public class ESEFElevatorMechanism {
   }
 
   public void periodic() {
+    SmartDashboard.putNumber("frc3620/Elevator/HomeSwitchInput", homeLimitSwitch.getVoltage());
 
     // only do something if we actually have a motor
     if (elevatorA != null && elevatorB != null) {
@@ -106,7 +111,7 @@ public class ESEFElevatorMechanism {
           // slowly towards the switch
           elevatorA.set(-0.05);
           // we have a timer, has the motor had power long enough to spin up
-          if (!homeLimitSwitch.get()) {
+          if (homeSwitchHit()) {
             // motor is not moving, hopefully it's against the stop
             encoderCalibrated = true;
             elevatorA.set(0.0);
@@ -126,15 +131,21 @@ public class ESEFElevatorMechanism {
     if (elevatorA != null) {
       SmartDashboard.putNumber("frc3620/Elevator/AMotorActualPosition",
           getCurrentHeight().in(Inches));
+      SmartDashboard.putNumber("frc3620/Elevator/AMotorAppliedPower", elevatorA.get());
     }
     if (elevatorB != null) {
       SmartDashboard.putNumber("frc3620/Elevator/BMotorActualPosition",
           getCurrentHeight().in(Inches));
+      SmartDashboard.putNumber("frc3620/Elevator/BMotorAppliedPower", elevatorB.get());
     }
 
-    SmartDashboard.putBoolean("frc3620/Elevator/HomeLimitSwitchPressed", !homeLimitSwitch.get());
+    SmartDashboard.putBoolean("frc3620/Elevator/HomeLimitSwitchPressed", homeSwitchHit());
     SmartDashboard.putBoolean("frc3620/Elevator/Calibrated", encoderCalibrated);
 
+  }
+
+  public boolean homeSwitchHit() {
+    return homeLimitSwitch.getVoltage() > 2.0;
   }
 
   public void setSetpoint(Distance position) {

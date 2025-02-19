@@ -19,11 +19,11 @@ public class ESEFMech {
 	// Create a Mechanism2d visualization of ESEF
 	private final Mechanism2d m_mech2d = new Mechanism2d(
 			3 * kShoulderLength,
-			(kShoulderLength + ESEFElevatorMechanism.kElevatorMaxHeightMeters) * 1.1);
+			(kShoulderLength + ESEFElevatorMechanism.kElevatorMaxHeight.in(Meters)) * 1.1);
 	private final MechanismRoot2d m_mech2dRoot = m_mech2d.getRoot("ESEF", 1.5 * kShoulderLength, 0);
 	private final MechanismLigament2d elevatorMech2d = m_mech2dRoot.append(new MechanismLigament2d(
 			"Elevator",
-			ESEFElevatorMechanism.kElevatorMinHeightMeters,
+			ESEFElevatorMechanism.kElevatorMinHeight.in(Meters),
 			90,
 			40,
 			new Color8Bit(Color.kBlue)));

@@ -1,7 +1,11 @@
 package frc.robot.subsystems.esefsubsystem;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
+
+import org.tinylog.TaggedLogger;
+import org.usfirst.frc3620.logger.LoggingMaster;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Angle;
@@ -13,6 +17,8 @@ public class ESEFPositionController {
   /* Don't touch anything from here to where it says                       */
   /* "You can add and modify the code below."                              */
   /* --------------------------------------------------------------------- */
+  TaggedLogger logger = LoggingMaster.getLogger(getClass());
+  
   final ESEFElevatorMechanism elevatorMechanism;
   final ESEFShoulderMechanism shoulderMechanism;
   
@@ -23,7 +29,7 @@ public class ESEFPositionController {
   ESEFMech intermediateSetpointMech = new ESEFMech();
   ESEFMech actualPositionMech = new ESEFMech();
 
-  double height_breakpoint_in_meters = 0.5;
+  Distance height_breakpoint = Inches.of(21);
   double shoulder_breakpoint_in_degrees_low = 80;
   double shoulder_breakpoint_in_degrees_high = 110;
 
@@ -31,7 +37,10 @@ public class ESEFPositionController {
     this.elevatorMechanism = elevatorMechanism;
     this.shoulderMechanism = shoulderMechanism;
 
-    intermediateSetpoint = new ESEFPosition(Meters.of(0), Degrees.of(0));
+    ultimateSetpoint = new ESEFPosition(Meters.of(0), Degrees.of(90));
+    updateDashboardForUltimate();
+    intermediateSetpoint = new ESEFPosition(Meters.of(0), Degrees.of(90));
+    updateDashboardForIntermediate();
 
     SmartDashboard.putData("frc3620/ESEF/setpointMech", ultimateSetpointMech.getMech());
     SmartDashboard.putData("frc3620/ESEF/intermediateSetpointMech", intermediateSetpointMech.getMech());
@@ -39,27 +48,29 @@ public class ESEFPositionController {
   }
 
   ESEFPosition limitedESEFPosition(Distance d, Angle a) {
-    double d_meters = d.in(Meters);
+    double d_inches = d.in(Inches);
     double a_degrees = a.in(Degrees);
-    if (d_meters < height_breakpoint_in_meters) {
+    if (d_inches < height_breakpoint.in(Inches)) {
       a_degrees = MathUtil.clamp(a_degrees, 80, 100);
     }
-    d_meters = MathUtil.clamp(d_meters, 0, 2);
-    return new ESEFPosition(Meters.of(d_meters), Degrees.of(a_degrees));
+    d_inches = MathUtil.clamp (d_inches, ESEFElevatorMechanism.kElevatorMinHeight.in(Inches), ESEFElevatorMechanism.kElevatorMaxHeight.in(Inches));
+    return new ESEFPosition(Inches.of(d_inches), Degrees.of(a_degrees));
   }
 
   void updateDashboardForUltimate() {
-    SmartDashboard.putNumber("frc3620/ESEF/ultimate.e", ultimateSetpoint.elevatorHeight.in(Meters));
+    SmartDashboard.putNumber("frc3620/ESEF/ultimate.e", ultimateSetpoint.elevatorHeight.in(Inches));
     SmartDashboard.putNumber("frc3620/ESEF/ultimate.s", ultimateSetpoint.shoulderAngle.in(Degrees));
   }
 
   void updateDashboardForIntermediate() {
-    SmartDashboard.putNumber("frc3620/ESEF/intermediate.e", intermediateSetpoint.elevatorHeight.in(Meters));
+    SmartDashboard.putNumber("frc3620/ESEF/intermediate.e", intermediateSetpoint.elevatorHeight.in(Inches));
     SmartDashboard.putNumber("frc3620/ESEF/intermediate.s", intermediateSetpoint.shoulderAngle.in(Degrees));
   }
 
   public void setPosition (ESEFPosition position) {
+    logger.info("position before limit = {}", position);
     ultimateSetpoint = limitedESEFPosition(position.elevatorHeight, position.shoulderAngle);
+    logger.info("position after limit = {}", ultimateSetpoint);
     updateDashboardForUltimate();
     ultimateSetpointMech.setShoulderAngle(ultimateSetpoint.shoulderAngle);
     ultimateSetpointMech.setElevatorHeight(ultimateSetpoint.elevatorHeight);
@@ -97,7 +108,7 @@ public class ESEFPositionController {
   public void periodic() {
     Distance currentHeight = elevatorMechanism.getCurrentHeight();
     Angle currentShoulderAngle = shoulderMechanism.getCurrentAngle();
-    SmartDashboard.putNumber("frc3620/ESEF/actual.e", currentHeight.in(Meters));
+    SmartDashboard.putNumber("frc3620/ESEF/actual.e", currentHeight.in(Inches));
     SmartDashboard.putNumber("frc3620/ESEF/actual.s", currentShoulderAngle.in(Degrees));
 
     actualPositionMech.setElevatorHeight(currentHeight);
@@ -127,7 +138,7 @@ public class ESEFPositionController {
     double targetShoulderDegrees = ultimateSetpoint.getShoulderAngle().in(Degrees);
     double targetElevatorMeters = ultimateSetpoint.getElevatorHeight().in(Meters);
 
-    if (elevatorMeters < height_breakpoint_in_meters) {
+    if (elevatorMeters < height_breakpoint.in(Meters)) {
         // If the elevator is below the limit, restrict the shoulder
         targetShoulderDegrees = MathUtil.clamp(targetShoulderDegrees, 80, 100);
     } 
@@ -138,7 +149,7 @@ public class ESEFPositionController {
 
     // If the shoulder is outside the limit, restrict the elevator
     if (shoulderDegrees > shoulder_breakpoint_in_degrees_high || shoulderDegrees < shoulder_breakpoint_in_degrees_low) {
-      targetElevatorMeters = MathUtil.clamp(targetElevatorMeters, height_breakpoint_in_meters, ESEFElevatorMechanism.kElevatorMaxHeightMeters);
+      targetElevatorMeters = MathUtil.clamp(targetElevatorMeters, height_breakpoint.in(Meters), ESEFElevatorMechanism.kElevatorMaxHeight.in(Meters));
     }
     // If the shoulder is within the limits, let elevator loose
     else {
