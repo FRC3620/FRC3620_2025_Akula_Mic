@@ -1,31 +1,47 @@
 # IO Assignments
 
 ## Digital IO
-* DIO 0: Practice Robot Jumper
+* DIO 0: Addressible LEDs
 * DIO 1: FL Absolute Encoder
 * DIO 2: FR Absolute Encoder
 * DIO 3: RL Absolute Encoder
 * DIO 4: RR Absolute Encoder
 * DIO 5: Intake Front Encoder
 * DIO 6: Intake Rear Encoder
-* DIO 7: Elevator Bottom Limit Switch
-* DIO 8: Climber Encoder
+* DIO 7: Algae Beam Break
+* DIO 8: Encoder Bram Break
+* DIO 9: Climber Encoder
 
 ## Analog IO
+* ANA 0: Elevator bottom switch
 
 ## PWM
 
 ## Motor Controllers
 * 1-8: Drive
-* TalonFX 9 (was 11): ESEF Elevator Motor A
-* TalonFX 10 (was 12): ESEF Elevator Motor B
-* TalonFX 11 (was 10): ESEF Shoulder Motor
-* TalonFX 12 (was 9): ESEF End Effector Motor
-* TalonFX 13 (was 15): Climber
-* TalonFX 14 (was 13): AFI Pivot Motor
-* SparkMax 15 (was 14): AFI roller Motor 
+* TalonFX 9: ESEF Elevator Motor A
+* TalonFX 10: ESEF Elevator Motor B
+* TalonFX 11: ESEF Shoulder Motor
+* TalonFX 12: ESEF End Effector Motor
+* TalonFX 13: Climber
+* TalonFX 14: AFI Pivot Motor
+* TalonFX 15: AFI roller Motor
+
+# CANCoders
+* 11: ESEF Shoulder CANCoder
 
 # PDB assignments
+* 1-8: drive
+* 9: ESEF Elevator Motor A
+* 10: ESEF Elevator Motor B
+* 11: ESEF Shoulder Motor
+* 12: ESEF End Effector Motor
+* 13: Climber
+* 14: AFI Pivot Motor
+* 15: AFI roller Motor 
+* 19: ESEF Shoulder CANcoder
+* 20: roboRIO
+* 22: Radio
 
 # Vision
 
