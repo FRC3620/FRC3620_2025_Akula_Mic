@@ -11,6 +11,7 @@ public class SetESEFPositionCommand extends InstantCommand {
   public SetESEFPositionCommand(ESEFPosition esefPosition, ESEFSubsystem subsystem) {
     this.subsystem = subsystem;
     this.esefPosition = esefPosition;
+    setName("SetESEFPosition: " + esefPosition);
   }
 
   // Called when the command is initially scheduled.
