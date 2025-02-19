@@ -10,6 +10,30 @@ public class ESEFPosition {
   final Distance elevatorHeight;
   final Angle shoulderAngle;
 
+  /**
+   * Enum for predefined arm positions
+   */
+  public enum PresetPosition {
+    Home(0, 90),        // Fully retracted, shoulder at 90°
+    Barge(0, 90),        // Fully retracted, shoulder at 90°
+    StationPickup(0, 90),        // Fully retracted, shoulder at 90°
+    L1(0, 80),        // Fully retracted, shoulder at 90°
+    L2(8, 80),     // Low scoring position
+    L3(30, 58),     // Mid scoring position
+    L4(56, 51),    // High scoring position
+    CLIMB(16.9, 142);        // Position for climbing
+
+    private final ESEFPosition position;
+
+    PresetPosition(double elevatorHeightInInches, double shoulderAngleInDegrees) {
+      this.position = new ESEFPosition(elevatorHeightInInches, shoulderAngleInDegrees);
+    }
+
+    public ESEFPosition getPosition() {
+      return position;
+    }
+  }
+
   public ESEFPosition(Distance elevatorHeight, Angle shoulderAngle) {
     this.elevatorHeight = elevatorHeight;
     this.shoulderAngle = shoulderAngle;

@@ -30,7 +30,7 @@ public class ESEFPositionController {
   ESEFMech intermediateSetpointMech = new ESEFMech();
   ESEFMech actualPositionMech = new ESEFMech();
 
-  Distance height_breakpoint = Inches.of(21);
+  Distance height_breakpoint = Inches.of(15);
   Angle shoulder_breakpoint_low = Degrees.of(75);
   Angle shoulder_breakpoint_high = Degrees.of(100);
 
@@ -67,6 +67,9 @@ public class ESEFPositionController {
   }
 
   public void setPosition (ESEFPosition position) {
+    // Set dynamic height breakpoint based on the target height, ensuring it's never below the minimum
+    height_breakpoint = maxDistance(determineDynamicBreakpoint(position.elevatorHeight), height_breakpoint);
+
     ultimateSetpoint = limitedESEFPosition(position.elevatorHeight, position.shoulderAngle);
     updateDashboardForUltimate();
     ultimateSetpointMech.setShoulderAngle(ultimateSetpoint.shoulderAngle);
@@ -147,4 +150,17 @@ public class ESEFPositionController {
     setElevatorHeightSetpoint(targetElevatorHeight);
   }
 
+  private Distance determineDynamicBreakpoint(Distance targetHeight) {
+    if (targetHeight.lt(Inches.of(21))) {
+        return Inches.of(15); // Lower breakpoint for very low placements (will be overridden by min)
+    } else if (targetHeight.lt(Inches.of(50))) {
+        return Inches.of(25); // Medium level breakpoint
+    } else {
+        return Inches.of(40); // Higher breakpoint for upper placements
+    }
+}
+
+private Distance maxDistance(Distance d1, Distance d2) {
+  return d1.gt(d2) ? d1 : d2;
+}
 }

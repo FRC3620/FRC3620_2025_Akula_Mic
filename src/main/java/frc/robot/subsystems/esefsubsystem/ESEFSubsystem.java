@@ -43,5 +43,8 @@ public class ESEFSubsystem extends SubsystemBase {
   public void setEndEffSpeed(double speed){
     endEffectorMechanism.setEndEffSpeed(speed);
   }
+  public boolean hasCoral() {
+    return endEffectorMechanism.hasCoral();
+  }
 
 }

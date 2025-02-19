@@ -28,7 +28,7 @@ import frc.robot.RobotContainer;
 /** Add your docs here. */
 public class ESEFElevatorMechanism {
   public static final Distance kElevatorMinHeight = Inches.of(0.0);
-  public static final Distance kElevatorMaxHeight = Inches.of(52);
+  public static final Distance kElevatorMaxHeight = Inches.of(55);
 
   boolean encoderCalibrated = false;
 
@@ -62,7 +62,7 @@ public class ESEFElevatorMechanism {
       TalonFXConfiguration elevatorAConfigs = new TalonFXConfiguration();
       elevatorAConfigs.Slot0.kG = 0.3; // Gravity FeedForward
       elevatorAConfigs.Slot0.kS = 0; // Friction FeedForward
-      elevatorAConfigs.Slot0.kP = 1.0; // an error of 1 rotation results in x Volt output
+      elevatorAConfigs.Slot0.kP = 1.2; // an error of 1 rotation results in x Volt output
       elevatorAConfigs.Slot0.kI = 0;
       elevatorAConfigs.Slot0.kD = 0;
       elevatorAConfigs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
