@@ -28,6 +28,7 @@ public class AFIRollerSetSpeedUntilInCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    hasAlgae = false;
     timer = new Timer();
     timer.reset();
     timer.start();
@@ -51,7 +52,9 @@ public class AFIRollerSetSpeedUntilInCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    afiSubsystem.setAFIRollerSpeed(0);
+    afiSubsystem.setAFIRollerSpeed(0.01);
+    timer.stop();
+    timer.reset();
   }
 
   // Returns true when the command should end.

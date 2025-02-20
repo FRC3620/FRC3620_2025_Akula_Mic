@@ -20,6 +20,7 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -119,6 +120,7 @@ public class AFISubsystem extends SubsystemBase {
       afiRollerLimit.SupplyCurrentLimitEnable = true;
 
       roller.getConfigurator().apply(afiRollerLimit);
+      roller.setNeutralMode(NeutralModeValue.Brake);
     }
   }
 
