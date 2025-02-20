@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Meters;
 
 import java.io.File;
 
@@ -46,6 +47,7 @@ import frc.robot.commands.SetClimberPostionCommand;
 import frc.robot.commands.SetIMUFromMegaTag1Command;
 import frc.robot.commands.ContinuousSetIMUFromMegaTag1Command;
 import frc.robot.commands.SetPivotPositionCommand;
+import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.AFI.AFIRollerSetSpeedCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -338,7 +340,13 @@ public class RobotContainer {
 
     SmartDashboard.putData("Reset IMU from Limelight data", new SetIMUFromMegaTag1Command());
 
-    SmartDashboard.putData("Drive 10 feet", swerveSubsystem.driveToDistanceCommand(Units.feetToMeters(10), 0.5));
+    // put all the commands that drive the robot in this if statement block
+    if (swerveSubsystem != null) {
+      SmartDashboard.putData("Drive 10 feet", swerveSubsystem.driveToDistanceCommand(Units.feetToMeters(10), 0.5));
+      SmartDashboard.putData("TurnToAngle", new TurnToAngleCommand(Degrees.of(90), Meters.of(2), swerveSubsystem));
+      SmartDashboard.putData("TurnToAngle-135", new TurnToAngleCommand(Degrees.of(-135), Meters.of(2), swerveSubsystem));
+
+    }
     
   }
 
