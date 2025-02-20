@@ -387,25 +387,8 @@ public class RobotContainer {
     SmartDashboard.putData("ElevatorSetPositionHome", new SetElevatorPositionCommand(Inches.of(0.0), esefSubsystem));
     SmartDashboard.putData("move End Effector", new SetEndEffectorSpeedCommand(0.5, esefSubsystem));
 
-    SmartDashboard.putData("PivotPositionUp", new SetPivotPositionCommand(Degrees.of(70), afiSubsystem));
-    SmartDashboard.putData("PivotPosition2", new SetPivotPositionCommand(Degrees.of(20), afiSubsystem));
-    SmartDashboard.putData("PivotPositionGroundPickup", new SetPivotPositionCommand(Degrees.of(20), afiSubsystem));
     SmartDashboard.putNumber("Elevator.ManualPosition", 5);
     SmartDashboard.putData("Elevator.ManualControl", new SetManualElevatorCommand());
-
-    SmartDashboard.putNumber("AFIPivotSlider", 0.2);
-    SmartDashboard.putData("AFISetRollerSpeedContinuous", new AFIRollerSetSpeedContinuousCommand(() -> {
-      return SmartDashboard.getNumber("AFIPivotSlider", -0.1);
-    }, afiSubsystem));
-    SmartDashboard.putData("AFISetRollerSpeedContinuous0.1", new AFIRollerSetSpeedContinuousCommand(() -> {
-      return 0.1;
-    }, afiSubsystem));
-    SmartDashboard.putData("AFISpit", new AFIRollerSetSpeedCommand(-0.05, afiSubsystem));
-
-    SmartDashboard.putData("AFISetRollerSpeedUntilIn", new AFIRollerSetSpeedUntilInCommand(0.5, afiSubsystem));
-    SmartDashboard.putData("Trying Again", new AFIRollerSetSpeedUntilInCommand(0.5, afiSubsystem));
-    SmartDashboard.putData("AFIStopRoller", new AFIRollerSetSpeedCommand(0.0, afiSubsystem));
-
     // SmartDashboard.putData('CoralSpeed');
 
     // SmartDashboard.putData(new xxxxCommand());
