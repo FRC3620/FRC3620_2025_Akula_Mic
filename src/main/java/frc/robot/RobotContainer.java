@@ -40,19 +40,24 @@ import org.usfirst.frc3620.XBoxConstants;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commandfactories.AFISubsystemCommandFactory;
+import frc.robot.commandfactories.ESEFSubsystemCommandFactory;
 import frc.robot.commandfactories.SwerveSubsystemCommandFactory;
 import frc.robot.commands.esefcommands.SetElevatorPositionCommand;
 import frc.robot.commands.esefcommands.SetEndEffectorSpeedCommand;
 import frc.robot.commands.esefcommands.SetManualElevatorCommand;
 import frc.robot.commands.esefcommands.SetShoulderPositionCommand;
+import frc.robot.commands.swervedrive.DriveToClosestStickCommand;
+import frc.robot.commands.swervedrive.DriveToClosestStickCommand.WhichStick;
 import frc.robot.commands.swervedrive.TestDriveToPoseCommand;
 import frc.robot.subsystems.AFISubsystem;
 import frc.robot.subsystems.BlinkySubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.HealthSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.VisionSubsystem.WhichBlueStick;
 import frc.robot.subsystems.esefsubsystem.ESEFSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.subsystems.swervedrive.Vision;
 import swervelib.SwerveInputStream;
 import swervelib.imu.SwerveIMU;
 import frc.robot.commands.ContinuousSetIMUFromMegaTag1Command;
@@ -111,7 +116,7 @@ public class RobotContainer {
   // command factories here
   public static AFISubsystemCommandFactory afiCommandFactory;
   public static SwerveSubsystemCommandFactory swerveCommandFactory;
-
+  public static ESEFSubsystemCommandFactory esefCommandFactory;
 
   // joysticks here....
   public static ChameleonController driverJoystick;
@@ -169,7 +174,7 @@ public class RobotContainer {
       missingDevicesAlert.set(true);
       missingDevicesAlert.setText("Missing from CAN bus: " + canDeviceFinder.getMissingDeviceSet());
     }
-
+    
     makeCommandFactories();
 
     // Configure the button bindings
@@ -222,6 +227,7 @@ public class RobotContainer {
   private void makeCommandFactories() {
     afiCommandFactory = new AFISubsystemCommandFactory(afiSubsystem);
     swerveCommandFactory = new SwerveSubsystemCommandFactory(swerveSubsystem);
+    esefCommandFactory = new ESEFSubsystemCommandFactory(esefSubsystem);
   }
 
   public String getDriverControllerName() {
@@ -324,31 +330,15 @@ public class RobotContainer {
   }
 
   private void setupSmartDashboardCommands() throws FileVersionException, IOException, ParseException {
-    // SmartDashboard.putData("Shoulder.P1", new SetShoulderPositionCommand(null,
-    // null));
-    SmartDashboard.putData("ShoulderSetPosition1", new SetShoulderPositionCommand(Degrees.of(0), esefSubsystem));
-    SmartDashboard.putData("ShoulderSetPosition2", new SetShoulderPositionCommand(Degrees.of(30), esefSubsystem));
-    SmartDashboard.putData("ShoulderSetPosition3", new SetShoulderPositionCommand(Degrees.of(60), esefSubsystem));
-    SmartDashboard.putData("ShoulderSetPosition4", new SetShoulderPositionCommand(Degrees.of(90), esefSubsystem));
-
-    SmartDashboard.putData("ElevatorSetPosition1", new SetElevatorPositionCommand(Inches.of(8.0), esefSubsystem));
-    SmartDashboard.putData("ElevatorSetPosition2", new SetElevatorPositionCommand(Inches.of(12.0), esefSubsystem));
-    SmartDashboard.putData("ElevatorSetPosition3", new SetElevatorPositionCommand(Inches.of(20.0), esefSubsystem));
-    SmartDashboard.putData("ElevatorSetPositionHome", new SetElevatorPositionCommand(Inches.of(0.0), esefSubsystem));
-    SmartDashboard.putData("move End Effector", new SetEndEffectorSpeedCommand(0.5, esefSubsystem));
-
-    SmartDashboard.putNumber("Elevator.ManualPosition", 5);
-    SmartDashboard.putData("Elevator.ManualControl", new SetManualElevatorCommand());
-
     // AFI commands
     afiCommandFactory.setupSmartDashboardCommands();
 
     // Swerve commands
     swerveCommandFactory.setupSmartDashboardCommands();
 
-    // SmartDashboard.putData('CoralSpeed');
+    // ESEF commands
+    esefCommandFactory.setupSmartDashboardCommands();
 
-    // SmartDashboard.putData(new xxxxCommand());
     SmartDashboard.putData("climber:p1", new SetClimberPostionCommand(ClimberSubsystem.pos1, climberSubsystem));
     SmartDashboard.putData("climber:p2", new SetClimberPostionCommand(ClimberSubsystem.pos2, climberSubsystem));
 

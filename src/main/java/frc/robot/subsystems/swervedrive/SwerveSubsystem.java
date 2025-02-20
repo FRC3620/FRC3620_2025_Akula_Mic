@@ -86,6 +86,8 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   private Vision vision;
 
+  boolean alignedState = false;
+
   TaggedLogger logger = LoggingMaster.getLogger(getClass());
   private Map <Translation2d, Integer> translationToTagMap = new HashMap<>();
 
@@ -94,6 +96,9 @@ public class SwerveSubsystem extends SubsystemBase {
   private Translation2d centerBlueReef;
 
   private List<Translation2d> tagTranslations = new ArrayList<>();
+
+  private Pose2d targetPose;
+
 
   double maxDistanceFromCenterToBeClose = 3;//Distance in meters
   /**
@@ -207,6 +212,22 @@ public class SwerveSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("frc3620/swerve/yaw", swerveDrive.getYaw().getDegrees());
     SmartDashboard.putNumber("frc3620/swerve/nearestTagID", getNearestTag(swerveDrive.getPose()));
+    if(targetPose!=null){
+       SmartDashboard.putNumber("frc3620/swerve/targetPose",
+       swerveDrive.getPose().getTranslation().getDistance(targetPose.getTranslation()));
+
+       if(swerveDrive.getPose().getTranslation().getDistance(targetPose.getTranslation()) < .06){//if pose is less than 2 inches away
+
+          alignedState = true;
+       }else{
+          alignedState = false;
+       }
+
+       SmartDashboard.putBoolean("Are we alligned?", alignedState);
+    }
+   
+    
+
   }
 
   @Override
@@ -325,6 +346,20 @@ public class SwerveSubsystem extends SubsystemBase {
     // Create the constraints to use while pathfinding
     PathConstraints constraints = new PathConstraints(
         swerveDrive.getMaximumChassisVelocity(), 4.0,
+        swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720));
+
+    // Since AutoBuilder is configured, we can use it to build pathfinding commands
+    return AutoBuilder.pathfindToPose(
+        pose,
+        constraints,
+        edu.wpi.first.units.Units.MetersPerSecond.of(0) // Goal end velocity in meters/sec
+    );
+  }
+
+  public Command driveToPoseSlow(Pose2d pose) {
+    // Create the constraints to use while pathfinding
+    PathConstraints constraints = new PathConstraints(
+      swerveDrive.getMaximumChassisVelocity() * .25, 2.0,
         swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720));
 
     // Since AutoBuilder is configured, we can use it to build pathfinding commands
@@ -797,4 +832,12 @@ public class SwerveSubsystem extends SubsystemBase {
     }
   }
 
+
+  public void setTargetPose(Pose2d pose){
+    targetPose=pose;
+  }
+
+  public Pose2d getTargetPose(){
+    return targetPose;
+  }
 }
