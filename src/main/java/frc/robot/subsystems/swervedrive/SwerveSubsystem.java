@@ -86,6 +86,8 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   private Vision vision;
 
+  boolean alignedState = false;
+
   TaggedLogger logger = LoggingMaster.getLogger(getClass());
   private Map <Translation2d, Integer> translationToTagMap = new HashMap<>();
 
@@ -213,7 +215,18 @@ public class SwerveSubsystem extends SubsystemBase {
     if(targetPose!=null){
        SmartDashboard.putNumber("frc3620/swerve/targetPose",
        swerveDrive.getPose().getTranslation().getDistance(targetPose.getTranslation()));
+
+       if(swerveDrive.getPose().getTranslation().getDistance(targetPose.getTranslation()) < .06){//if pose is less than 2 inches away
+
+          alignedState = true;
+       }else{
+          alignedState = false;
+       }
+
+       SmartDashboard.putBoolean("Are we alligned?", alignedState);
     }
+   
+    
 
   }
 

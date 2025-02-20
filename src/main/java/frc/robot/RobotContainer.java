@@ -159,8 +159,12 @@ public class RobotContainer {
       missingDevicesAlert.set(true);
       missingDevicesAlert.setText("Missing from CAN bus: " + canDeviceFinder.getMissingDeviceSet());
     }
-
+    
+    if(swerveSubsystem!=null){
     autoChooser = AutoBuilder.buildAutoChooser();
+    } else {
+      autoChooser = null;
+    }
     // Configure the button bindings
     configureButtonBindings();
 
