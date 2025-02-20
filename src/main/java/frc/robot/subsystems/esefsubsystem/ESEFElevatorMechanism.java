@@ -12,14 +12,14 @@ import org.usfirst.frc3620.RobotMode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
-//import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
@@ -27,12 +27,15 @@ import frc.robot.RobotContainer;
 
 /** Add your docs here. */
 public class ESEFElevatorMechanism {
+  public static final Distance kElevatorMinHeight = Inches.of(0.0);
+  public static final Distance kElevatorMaxHeight = Inches.of(55);
+
   boolean encoderCalibrated = false;
-  Timer calibrationTimer;
+
   // to save a requested position if encoder is not calibrated
   Distance requestedPositionWhileCalibrating = null;
 
-  DigitalInput homeLimitSwitch = new DigitalInput(7);
+  AnalogInput homeLimitSwitch = new AnalogInput(0);
 
   TalonFXConfiguration elevatorAConfig = new TalonFXConfiguration();
   TalonFXConfiguration elevatorBConfig = new TalonFXConfiguration();
@@ -59,7 +62,7 @@ public class ESEFElevatorMechanism {
       TalonFXConfiguration elevatorAConfigs = new TalonFXConfiguration();
       elevatorAConfigs.Slot0.kG = 0.3; // Gravity FeedForward
       elevatorAConfigs.Slot0.kS = 0; // Friction FeedForward
-      elevatorAConfigs.Slot0.kP = 1.0; // an error of 1 rotation results in x Volt output
+      elevatorAConfigs.Slot0.kP = 1.2; // an error of 1 rotation results in x Volt output
       elevatorAConfigs.Slot0.kI = 0;
       elevatorAConfigs.Slot0.kD = 0;
       elevatorAConfigs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
@@ -69,6 +72,8 @@ public class ESEFElevatorMechanism {
       elevatorAConfigs.MotorOutput.withPeakReverseDutyCycle(-0.025);
       elevatorAConfigs.Voltage.withPeakForwardVoltage(12 * 0.1);
       elevatorAConfigs.Voltage.withPeakReverseVoltage(-12 * 0.025);
+
+      elevatorAConfigs.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
 
       // elevatorAConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
       // elevatorAConfigs.MotorOutput.PeakForwardDutyCycle = 0.05;
@@ -94,6 +99,7 @@ public class ESEFElevatorMechanism {
   }
 
   public void periodic() {
+    SmartDashboard.putNumber("frc3620/Elevator/HomeSwitchInput", homeLimitSwitch.getVoltage());
 
     // only do something if we actually have a motor
     if (elevatorA != null && elevatorB != null) {
@@ -102,17 +108,16 @@ public class ESEFElevatorMechanism {
           // If the robot is running, and the encoder is "not calibrated," run motor very
           // slowly towards the switch
           elevatorA.set(-0.05);
-          // we have a timer, has the motor had power long enough to spin up
-          if (!homeLimitSwitch.get()) {
-            // motor is not moving, hopefully it's against the stop
+          if (homeSwitchHit()) {
+            // we are home
             encoderCalibrated = true;
             elevatorA.set(0.0);
             elevatorA.setPosition(0);
-            setElevatorPosition(Inches.of(0));
+            setSetpoint(Inches.of(0));
 
             // If there was a requested position while we were calibrating, go there
             if (requestedPositionWhileCalibrating != null) {
-              setElevatorPosition(requestedPositionWhileCalibrating);
+              setSetpoint(requestedPositionWhileCalibrating);
               requestedPositionWhileCalibrating = null;
             }
           }
@@ -122,19 +127,25 @@ public class ESEFElevatorMechanism {
 
     if (elevatorA != null) {
       SmartDashboard.putNumber("frc3620/Elevator/AMotorActualPosition",
-          getElevatorPosition().in(Inches));
+          getCurrentHeight().in(Inches));
+      SmartDashboard.putNumber("frc3620/Elevator/AMotorAppliedPower", elevatorA.get());
     }
     if (elevatorB != null) {
       SmartDashboard.putNumber("frc3620/Elevator/BMotorActualPosition",
-          getElevatorPosition().in(Inches));
+          getCurrentHeight().in(Inches));
+      SmartDashboard.putNumber("frc3620/Elevator/BMotorAppliedPower", elevatorB.get());
     }
 
-    SmartDashboard.putBoolean("frc3620/Elevator/HomeLimitSwitchPressed", !homeLimitSwitch.get());
+    SmartDashboard.putBoolean("frc3620/Elevator/HomeLimitSwitchPressed", homeSwitchHit());
     SmartDashboard.putBoolean("frc3620/Elevator/Calibrated", encoderCalibrated);
 
   }
 
-  public void setElevatorPosition(Distance position) {
+  public boolean homeSwitchHit() {
+    return homeLimitSwitch.getVoltage() > 2.0;
+  }
+
+  public void setSetpoint(Distance position) {
     SmartDashboard.putNumber("frc3620/Elevator/RequestedPosition", position.in(Inches));
 
     double motorRotations = position.in(Inches) / positionConversion.in(Inches); // Convert inches to rotations
@@ -145,8 +156,12 @@ public class ESEFElevatorMechanism {
     }
   }
 
-  public Distance getElevatorPosition() {
-    return Inches.of(elevatorA.getPosition().getValueAsDouble() * positionConversion.in(Inches));
+  public Distance getCurrentHeight() {
+    if (elevatorA != null) {
+      return Inches.of(elevatorA.getPosition().getValueAsDouble() * positionConversion.in(Inches));
+    } else {
+      return Inches.of(0);
+    }
   }
 
 }

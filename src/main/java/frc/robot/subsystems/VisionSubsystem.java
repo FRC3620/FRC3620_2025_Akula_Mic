@@ -253,7 +253,9 @@ public class VisionSubsystem extends SubsystemBase {
       }
     }
 
-    SmartDashboard.putNumber("frc3620/vision/nearestTagID", getNearestTagID(RobotContainer.swerveSubsystem.getPose()));
+    if (RobotContainer.swerveSubsystem != null) {
+      SmartDashboard.putNumber("frc3620/vision/nearestTagID", getNearestTagID(RobotContainer.swerveSubsystem.getPose()));
+    }
 
   }
 

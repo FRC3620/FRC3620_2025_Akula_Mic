@@ -13,10 +13,13 @@ public class ESEFSubsystem extends SubsystemBase {
   private ESEFShoulderMechanism shoulderMechanism;
   private ESEFElevatorMechanism elevatorMechanism;
   private ESEFEndEffectorMechanism endEffectorMechanism;
+  private ESEFPositionController positionController;
+
   public ESEFSubsystem() { //constructor
     shoulderMechanism = new ESEFShoulderMechanism();
     elevatorMechanism = new ESEFElevatorMechanism();
     endEffectorMechanism = new ESEFEndEffectorMechanism();
+    positionController = new ESEFPositionController(elevatorMechanism, shoulderMechanism);
   }
 
   @Override
@@ -24,16 +27,24 @@ public class ESEFSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     shoulderMechanism.periodic();
     elevatorMechanism.periodic();
+    positionController.periodic();
+  }
+
+  public void setPosition(ESEFPosition position) {
+    positionController.setPosition(position);
   }
 
   public void setShoulderPosition(Angle position){
-    shoulderMechanism.setShoulderPosition(position);
+    shoulderMechanism.setSetpoint(position);
   }
   public void setElevatorPosition(Distance position){
-    elevatorMechanism.setElevatorPosition(position);
+    elevatorMechanism.setSetpoint(position);
   }
   public void setEndEffSpeed(double speed){
     endEffectorMechanism.setEndEffSpeed(speed);
+  }
+  public boolean hasCoral() {
+    return endEffectorMechanism.hasCoral();
   }
 
 }

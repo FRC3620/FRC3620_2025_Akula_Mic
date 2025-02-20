@@ -23,18 +23,24 @@ public class AFISubsystemCommandFactory {
     SmartDashboard.putData("PivotPosition2", new SetPivotPositionCommand(Degrees.of(20), afiSubsystem));
     SmartDashboard.putData("PivotPositionGroundPickup", new SetPivotPositionCommand(Degrees.of(20), afiSubsystem));
 
-    SmartDashboard.putNumber("AFIPivotSlider", 0.2);
+    SmartDashboard.putNumber("AFIPivotSlider",0);
+
     SmartDashboard.putData("AFISetRollerSpeedContinuous", new AFIRollerSetSpeedContinuousCommand(() -> {
       return SmartDashboard.getNumber("AFIPivotSlider", -0.1);
-    }, afiSubsystem));
+    }, afiSubsystem).withName("ContinuousFromSlider"));
+
     SmartDashboard.putData("AFISetRollerSpeedContinuous0.1", new AFIRollerSetSpeedContinuousCommand(() -> {
       return 0.1;
-    }, afiSubsystem));
+    }, afiSubsystem).withName("Continuous0.1"));
+
     SmartDashboard.putData("AFISpit", new AFIRollerSetSpeedCommand(-0.05, afiSubsystem));
 
     SmartDashboard.putData("AFISetRollerSpeedUntilIn", new AFIRollerSetSpeedUntilInCommand(0.5, afiSubsystem));
     SmartDashboard.putData("Trying Again", new AFIRollerSetSpeedUntilInCommand(0.5, afiSubsystem));
     SmartDashboard.putData("AFIStopRoller", new AFIRollerSetSpeedCommand(0.0, afiSubsystem));
+
+    SmartDashboard.putData("AFISetRollerSpeed1", new AFIRollerSetSpeedCommand(0.1, afiSubsystem));
+
 
   }
 }
