@@ -3,11 +3,12 @@ package frc.robot.commandfactories;
 import static edu.wpi.first.units.Units.Degrees;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import frc.robot.commands.SetPivotPositionCommand;
 import frc.robot.commands.AFI.AFIRollerSetSpeedCommand;
 import frc.robot.commands.AFI.AFIRollerSetSpeedContinuousCommand;
 import frc.robot.commands.AFI.AFIRollerSetSpeedUntilInCommand;
-import frc.robot.commands.esefcommands.SetManualElevatorCommand;
+
 import frc.robot.subsystems.AFISubsystem;
 
 public class AFISubsystemCommandFactory {
@@ -21,7 +22,6 @@ public class AFISubsystemCommandFactory {
     SmartDashboard.putData("PivotPositionUp", new SetPivotPositionCommand(Degrees.of(70), afiSubsystem));
     SmartDashboard.putData("PivotPosition2", new SetPivotPositionCommand(Degrees.of(20), afiSubsystem));
     SmartDashboard.putData("PivotPositionGroundPickup", new SetPivotPositionCommand(Degrees.of(20), afiSubsystem));
-
 
     SmartDashboard.putNumber("AFIPivotSlider", 0.2);
     SmartDashboard.putData("AFISetRollerSpeedContinuous", new AFIRollerSetSpeedContinuousCommand(() -> {

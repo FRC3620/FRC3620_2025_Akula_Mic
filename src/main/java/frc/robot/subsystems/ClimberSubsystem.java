@@ -5,9 +5,11 @@ import java.util.function.DoubleSupplier;
 import org.usfirst.frc3620.CANDeviceType;
 import org.usfirst.frc3620.NTPublisher;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -34,6 +36,7 @@ public class ClimberSubsystem extends SubsystemBase {
             slot0Configs.kI = 1; // no output for integrated error
             slot0Configs.kD = 0.003; // A velocity of 1 rps results in 0.1 V output
             motor.getConfigurator().apply(slot0Configs);
+            motor.setNeutralMode(NeutralModeValue.Brake);
         }
     }
 
