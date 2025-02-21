@@ -50,7 +50,7 @@ public class ESEFPositionController {
 
   ESEFPosition limitedESEFPosition(Distance d, Angle a) {
     if (d.lt(height_breakpoint)) {
-      a = Utilities.clamp(a, Degrees.of(80), Degrees.of(100));
+      a = Utilities.clamp(a, Degrees.of(80), Degrees.of(130));
     }
     d = Utilities.clamp (d, ESEFElevatorMechanism.kElevatorMinHeight, ESEFElevatorMechanism.kElevatorMaxHeight);
     return new ESEFPosition(d, a);
