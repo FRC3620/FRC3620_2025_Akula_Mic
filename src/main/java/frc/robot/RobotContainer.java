@@ -46,6 +46,7 @@ import frc.robot.commands.SetPivotPositionCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -232,6 +233,8 @@ public class RobotContainer {
           .deadband(OperatorConstants.DEADBAND)
           .scaleTranslation(0.8)
           .allianceRelativeControl(true);
+
+      driverJoystick.button(XBoxConstants.BUTTON_A, FlySkyConstants.BUTTON_SWA).onTrue(new InstantCommand(() -> swerveSubsystem.squareUp()));
 
       /*     
       // Derive the heading axis with math!
@@ -446,9 +449,9 @@ public class RobotContainer {
       return 0;
     }
     if (axisValue < 0) {
-      return -(axisValue * axisValue);
+      return (axisValue /* * axisValue*/);
     }
-    return axisValue * axisValue;
+    return axisValue/* * axisValue*/;
   }
 
   public static double getDriveSpinJoystick() {
@@ -464,7 +467,7 @@ public class RobotContainer {
 
     double rv = 0;
     if (Math.abs(axisValue) >= deadzone) {
-      rv = axisValue * axisValue;
+      rv = axisValue/* * axisValue*/;
       if (axisValue < 0) {
         rv = -rv;
       }

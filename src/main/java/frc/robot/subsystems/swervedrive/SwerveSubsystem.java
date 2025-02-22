@@ -37,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.swervedrive.Vision.Cameras;
 import java.io.File;
 import java.io.IOException;
@@ -371,6 +372,21 @@ public class SwerveSubsystem extends SubsystemBase {
   public Command centerModulesCommand() {
     return run(() -> Arrays.asList(swerveDrive.getModules())
         .forEach(it -> it.setAngle(0.0)));
+  }
+
+  public void squareUp(){
+      var color = DriverStation.getAlliance();
+        if(color.isPresent()){
+          if(color.get()==Alliance.Red){
+            var pose = RobotContainer.swerveSubsystem.getPose();
+            var newPose = new Pose2d(pose.getTranslation(), Rotation2d.fromDegrees(180));
+            RobotContainer.swerveSubsystem.resetOdometry(newPose);
+          }else{
+            var pose = RobotContainer.swerveSubsystem.getPose();
+            var newPose = new Pose2d(pose.getTranslation(), Rotation2d.fromDegrees(0));
+            RobotContainer.swerveSubsystem.resetOdometry(newPose);
+          }
+        }
   }
 
   /**
