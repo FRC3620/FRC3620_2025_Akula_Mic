@@ -231,19 +231,31 @@ public class SwerveSubsystem extends SubsystemBase {
 
       SmartDashboard.putBoolean("Are we alligned?", alignedState);
     }
-    
-    SmartDashboard.putNumber("frc3620/swerve/frontMegaTag1Error", swerveDrive.getPose().getTranslation().getDistance(
-        RobotContainer.visionSubsystem.getCameraData(Camera.FRONT).megaTag1.getPoseEstimate().pose.getTranslation()));
 
-    SmartDashboard.putNumber("frc3620/swerve/frontMegaTag2Error", swerveDrive.getPose().getTranslation().getDistance(
-        RobotContainer.visionSubsystem.getCameraData(Camera.FRONT).megaTag2.getPoseEstimate().pose.getTranslation()));
-
-    SmartDashboard.putNumber("frc3620/swerve/backMegaTag1Error", swerveDrive.getPose().getTranslation().getDistance(
-        RobotContainer.visionSubsystem.getCameraData(Camera.BACK).megaTag1.getPoseEstimate().pose.getTranslation()));
-
-    SmartDashboard.putNumber("frc3620/swerve/backMegaTag2Error", swerveDrive.getPose().getTranslation().getDistance(
-        RobotContainer.visionSubsystem.getCameraData(Camera.BACK).megaTag2.getPoseEstimate().pose.getTranslation()));
-
+   /*  if (swerveDrive.getPose() != null) {
+      if (RobotContainer.visionSubsystem.getCameraData(Camera.FRONT).megaTag1.getPoseEstimate() != null) {
+        SmartDashboard.putNumber("frc3620/swerve/frontMegaTag1Error",
+            swerveDrive.getPose().getTranslation().getDistance(
+                RobotContainer.visionSubsystem.getCameraData(Camera.FRONT).megaTag1.getPoseEstimate().pose
+                    .getTranslation()));
+      }
+      if (RobotContainer.visionSubsystem.getCameraData(Camera.FRONT).megaTag2.getPoseEstimate() != null) {
+        SmartDashboard.putNumber("frc3620/swerve/frontMegaTag2Error",
+            swerveDrive.getPose().getTranslation().getDistance(
+                RobotContainer.visionSubsystem.getCameraData(Camera.FRONT).megaTag2.getPoseEstimate().pose
+                    .getTranslation()));
+      }
+      if (RobotContainer.visionSubsystem.getCameraData(Camera.BACK).megaTag1.getPoseEstimate() != null) {
+        SmartDashboard.putNumber("frc3620/swerve/backMegaTag1Error", swerveDrive.getPose().getTranslation().getDistance(
+            RobotContainer.visionSubsystem.getCameraData(Camera.BACK).megaTag1.getPoseEstimate().pose
+                .getTranslation()));
+      }
+      if (RobotContainer.visionSubsystem.getCameraData(Camera.BACK).megaTag2.getPoseEstimate() != null) {
+        SmartDashboard.putNumber("frc3620/swerve/backMegaTag2Error", swerveDrive.getPose().getTranslation().getDistance(
+            RobotContainer.visionSubsystem.getCameraData(Camera.BACK).megaTag2.getPoseEstimate().pose
+                .getTranslation()));
+      }
+    }*/
   }
 
   @Override
@@ -530,6 +542,17 @@ public class SwerveSubsystem extends SubsystemBase {
           true,
           false);
     });
+  }
+
+  public Command testDriveCommand()
+  {
+    return runOnce(() -> {
+      swerveDrive.drive(new Translation2d(Units.inchesToMeters(12),0),0,false,true);}
+    );
+  }
+
+  public double distanceX(){
+    return 0;
   }
 
   /**

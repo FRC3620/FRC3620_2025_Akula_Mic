@@ -238,19 +238,19 @@ public class VisionSubsystem extends SubsystemBase {
                                             // vision updates
       {
         doRejectUpdate = true;
-        Logger.info("Vision Reject","Angular Velocity");
+        Logger.info("Vision Reject : Angular Velocity","");
       }
       else if (cameraData.megaTag2.poseEstimate == null) {
         doRejectUpdate = true;
-        Logger.info("Vision Reject","megaTag2 Pose = null");
+        Logger.info("Vision Reject : megaTag2 Pose = null","");
       }
       else if (cameraData.megaTag2.poseEstimate.tagCount == 0) {
         doRejectUpdate = true;
-        Logger.info("Vision Reject","No Visible Tags");
+        Logger.info("Vision Reject : No Visible Tags","");
       }
       else if(sd == null){
         doRejectUpdate = true;
-        Logger.info("Vision Reject","No Swerve Drive");
+        Logger.info("Vision Reject : No Swerve Drive","");
       }
       if (!doRejectUpdate) {
         sd.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));

@@ -8,7 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import frc.robot.commands.DestinationToAngleCommand;
 import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand.WhichStick;
@@ -30,6 +30,8 @@ public class SwerveSubsystemCommandFactory {
     SmartDashboard.putData("Drive 10 feet", swerveSubsystem.driveToDistanceCommand(Units.feetToMeters(10), 0.5));
     SmartDashboard.putData("TurnToAngle", new TurnToAngleCommand(Degrees.of(90), Meters.of(2), swerveSubsystem));
     SmartDashboard.putData("TurnToAngle-135", new TurnToAngleCommand(Degrees.of(-135), Meters.of(2), swerveSubsystem));
+    SmartDashboard.putData("DestinationToAngle", new DestinationToAngleCommand(new Pose2d(2,2, Rotation2d.fromDegrees(60)), swerveSubsystem));
+    SmartDashboard.putData("Drive Translation Command",swerveSubsystem.testDriveCommand());
 
     SmartDashboard.putData("Drive To Nearest Tag LEFT", new DriveToClosestStickCommand(WhichStick.LEFT));
     SmartDashboard.putData("Drive To Nearest Tag RIGHT", new DriveToClosestStickCommand(WhichStick.RIGHT));
