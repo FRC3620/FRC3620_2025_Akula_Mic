@@ -1,6 +1,7 @@
 package frc.robot.subsystems.esefsubsystem;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inch;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
@@ -31,8 +32,9 @@ public class ESEFPositionController {
   ESEFMech actualPositionMech = new ESEFMech();
 
   Distance height_breakpoint = Inches.of(15);
-  Angle shoulder_breakpoint_low = Degrees.of(75);
-  Angle shoulder_breakpoint_high = Degrees.of(100);
+  Distance height_breakpoint_minimum = Inches.of(15);
+  Angle shoulder_breakpoint_low = Degrees.of(70);
+  Angle shoulder_breakpoint_high = Degrees.of(95);
 
   public ESEFPositionController(ESEFElevatorMechanism elevatorMechanism, ESEFShoulderMechanism shoulderMechanism) {
     this.elevatorMechanism = elevatorMechanism;
@@ -50,7 +52,7 @@ public class ESEFPositionController {
 
   ESEFPosition limitedESEFPosition(Distance d, Angle a) {
     if (d.lt(height_breakpoint)) {
-      a = Utilities.clamp(a, Degrees.of(80), Degrees.of(100));
+      a = Utilities.clamp(a, shoulder_breakpoint_low, shoulder_breakpoint_high);
     }
     d = Utilities.clamp (d, ESEFElevatorMechanism.kElevatorMinHeight, ESEFElevatorMechanism.kElevatorMaxHeight);
     return new ESEFPosition(d, a);
@@ -68,9 +70,13 @@ public class ESEFPositionController {
 
   public void setPosition (ESEFPosition position) {
     // Set dynamic height breakpoint based on the target height, ensuring it's never below the minimum
-    height_breakpoint = maxDistance(determineDynamicBreakpoint(position.elevatorHeight), height_breakpoint);
-
-    ultimateSetpoint = limitedESEFPosition(position.elevatorHeight, position.shoulderAngle);
+    SmartDashboard.putNumber("frc3620/ESEF/debug/targetHeight", position.elevatorHeight.in(Inches));
+    SmartDashboard.putNumber("frc3620/ESEF/debug/dynamicBreakpoint", determineDynamicBreakpoint(position.elevatorHeight).in(Inches));
+    SmartDashboard.putNumber("frc3620/ESEF/debug/previousBreakpoint", height_breakpoint.in(Inches));
+    height_breakpoint = maxDistance(determineDynamicBreakpoint(position.elevatorHeight), height_breakpoint_minimum);
+    SmartDashboard.putNumber("frc3620/ESEF/debug/updatedBreakpoint", height_breakpoint.in(Inches));    
+    ultimateSetpoint = new ESEFPosition(position.elevatorHeight, position.shoulderAngle);
+    
     updateDashboardForUltimate();
     ultimateSetpointMech.setShoulderAngle(ultimateSetpoint.shoulderAngle);
     ultimateSetpointMech.setElevatorHeight(ultimateSetpoint.elevatorHeight);
@@ -136,7 +142,7 @@ public class ESEFPositionController {
     Angle targetShoulderAngle = ultimateSetpoint.shoulderAngle;
     if (currentHeight.lt(height_breakpoint)) {
       // If the elevator is below the limit, restrict the shoulder
-      targetShoulderAngle = Utilities.clamp(ultimateSetpoint.shoulderAngle, Degrees.of(80), Degrees.of(100));
+      targetShoulderAngle = Utilities.clamp(ultimateSetpoint.shoulderAngle, shoulder_breakpoint_low, shoulder_breakpoint_high);
     }
 
     Distance targetElevatorHeight = ultimateSetpoint.elevatorHeight;
@@ -151,13 +157,16 @@ public class ESEFPositionController {
   }
 
   private Distance determineDynamicBreakpoint(Distance targetHeight) {
-    if (targetHeight.lt(Inches.of(21))) {
-        return Inches.of(15); // Lower breakpoint for very low placements (will be overridden by min)
+    Distance targetBreakpt;
+    if (targetHeight.lt(Inches.of(40))) {
+        targetBreakpt = Inches.of(15); // Lower breakpoint for very low placements (will be overridden by min)
     } else if (targetHeight.lt(Inches.of(50))) {
-        return Inches.of(25); // Medium level breakpoint
+        targetBreakpt = Inches.of(25); // Medium level breakpoint
     } else {
-        return Inches.of(40); // Higher breakpoint for upper placements
+        targetBreakpt = Inches.of(43); // Higher breakpoint for upper placements
     }
+    //SmartDashboard.putNumber("frc3620/ESEF/dynamicBreakpoint", targetBreakpt.in(Inches));
+    return targetBreakpt;
 }
 
 private Distance maxDistance(Distance d1, Distance d2) {
