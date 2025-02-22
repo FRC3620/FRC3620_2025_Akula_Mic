@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Inches;
 
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.esefcommands.RunEndEffectorUntilCoralGone;
 import frc.robot.commands.esefcommands.RunEndEffectorUntilHasCoral;
 import frc.robot.commands.esefcommands.SetESEFPositionCommand;
@@ -35,11 +36,13 @@ public class ESEFSubsystemCommandFactory {
     SmartDashboard.putData("Elevator Set Position 0", new SetElevatorPositionCommand(Inches.of(0.0), esefSubsystem));
 
     SmartDashboard.putData("Run EndEffector until has coral", new RunEndEffectorUntilHasCoral(0.7, esefSubsystem));
-    SmartDashboard.putData("Run EndEffector until coral gone", new RunEndEffectorUntilCoralGone(0.7, esefSubsystem));
+    SmartDashboard.putData("Run EndEffector until coral gone", new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
     SmartDashboard.putData("move End Effector", new SetEndEffectorSpeedCommand(0.5, esefSubsystem));
 
-    SmartDashboard.putNumber("Elevator.ManualPosition", 5);
-    SmartDashboard.putData("Elevator.ManualControl", new SetManualElevatorCommand());
+    SmartDashboard.putData("Bump Elevator + 1", new InstantCommand(() -> esefSubsystem.bumpElevatorHeight(Inches.of(1))));
+    SmartDashboard.putData("Bump Elevator - 1", new InstantCommand(() -> esefSubsystem.bumpElevatorHeight(Inches.of(-1))));
+    SmartDashboard.putData("Bump Shoulder + 2.5", new InstantCommand(() -> esefSubsystem.bumpShoulderAngle(Degrees.of(2.5))));
+    SmartDashboard.putData("Bump Shoulder - 2.5", new InstantCommand(() -> esefSubsystem.bumpShoulderAngle(Degrees.of(-2.5))));
 
     SmartDashboard.putData("ESEF 0 height, 90 shoulder", new SetESEFPositionCommand(new ESEFPosition(0, 90), esefSubsystem));
     SmartDashboard.putData("ESEF 21 height, 90 shoulder", new SetESEFPositionCommand(new ESEFPosition(21, 90), esefSubsystem));
@@ -47,8 +50,13 @@ public class ESEFSubsystemCommandFactory {
     SmartDashboard.putData("ESEF 21 height, 120 shoulder", new SetESEFPositionCommand(new ESEFPosition(21, 120), esefSubsystem));
     SmartDashboard.putData("ESEF 48 height, 0 shoulder", new SetESEFPositionCommand(new ESEFPosition(48, 0), esefSubsystem));
     SmartDashboard.putData("ESEF 48 height, 120 shoulder", new SetESEFPositionCommand(new ESEFPosition(48, 120), esefSubsystem));
-    SmartDashboard.putData("ESEF 23 height, 120 shoulder", new SetESEFPositionCommand(new ESEFPosition(23, 120), esefSubsystem));
 
+    SmartDashboard.putData("ESEF 33 height, 90 shoulder", new SetESEFPositionCommand(new ESEFPosition(33, 90), esefSubsystem));
+    SmartDashboard.putData("ESEF 55 height, 90 shoulder", new SetESEFPositionCommand(new ESEFPosition(55, 90), esefSubsystem));
+    SmartDashboard.putData("ESEF 55 height, 70 shoulder", new SetESEFPositionCommand(new ESEFPosition(55, 70), esefSubsystem));
+
+
+    SmartDashboard.putData("ESEF Home", new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     SmartDashboard.putData("ESEF L1", new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem));
     SmartDashboard.putData("ESEF L2", new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem));
     SmartDashboard.putData("ESEF L3", new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem));

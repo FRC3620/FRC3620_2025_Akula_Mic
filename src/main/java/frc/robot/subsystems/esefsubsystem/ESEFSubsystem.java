@@ -37,6 +37,12 @@ public class ESEFSubsystem extends SubsystemBase {
   public void setShoulderPosition(Angle position){
     shoulderMechanism.setSetpoint(position);
   }
+  public void bumpShoulderAngle(Angle delta) {
+    positionController.bumpShoulderAngle(delta);
+  }
+  public void bumpElevatorHeight(Distance delta) {
+    positionController.bumpElevatorHeight(delta);
+  }
   public void setElevatorPosition(Distance position){
     elevatorMechanism.setSetpoint(position);
   }
