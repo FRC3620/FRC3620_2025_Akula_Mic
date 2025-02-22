@@ -35,50 +35,50 @@ public class VisionSubsystem extends SubsystemBase {
 
   public static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
-  private Map <Translation2d, Integer> translationToTagMap = new HashMap<>();
+  private Map<Translation2d, Integer> translationToTagMap = new HashMap<>();
 
-  private Map <Integer, Translation2d> tagToTranslationMap = new HashMap<>();
+  private Map<Integer, Translation2d> tagToTranslationMap = new HashMap<>();
 
-  private Map <Integer, Pose2d> tagToStickPose2dLeft = new HashMap<>();
+  private Map<Integer, Pose2d> tagToStickPose2dLeft = new HashMap<>();
 
-  private Map <Integer, Pose2d> tagToStickPose2dRight = new HashMap<>();
+  private Map<Integer, Pose2d> tagToStickPose2dRight = new HashMap<>();
 
   private Translation2d centerBlueReef;
 
   private List<Translation2d> tagTranslations = new ArrayList<>();
 
-  double maxDistanceFromCenterToBeClose = 3;//Distance in meters
+  double maxDistanceFromCenterToBeClose = 3;// Distance in meters
+
+  String lastLoggedError;
 
   public enum Camera {
     FRONT("limelight-front"), BACK("limelight-back");
 
     public final String limelightName;
 
-
     Camera(String limelightName) {
       this.limelightName = limelightName;
     }
   }
 
-  
+  public enum WhichBlueStick {
+    BSTICKA(5.71, 3.80, Rotation2d.fromDegrees(-180)),
+    BSTICKB(5.71, 4.26, Rotation2d.fromDegrees(-180)),
+    BSTICKC(5.17, 5.2, Rotation2d.fromDegrees(-120)),
+    BSTICKD(5.1, 5.5, Rotation2d.fromDegrees(-120)),
+    BSTICKE(4, 5.35, Rotation2d.fromDegrees(-60)),
+    BSTICKF(3.6, 5.18, Rotation2d.fromDegrees(-60)),
+    BSTICKG(3.26, 4.2, Rotation2d.fromDegrees(0)),
+    BSTICKH(3.26, 3.84, Rotation2d.fromDegrees(0)),
+    BSTICKI(3.85, 3, Rotation2d.fromDegrees(60)),
+    BSTICKJ(3.96, 2.9, Rotation2d.fromDegrees(60)),
+    BSTICKK(4.98, 2.9, Rotation2d.fromDegrees(120)),
+    BSTICKL(5.1, 3.09, Rotation2d.fromDegrees(120));
 
-  public enum WhichBlueStick{
-    BSTICKA(5.71,3.80,Rotation2d.fromDegrees(-180)), 
-    BSTICKB(5.71,4.26, Rotation2d.fromDegrees(-180)), 
-    BSTICKC(5.17,5.2, Rotation2d.fromDegrees(-120)), 
-    BSTICKD(5.1,5.5, Rotation2d.fromDegrees(-120)), 
-    BSTICKE(4,5.35, Rotation2d.fromDegrees(-60)), 
-    BSTICKF(3.6,5.18, Rotation2d.fromDegrees(-60)), 
-    BSTICKG(3.26,4.2, Rotation2d.fromDegrees(0)), 
-    BSTICKH(3.26,3.84, Rotation2d.fromDegrees(0)),
-    BSTICKI(3.85,3,Rotation2d.fromDegrees(60)), 
-    BSTICKJ(3.96,2.9, Rotation2d.fromDegrees(60)), 
-    BSTICKK(4.98,2.9, Rotation2d.fromDegrees(120)),
-    BSTICKL(5.1,3.09, Rotation2d.fromDegrees(120));
     public final Pose2d pose;
 
-    WhichBlueStick (double x, double y, Rotation2d rotation){
-      pose = new Pose2d(x,y,rotation);
+    WhichBlueStick(double x, double y, Rotation2d rotation) {
+      pose = new Pose2d(x, y, rotation);
     }
   }
 
@@ -179,11 +179,12 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
 
-  void setUpTagMaps(){
+  void setUpTagMaps() {
 
-    for (int tagID = 17; tagID  <= 22; tagID++){
+    for (int tagID = 17; tagID <= 22; tagID++) {
 
-      Translation2d translation = RobotContainer.aprilTagFieldLayout.getTagPose(tagID).get().getTranslation().toTranslation2d();
+      Translation2d translation = RobotContainer.aprilTagFieldLayout.getTagPose(tagID).get().getTranslation()
+          .toTranslation2d();
 
       translationToTagMap.put(translation, tagID);
       tagToTranslationMap.put(tagID, translation);
@@ -208,9 +209,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     centerBlueReef = tagToTranslationMap.get(17).plus(tagToTranslationMap.get(20)).div(2);
 
-
   }
-
 
   @Override
   public void periodic() {
@@ -227,7 +226,7 @@ public class VisionSubsystem extends SubsystemBase {
       // yawRate = sd.getGyro().getYawAngularVelocity();
     }
     for (var cameraData : allCameraData.values()) {
-      
+
       LimelightHelpers.SetRobotOrientation(cameraData.limelightName, yaw, yawRate, pitch, 0, 0, 0);
       processMegaTag(cameraData.megaTag1, () -> LimelightHelpers.getBotPoseEstimate_wpiBlue(cameraData.limelightName));
       processMegaTag(cameraData.megaTag2,
@@ -235,31 +234,45 @@ public class VisionSubsystem extends SubsystemBase {
 
       // update robot odometry from vision
       if (Math.abs(yawRate) > 720) // if our angular velocity is greater than 720 degrees per second, ignore
-                                            // vision updates
+                                   // vision updates
       {
         doRejectUpdate = true;
-        Logger.info("Vision Reject","Angular Velocity");
-      }
-      else if (cameraData.megaTag2.poseEstimate == null) {
+        if (lastLoggedError != "Angular Velocity") {
+          Logger.info("Vision Reject", "Angular Velocity");
+          lastLoggedError = "Angular Velocity";
+        }
+      } else if (cameraData.megaTag2.poseEstimate == null) {
         doRejectUpdate = true;
-        Logger.info("Vision Reject","megaTag2 Pose = null");
-      }
-      else if (cameraData.megaTag2.poseEstimate.tagCount == 0) {
+        if (lastLoggedError != "megaTag2Pose = null") {
+          Logger.info("Vision Reject", "megaTag2 Pose = null");
+          lastLoggedError = "megaTag2Pose = null";
+        }
+      } else if (cameraData.megaTag2.poseEstimate.tagCount == 0) {
         doRejectUpdate = true;
-        Logger.info("Vision Reject","No Visible Tags");
-      }
-      else if(sd == null){
+        if (lastLoggedError != "No Visible Tags") {
+          Logger.info("Vision Reject", "No Visible Tags");
+          lastLoggedError = "No Visible Tags";
+        }
+      } else if (sd == null) {
         doRejectUpdate = true;
-        Logger.info("Vision Reject","No Swerve Drive");
+        if (lastLoggedError != "No Swerve Drive") {
+          Logger.info("Vision Reject", "No Swerve Drive");
+          lastLoggedError = "No Swerve Drive";
+        }
       }
       if (!doRejectUpdate) {
+        if (lastLoggedError != "No Error") {
+          lastLoggedError = "No Error";
+        }
         sd.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
-        sd.addVisionMeasurement(cameraData.megaTag2.poseEstimate.pose, cameraData.megaTag2.poseEstimate.timestampSeconds);
+        sd.addVisionMeasurement(cameraData.megaTag2.poseEstimate.pose,
+            cameraData.megaTag2.poseEstimate.timestampSeconds);
       }
     }
 
     if (RobotContainer.swerveSubsystem != null) {
-      SmartDashboard.putNumber("frc3620/vision/nearestTagID", getNearestTagID(RobotContainer.swerveSubsystem.getPose()));
+      SmartDashboard.putNumber("frc3620/vision/nearestTagID",
+          getNearestTagID(RobotContainer.swerveSubsystem.getPose()));
     }
 
   }
@@ -272,34 +285,34 @@ public class VisionSubsystem extends SubsystemBase {
     return allCameraDataAsSet;
   }
 
-  public int getNearestTagID(Pose2d pose){
+  public int getNearestTagID(Pose2d pose) {
     Translation2d translation = pose.getTranslation();
     Translation2d nearestTagTranslation = translation.nearest(tagTranslations);
 
-    if(translation.getDistance(centerBlueReef) < maxDistanceFromCenterToBeClose){
+    if (translation.getDistance(centerBlueReef) < maxDistanceFromCenterToBeClose) {
       return translationToTagMap.get(nearestTagTranslation);
-    }else{
+    } else {
       return -1;
     }
   }
 
-  public Pose2d getNearestLeftStickPose(int tagID){
-    if(tagID == -1){
+  public Pose2d getNearestLeftStickPose(int tagID) {
+    if (tagID == -1) {
       return RobotContainer.swerveSubsystem.getPose();
-    }else{
+    } else {
 
       return tagToStickPose2dLeft.get(tagID);
 
     }
   }
 
-  public Pose2d getNearestRightStickPose(int tagID){
-    if(tagID == -1){
+  public Pose2d getNearestRightStickPose(int tagID) {
+    if (tagID == -1) {
       return RobotContainer.swerveSubsystem.getPose();
-    }else{
+    } else {
 
       return tagToStickPose2dRight.get(tagID);
-      
+
     }
   }
 
