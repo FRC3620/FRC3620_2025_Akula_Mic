@@ -12,6 +12,7 @@ import org.tinylog.TaggedLogger;
 import org.usfirst.frc3620.CANDeviceType;
 import org.usfirst.frc3620.logger.LoggingMaster;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
@@ -19,6 +20,7 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -36,6 +38,7 @@ public class AFISubsystem extends SubsystemBase {
   public TalonFX pivot;
   public DutyCycleEncoder frontEncoder;
   public DutyCycleEncoder rearEncoder;
+
   Angle rearEncoderOffset;
   Angle frontEncoderOffset;
 
@@ -43,7 +46,9 @@ public class AFISubsystem extends SubsystemBase {
     FRONT, REAR
   }
 
-  // Front Encoder is backwards use rear until fixed.
+
+  public double measuredRollerSpeed;
+  //Front Encoder is backwards use rear until fixed.
   WhichEncoderToUse whichEncoderToUse = WhichEncoderToUse.REAR;
 
   boolean relativeEncoderSet = false;
@@ -68,6 +73,7 @@ public class AFISubsystem extends SubsystemBase {
     // constructor
     frontEncoder = new DutyCycleEncoder(5);
     rearEncoder = new DutyCycleEncoder(6);
+    frontEncoder.setInverted(true);
     frontEncoderOffset = Degrees.of(RobotContainer.robotParameters.getIntakeFrontEncoderOffset());
     rearEncoderOffset = Degrees.of(RobotContainer.robotParameters.getIntakeRearEncoderOffset());
 
@@ -107,6 +113,13 @@ public class AFISubsystem extends SubsystemBase {
     if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, AFIROLLERMOTORID, "AFIRoller")
         || RobotContainer.shouldMakeAllCANDevices()) {
       this.roller = new TalonFX(AFIROLLERMOTORID);
+
+      CurrentLimitsConfigs afiRollerLimit = new CurrentLimitsConfigs();
+      afiRollerLimit.SupplyCurrentLimit = 10;
+      afiRollerLimit.SupplyCurrentLimitEnable = true;
+
+      roller.getConfigurator().apply(afiRollerLimit);
+      roller.setNeutralMode(NeutralModeValue.Brake);
     }
   }
 
@@ -135,6 +148,10 @@ public class AFISubsystem extends SubsystemBase {
       SmartDashboard.putNumber("frc3620/AFI/pivotffOutput", ffoutput);
       SmartDashboard.putNumber("frc3620/AFI/pivotOutput", ffoutput + pidoutput);
       SmartDashboard.putNumber("frc3620/AFI/pivotOutput", MathUtil.clamp(pidoutput + ffoutput, -0.1, 0.1));
+      
+      measuredRollerSpeed = roller.getVelocity().getValueAsDouble();
+      SmartDashboard.putNumber("frc3620/AFI/measureRollerVelocity", measuredRollerSpeed);
+    
     }
 
     SmartDashboard.putNumber("frc3620/AFI/PivotFrontAbsolutePositionRaw", Rotations.of(frontEncoder.get()).in(Degrees));
