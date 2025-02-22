@@ -2,12 +2,17 @@ package org.usfirst.frc3620.motors;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
-class TalonFetcher extends MotorWatcherFetcher {
+public class TalonFetcher extends MotorWatcherFetcher {
   TalonFX talonFX;
 
-  TalonFetcher(TalonFX _talonFX) {
+  public TalonFetcher(TalonFX _talonFX) {
     super();
     talonFX = _talonFX;
+  }
+
+  @Override
+  public void setPower(double power) {
+    talonFX.set(power);
   }
 
   @Override
@@ -23,5 +28,10 @@ class TalonFetcher extends MotorWatcherFetcher {
   @Override
   Double measureOutputCurrent() {
     return outputCurrent = talonFX.getStatorCurrent().getValueAsDouble();
+  }
+
+  @Override
+  Double measureVelocity() {
+    return velocity = talonFX.getVelocity().getValueAsDouble();
   }
 }

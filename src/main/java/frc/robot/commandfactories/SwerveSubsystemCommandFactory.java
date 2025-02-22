@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand;
+import frc.robot.commands.swervedrive.SwerveDriveDiagnosticCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand.WhichStick;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
@@ -36,6 +37,8 @@ public class SwerveSubsystemCommandFactory {
 
     Pose2d testPose = new Pose2d(5.1,3.09, Rotation2d.fromDegrees(120));
     SmartDashboard.putData("Drive To TEST", swerveSubsystem.driveToPoseSlow(testPose));
+
+    SmartDashboard.putData(new SwerveDriveDiagnosticCommand(swerveSubsystem));
 
   }
 

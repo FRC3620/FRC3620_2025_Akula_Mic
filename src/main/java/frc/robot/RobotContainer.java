@@ -349,6 +349,7 @@ public class RobotContainer {
 
     // Swerve commands
     if (swerveSubsystem != null) {
+      SmartDashboard.putData("Reset IMU from Limelight data", new SetIMUFromMegaTag1Command());
       swerveCommandFactory.setupSmartDashboardCommands();
     }
 
@@ -357,13 +358,6 @@ public class RobotContainer {
 
     // climber commands
     climberCommandFactory.setupSmartDashboardCommands();
-
-    if (swerveSubsystem != null) {
-      SmartDashboard.putData("Reset IMU from Limelight data", new SetIMUFromMegaTag1Command());
-
-      swerveCommandFactory.setupSmartDashboardCommands();
-    }
-    
   }
 
   public void setupAutonomousCommands() {
