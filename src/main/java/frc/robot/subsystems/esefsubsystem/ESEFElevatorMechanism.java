@@ -11,6 +11,7 @@ import org.usfirst.frc3620.RobotMode;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
@@ -27,6 +28,8 @@ import frc.robot.RobotContainer;
 
 /** Add your docs here. */
 public class ESEFElevatorMechanism {
+  private final MotionMagicVoltage elevatorMotionMagicRequest = new MotionMagicVoltage(0).withSlot(0);
+  
   public static final Distance kElevatorMinHeight = Inches.of(0.0);
   public static final Distance kElevatorMaxHeight = Inches.of(58);
 
@@ -67,11 +70,15 @@ public class ESEFElevatorMechanism {
       elevatorAConfigs.Slot0.kD = 0;
       elevatorAConfigs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
 
+      elevatorAConfigs.MotionMagic.MotionMagicCruiseVelocity = 95; // Max speed in Rotations per second
+      elevatorAConfigs.MotionMagic.MotionMagicAcceleration = 70; // Max acceleration in Rotations per second^2
+      elevatorAConfigs.MotionMagic.MotionMagicJerk = 200; // Smooth out acceleration (optional)
+
       elevatorAConfigs.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);
-      elevatorAConfigs.MotorOutput.withPeakForwardDutyCycle(0.1);
-      elevatorAConfigs.MotorOutput.withPeakReverseDutyCycle(-0.025);
-      elevatorAConfigs.Voltage.withPeakForwardVoltage(12 * 0.1);
-      elevatorAConfigs.Voltage.withPeakReverseVoltage(-12 * 0.025);
+      elevatorAConfigs.MotorOutput.withPeakForwardDutyCycle(0.5);
+      elevatorAConfigs.MotorOutput.withPeakReverseDutyCycle(-0.35);
+      elevatorAConfigs.Voltage.withPeakForwardVoltage(12 * 0.5);
+      elevatorAConfigs.Voltage.withPeakReverseVoltage(-12 * 0.35);
 
       elevatorAConfigs.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
 
@@ -152,8 +159,7 @@ public class ESEFElevatorMechanism {
     motorRotations = MathUtil.clamp(motorRotations, 0, 40.2);
 
     if (elevatorA != null && encoderCalibrated) {
-      elevatorA.setControl(elevatorARequest.withPosition(motorRotations));
-    }
+      elevatorA.setControl(elevatorMotionMagicRequest.withPosition(motorRotations));    }
   }
 
   public Distance getCurrentHeight() {

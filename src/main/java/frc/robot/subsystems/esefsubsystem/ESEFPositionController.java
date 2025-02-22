@@ -158,7 +158,7 @@ public class ESEFPositionController {
 
   private Distance determineDynamicBreakpoint(Distance targetHeight) {
     Distance targetBreakpt;
-    if (targetHeight.lt(Inches.of(25))) {
+    if (targetHeight.lt(Inches.of(40))) {
         targetBreakpt = Inches.of(15); // Lower breakpoint for very low placements (will be overridden by min)
     } else if (targetHeight.lt(Inches.of(50))) {
         targetBreakpt = Inches.of(25); // Medium level breakpoint
