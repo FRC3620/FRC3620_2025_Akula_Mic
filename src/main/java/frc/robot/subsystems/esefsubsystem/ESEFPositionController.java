@@ -32,7 +32,7 @@ public class ESEFPositionController {
   ESEFMech actualPositionMech = new ESEFMech();
 
   Distance height_breakpoint = Inches.of(15);
-  Angle shoulder_breakpoint_low = Degrees.of(75);
+  Angle shoulder_breakpoint_low = Degrees.of(70);
   Angle shoulder_breakpoint_high = Degrees.of(95);
 
   public ESEFPositionController(ESEFElevatorMechanism elevatorMechanism, ESEFShoulderMechanism shoulderMechanism) {
@@ -158,7 +158,7 @@ public class ESEFPositionController {
     } else if (targetHeight.lt(Inches.of(50))) {
         targetBreakpt = Inches.of(25); // Medium level breakpoint
     } else {
-        targetBreakpt = Inches.of(40); // Higher breakpoint for upper placements
+        targetBreakpt = Inches.of(43); // Higher breakpoint for upper placements
     }
     SmartDashboard.putNumber("frc3620/ESEF/dynamicBreakpoint", targetBreakpt.in(Inches));
     return targetBreakpt;

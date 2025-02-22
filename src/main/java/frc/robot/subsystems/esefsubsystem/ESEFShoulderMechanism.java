@@ -55,7 +55,7 @@ public class ESEFShoulderMechanism {
 
             shoulderConfigs.Slot0.kG = 0.02; // Gravity FeedForward
             shoulderConfigs.Slot0.kS = 0; // Friction FeedForward
-            shoulderConfigs.Slot0.kP = 25; // an error of 1 rotation results in x Volt output
+            shoulderConfigs.Slot0.kP = 30; // an error of 1 rotation results in x Volt output
             shoulderConfigs.Slot0.kI = 0;
             shoulderConfigs.Slot0.kD = 0;
 

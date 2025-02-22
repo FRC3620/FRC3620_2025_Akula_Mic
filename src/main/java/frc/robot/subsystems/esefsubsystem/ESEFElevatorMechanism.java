@@ -28,7 +28,7 @@ import frc.robot.RobotContainer;
 /** Add your docs here. */
 public class ESEFElevatorMechanism {
   public static final Distance kElevatorMinHeight = Inches.of(0.0);
-  public static final Distance kElevatorMaxHeight = Inches.of(55);
+  public static final Distance kElevatorMaxHeight = Inches.of(58);
 
   boolean encoderCalibrated = false;
 
@@ -149,7 +149,7 @@ public class ESEFElevatorMechanism {
     SmartDashboard.putNumber("frc3620/Elevator/RequestedPosition", position.in(Inches));
 
     double motorRotations = position.in(Inches) / positionConversion.in(Inches); // Convert inches to rotations
-    motorRotations = MathUtil.clamp(motorRotations, 0, 35);
+    motorRotations = MathUtil.clamp(motorRotations, 0, 40.2);
 
     if (elevatorA != null && encoderCalibrated) {
       elevatorA.setControl(elevatorARequest.withPosition(motorRotations));
