@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 import org.dyn4j.geometry.Rotatable;
+import org.tinylog.Logger;
 import org.usfirst.frc3620.NTPublisher;
 import org.usfirst.frc3620.NTStructs;
 
@@ -237,15 +238,19 @@ public class VisionSubsystem extends SubsystemBase {
                                             // vision updates
       {
         doRejectUpdate = true;
+        Logger.info("Vision Reject","Angular Velocity");
       }
       else if (cameraData.megaTag2.poseEstimate == null) {
         doRejectUpdate = true;
+        Logger.info("Vision Reject","megaTag2 Pose = null");
       }
       else if (cameraData.megaTag2.poseEstimate.tagCount == 0) {
         doRejectUpdate = true;
+        Logger.info("Vision Reject","No Visible Tags");
       }
       else if(sd == null){
         doRejectUpdate = true;
+        Logger.info("Vision Reject","No Swerve Drive");
       }
       if (!doRejectUpdate) {
         sd.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));

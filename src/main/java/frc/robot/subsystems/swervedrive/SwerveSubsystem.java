@@ -40,6 +40,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.VisionSubsystem.Camera;
 import frc.robot.subsystems.swervedrive.Vision.Cameras;
 import java.io.File;
 import java.io.IOException;
@@ -89,9 +90,9 @@ public class SwerveSubsystem extends SubsystemBase {
   boolean alignedState = false;
 
   TaggedLogger logger = LoggingMaster.getLogger(getClass());
-  private Map <Translation2d, Integer> translationToTagMap = new HashMap<>();
+  private Map<Translation2d, Integer> translationToTagMap = new HashMap<>();
 
-  private Map <Integer, Translation2d> tagToTranslationMap = new HashMap<>();
+  private Map<Integer, Translation2d> tagToTranslationMap = new HashMap<>();
 
   private Translation2d centerBlueReef;
 
@@ -99,8 +100,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
   private Pose2d targetPose;
 
+  double maxDistanceFromCenterToBeClose = 3;// Distance in meters
 
-  double maxDistanceFromCenterToBeClose = 3;//Distance in meters
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
    *
@@ -147,11 +148,12 @@ public class SwerveSubsystem extends SubsystemBase {
     setUpTagMaps();
   }
 
-  void setUpTagMaps(){
+  void setUpTagMaps() {
 
-    for (int tagID = 17; tagID  <= 22; tagID++){
+    for (int tagID = 17; tagID <= 22; tagID++) {
 
-      Translation2d translation = RobotContainer.aprilTagFieldLayout.getTagPose(tagID).get().getTranslation().toTranslation2d();
+      Translation2d translation = RobotContainer.aprilTagFieldLayout.getTagPose(tagID).get().getTranslation()
+          .toTranslation2d();
 
       translationToTagMap.put(translation, tagID);
       tagToTranslationMap.put(tagID, translation);
@@ -164,11 +166,12 @@ public class SwerveSubsystem extends SubsystemBase {
 
   }
 
-  public Command pathFinderCommand(){
+  public Command pathFinderCommand() {
 
     Pose2d targetPose = new Pose2d(4.98, 2.9, Rotation2d.fromDegrees(121.5));
 
-    PathConstraints constraints = new PathConstraints(1.0, 4.0, Units.degreesToRadians(540), Units.degreesToRadians(720));
+    PathConstraints constraints = new PathConstraints(1.0, 4.0, Units.degreesToRadians(540),
+        Units.degreesToRadians(720));
 
     Command testCommand = AutoBuilder.pathfindToPose(targetPose, constraints, 0);
 
@@ -181,14 +184,16 @@ public class SwerveSubsystem extends SubsystemBase {
    *
    * @param driveCfg      SwerveDriveConfiguration for the swerve.
    * @param controllerCfg Swerve Controller.
-   *//* 
-  public SwerveSubsystem(SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg) {
-    swerveDrive = new SwerveDrive(driveCfg,
-        controllerCfg,
-        Constants.MAX_SPEED,
-        new Pose2d(new Translation2d(Meter.of(2), Meter.of(0)),
-            Rotation2d.fromDegrees(0)));
-  }*/
+   *//*
+      * public SwerveSubsystem(SwerveDriveConfiguration driveCfg,
+      * SwerveControllerConfiguration controllerCfg) {
+      * swerveDrive = new SwerveDrive(driveCfg,
+      * controllerCfg,
+      * Constants.MAX_SPEED,
+      * new Pose2d(new Translation2d(Meter.of(2), Meter.of(0)),
+      * Rotation2d.fromDegrees(0)));
+      * }
+      */
 
   /**
    * Setup the photon vision class.
@@ -208,25 +213,36 @@ public class SwerveSubsystem extends SubsystemBase {
      * }
      */
 
-    NTStructs.publish("SmartDashboard/frc3620/swerve/pose" , swerveDrive.getPose());
+    NTStructs.publish("SmartDashboard/frc3620/swerve/pose", swerveDrive.getPose());
 
     SmartDashboard.putNumber("frc3620/swerve/yaw", swerveDrive.getYaw().getDegrees());
     SmartDashboard.putNumber("frc3620/swerve/nearestTagID", getNearestTag(swerveDrive.getPose()));
-    if(targetPose!=null){
-       SmartDashboard.putNumber("frc3620/swerve/targetPose",
-       swerveDrive.getPose().getTranslation().getDistance(targetPose.getTranslation()));
+    if (targetPose != null) {
+      SmartDashboard.putNumber("frc3620/swerve/targetPose",
+          swerveDrive.getPose().getTranslation().getDistance(targetPose.getTranslation()));
 
-       if(swerveDrive.getPose().getTranslation().getDistance(targetPose.getTranslation()) < .06){//if pose is less than 2 inches away
+      if (swerveDrive.getPose().getTranslation().getDistance(targetPose.getTranslation()) < .06) {// if pose is less
+                                                                                                  // than 2 inches away
 
-          alignedState = true;
-       }else{
-          alignedState = false;
-       }
+        alignedState = true;
+      } else {
+        alignedState = false;
+      }
 
-       SmartDashboard.putBoolean("Are we alligned?", alignedState);
+      SmartDashboard.putBoolean("Are we alligned?", alignedState);
     }
-   
     
+    SmartDashboard.putNumber("frc3620/swerve/frontMegaTag1Error", swerveDrive.getPose().getTranslation().getDistance(
+        RobotContainer.visionSubsystem.getCameraData(Camera.FRONT).megaTag1.getPoseEstimate().pose.getTranslation()));
+
+    SmartDashboard.putNumber("frc3620/swerve/frontMegaTag2Error", swerveDrive.getPose().getTranslation().getDistance(
+        RobotContainer.visionSubsystem.getCameraData(Camera.FRONT).megaTag2.getPoseEstimate().pose.getTranslation()));
+
+    SmartDashboard.putNumber("frc3620/swerve/backMegaTag1Error", swerveDrive.getPose().getTranslation().getDistance(
+        RobotContainer.visionSubsystem.getCameraData(Camera.BACK).megaTag1.getPoseEstimate().pose.getTranslation()));
+
+    SmartDashboard.putNumber("frc3620/swerve/backMegaTag2Error", swerveDrive.getPose().getTranslation().getDistance(
+        RobotContainer.visionSubsystem.getCameraData(Camera.BACK).megaTag2.getPoseEstimate().pose.getTranslation()));
 
   }
 
@@ -268,11 +284,10 @@ public class SwerveSubsystem extends SubsystemBase {
           new PPHolonomicDriveController(
               // PPHolonomicController is the built in path following controller for holonomic
               // drive trains
-              //Original PIDs 5,0,0.
+              // Original PIDs 5,0,0.
               new PIDConstants(5.0, 0.0, 0.0),
               // Translation PID constants
-              new PIDConstants(7.5, 0.0, 1.2
-              )
+              new PIDConstants(7.5, 0.0, 1.2)
           // Rotation PID constants
           ),
           config,
@@ -359,7 +374,7 @@ public class SwerveSubsystem extends SubsystemBase {
   public Command driveToPoseSlow(Pose2d pose) {
     // Create the constraints to use while pathfinding
     PathConstraints constraints = new PathConstraints(
-      swerveDrive.getMaximumChassisVelocity() * .25, 2.0,
+        swerveDrive.getMaximumChassisVelocity() * .25, 2.0,
         swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720));
 
     // Since AutoBuilder is configured, we can use it to build pathfinding commands
@@ -821,23 +836,22 @@ public class SwerveSubsystem extends SubsystemBase {
     return swerveDrive;
   }
 
-  public int getNearestTag(Pose2d pose){
+  public int getNearestTag(Pose2d pose) {
     Translation2d translation = pose.getTranslation();
     Translation2d nearestTagTranslation = translation.nearest(tagTranslations);
 
-    if(translation.getDistance(centerBlueReef) < maxDistanceFromCenterToBeClose){
+    if (translation.getDistance(centerBlueReef) < maxDistanceFromCenterToBeClose) {
       return translationToTagMap.get(nearestTagTranslation);
-    }else{
+    } else {
       return -1;
     }
   }
 
-
-  public void setTargetPose(Pose2d pose){
-    targetPose=pose;
+  public void setTargetPose(Pose2d pose) {
+    targetPose = pose;
   }
 
-  public Pose2d getTargetPose(){
+  public Pose2d getTargetPose() {
     return targetPose;
   }
 }
