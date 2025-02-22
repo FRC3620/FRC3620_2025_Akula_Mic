@@ -32,6 +32,7 @@ public class ESEFPositionController {
   ESEFMech actualPositionMech = new ESEFMech();
 
   Distance height_breakpoint = Inches.of(15);
+  Distance height_breakpoint_minimum = Inches.of(15);
   Angle shoulder_breakpoint_low = Degrees.of(70);
   Angle shoulder_breakpoint_high = Degrees.of(95);
 
@@ -69,7 +70,11 @@ public class ESEFPositionController {
 
   public void setPosition (ESEFPosition position) {
     // Set dynamic height breakpoint based on the target height, ensuring it's never below the minimum
-    height_breakpoint = maxDistance(determineDynamicBreakpoint(position.elevatorHeight), height_breakpoint);
+    SmartDashboard.putNumber("frc3620/ESEF/debug/targetHeight", position.elevatorHeight.in(Inches));
+    SmartDashboard.putNumber("frc3620/ESEF/debug/dynamicBreakpoint", determineDynamicBreakpoint(position.elevatorHeight).in(Inches));
+    SmartDashboard.putNumber("frc3620/ESEF/debug/previousBreakpoint", height_breakpoint.in(Inches));
+    height_breakpoint = maxDistance(determineDynamicBreakpoint(position.elevatorHeight), height_breakpoint_minimum);
+    SmartDashboard.putNumber("frc3620/ESEF/debug/updatedBreakpoint", height_breakpoint.in(Inches));    
     ultimateSetpoint = new ESEFPosition(position.elevatorHeight, position.shoulderAngle);
     
     updateDashboardForUltimate();
@@ -160,7 +165,7 @@ public class ESEFPositionController {
     } else {
         targetBreakpt = Inches.of(43); // Higher breakpoint for upper placements
     }
-    SmartDashboard.putNumber("frc3620/ESEF/dynamicBreakpoint", targetBreakpt.in(Inches));
+    //SmartDashboard.putNumber("frc3620/ESEF/dynamicBreakpoint", targetBreakpt.in(Inches));
     return targetBreakpt;
 }
 
