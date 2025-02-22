@@ -322,8 +322,8 @@ public class RobotContainer {
         swerveSubsystem.setDefaultCommand(driveFieldOrientedAnglularVelocity);
       }
 
-      driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH)
-          .onTrue(swerveSubsystem.pathFinderCommand());
+      //driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH)
+      //    .onTrue(swerveSubsystem.pathFinderCommand());
 
       new JoystickAnalogButton(operatorJoystick, XBoxConstants.BUTTON_A)
         .onTrue(new AFIRollerSetSpeedUntilInCommand(0.5, afiSubsystem));

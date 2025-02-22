@@ -52,7 +52,9 @@ public class ESEFPositionController {
 
   ESEFPosition limitedESEFPosition(Distance d, Angle a) {
     if (d.lt(height_breakpoint)) {
+
       a = Utilities.clamp(a, shoulder_breakpoint_low, shoulder_breakpoint_high);
+
     }
     d = Utilities.clamp (d, ESEFElevatorMechanism.kElevatorMinHeight, ESEFElevatorMechanism.kElevatorMaxHeight);
     return new ESEFPosition(d, a);
