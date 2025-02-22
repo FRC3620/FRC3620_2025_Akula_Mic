@@ -32,6 +32,7 @@ import org.usfirst.frc3620.CANDeviceType;
 import org.usfirst.frc3620.ChameleonController;
 import org.usfirst.frc3620.ChameleonController.ControllerType;
 import org.usfirst.frc3620.FlySkyConstants;
+import org.usfirst.frc3620.JoystickAnalogButton;
 import org.usfirst.frc3620.RobotParametersContainer;
 import org.usfirst.frc3620.Utilities;
 import org.usfirst.frc3620.XBoxConstants;
@@ -56,6 +57,8 @@ import frc.robot.commands.SetClimberPostionCommand;
 import frc.robot.commands.SetIMUFromMegaTag1Command;
 import frc.robot.commands.SetPivotPositionCommand;
 import frc.robot.commands.AFI.AFIRollerSetSpeedCommand;
+import frc.robot.commands.AFI.AFIRollerSetSpeedContinuousCommand;
+import frc.robot.commands.AFI.AFIRollerSetSpeedUntilInCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -101,7 +104,6 @@ public class RobotContainer {
   public static BlinkySubsystem blinkySubsystem;
   public static VisionSubsystem visionSubsystem;
 
-
   // joysticks here....
   public static ChameleonController driverJoystick;
   public static Joystick operatorJoystick;
@@ -110,17 +112,17 @@ public class RobotContainer {
   public static AprilTagFieldLayout aprilTagFieldLayout;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  //final CommandXboxController driverXbox = new CommandXboxController(0);
+  // final CommandXboxController driverXbox = new CommandXboxController(0);
   // The robot's subsystems and commands are defined here...
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
-      * @throws ParseException 
-      * @throws IOException 
-      * @throws FileVersionException 
-      */
-     public RobotContainer() throws FileVersionException, IOException, ParseException {
-
+   * 
+   * @throws ParseException
+   * @throws IOException
+   * @throws FileVersionException
+   */
+  public RobotContainer() throws FileVersionException, IOException, ParseException {
 
     canDeviceFinder = new CANDeviceFinder();
 
@@ -137,12 +139,14 @@ public class RobotContainer {
     }
 
     /*
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.REV_PH, 1, "REV PH") || iAmACompetitionRobot) {
-      pneumaticModuleType = PneumaticsModuleType.REVPH;
-    } else if (canDeviceFinder.isDevicePresent(CANDeviceType.CTRE_PCM, 0, "CTRE PCM")) {
-      pneumaticModuleType = PneumaticsModuleType.CTREPCM;
-    }
-    */
+     * if (canDeviceFinder.isDevicePresent(CANDeviceType.REV_PH, 1, "REV PH") ||
+     * iAmACompetitionRobot) {
+     * pneumaticModuleType = PneumaticsModuleType.REVPH;
+     * } else if (canDeviceFinder.isDevicePresent(CANDeviceType.CTRE_PCM, 0,
+     * "CTRE PCM")) {
+     * pneumaticModuleType = PneumaticsModuleType.CTREPCM;
+     * }
+     */
 
     if (canDeviceFinder.isDevicePresent(CANDeviceType.REV_PDH, 1) || iAmACompetitionRobot) {
       powerDistribution = new PowerDistribution();
@@ -165,7 +169,6 @@ public class RobotContainer {
 
     setupAutonomousCommands();
 
-
     DriverStation.silenceJoystickConnectionWarning(true);
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
 
@@ -173,7 +176,8 @@ public class RobotContainer {
   }
 
   private void makeSubsystems() {
-    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 1, "Swerve Drive 1") || shouldMakeAllCANDevices()) {
+    if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 1, "Swerve Drive 1")
+        || shouldMakeAllCANDevices()) {
       canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 3, "Swerve Drive 3");
       canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 5, "Swerve Drive 5");
       canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 7, "Swerve Drive 7");
@@ -194,13 +198,12 @@ public class RobotContainer {
     climberSubsystem = new ClimberSubsystem();
     blinkySubsystem = new BlinkySubsystem();
     visionSubsystem = new VisionSubsystem();
-    
+
     // need to create healthSubsystem LAST!!!!!!!
     healthSubsystem = new HealthSubsystem();
 
     CommandScheduler.getInstance().schedule(new ContinuousSetIMUFromMegaTag1Command());
   }
-
 
   public String getDriverControllerName() {
     return driverJoystick.getName();
@@ -209,7 +212,7 @@ public class RobotContainer {
   public void setDriverControllerName(ControllerType driveControllerType) {
     driverJoystick.setCurrentControllerType(driveControllerType);
   }
-  
+
   /**
    * Use this method to define your trigger->command mappings. Triggers can be
    * created via the
@@ -228,14 +231,13 @@ public class RobotContainer {
     driverJoystick = new ChameleonController(new Joystick(0));
     operatorJoystick = new Joystick(1);
 
-
-    climberSubsystem.setDefaultCommand(climberSubsystem.makeSetClimberPowerCommand(() -> MathUtil.applyDeadband(operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y),0.1)));
-
+    climberSubsystem.setDefaultCommand(climberSubsystem.makeSetClimberPowerCommand(
+        () -> MathUtil.applyDeadband(operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y), 0.1)));
 
     if (swerveSubsystem != null) {
       /*
-        Converts driver input into a field-relative ChassisSpeeds that is controlled
-        by angular velocity.
+       * Converts driver input into a field-relative ChassisSpeeds that is controlled
+       * by angular velocity.
        */
       SwerveInputStream driveAngularVelocity = SwerveInputStream.of(swerveSubsystem.getSwerveDrive(),
           () -> getDriveVerticalJoystick() * -1,
@@ -246,16 +248,17 @@ public class RobotContainer {
           .allianceRelativeControl(true);
 
       /*
-        Clone's the angular velocity input stream and converts it to a fieldRelative
-        input stream.()
+       * Clone's the angular velocity input stream and converts it to a fieldRelative
+       * input stream.()
        */
-      SwerveInputStream driveDirectAngle = driveAngularVelocity.copy().withControllerHeadingAxis(() -> getDriveHorizontalJoystick(),
-          () -> getDriveVerticalJoystick())
+      SwerveInputStream driveDirectAngle = driveAngularVelocity.copy()
+          .withControllerHeadingAxis(() -> getDriveHorizontalJoystick(),
+              () -> getDriveVerticalJoystick())
           .headingWhile(true);
 
       /*
-        Clone's the angular velocity input stream and converts it to a robotRelative
-        input stream.
+       * Clone's the angular velocity input stream and converts it to a robotRelative
+       * input stream.
        */
       SwerveInputStream driveRobotOriented = driveAngularVelocity.copy().robotRelative(true)
           .allianceRelativeControl(false);
@@ -268,88 +271,105 @@ public class RobotContainer {
           .scaleTranslation(0.8)
           .allianceRelativeControl(true);
 
-      /*     
-      // Derive the heading axis with math!
-      SwerveInputStream driveDirectAngleKeyboard = driveAngularVelocityKeyboard.copy()
-          .withControllerHeadingAxis(() -> Math.sin(
-              driverXbox.getRawAxis(
-                  2) *
-                  Math.PI)
-              *
-              (Math.PI *
-                  2),
-              () -> Math.cos(
-                  driverXbox.getRawAxis(
-                      2) *
-                      Math.PI)
-                  *
-                  (Math.PI *
-                      2))
-          .headingWhile(true);
-      */
+      /*
+       * // Derive the heading axis with math!
+       * SwerveInputStream driveDirectAngleKeyboard =
+       * driveAngularVelocityKeyboard.copy()
+       * .withControllerHeadingAxis(() -> Math.sin(
+       * driverXbox.getRawAxis(
+       * 2) *
+       * Math.PI)
+       *
+       * (Math.PI *
+       * 2),
+       * () -> Math.cos(
+       * driverXbox.getRawAxis(
+       * 2) *
+       * Math.PI)
+       *
+       * (Math.PI *
+       * 2))
+       * .headingWhile(true);
+       */
       Command driveFieldOrientedDirectAngle = swerveSubsystem.driveFieldOriented(driveDirectAngle);
       Command driveFieldOrientedAnglularVelocity = swerveSubsystem.driveFieldOriented(driveAngularVelocity);
       Command driveRobotOrientedAngularVelocity = swerveSubsystem.driveFieldOriented(driveRobotOriented);
       Command driveSetpointGen = swerveSubsystem.driveWithSetpointGeneratorFieldRelative(
           driveDirectAngle);
-      //Command driveFieldOrientedDirectAngleKeyboard = swerveSubsystem.driveFieldOriented(driveDirectAngleKeyboard);
+      // Command driveFieldOrientedDirectAngleKeyboard =
+      // swerveSubsystem.driveFieldOriented(driveDirectAngleKeyboard);
       Command driveFieldOrientedAnglularVelocityKeyboard = swerveSubsystem
           .driveFieldOriented(driveAngularVelocityKeyboard);
-     // Command driveSetpointGenKeyboard = swerveSubsystem.driveWithSetpointGeneratorFieldRelative(
-     //     driveDirectAngleKeyboard);
+      // Command driveSetpointGenKeyboard =
+      // swerveSubsystem.driveWithSetpointGeneratorFieldRelative(
+      // driveDirectAngleKeyboard);
 
       if (RobotBase.isSimulation()) {
-        //swerveSubsystem.setDefaultCommand(driveFieldOrientedDirectAngleKeyboard);
+        // swerveSubsystem.setDefaultCommand(driveFieldOrientedDirectAngleKeyboard);
       } else {
         swerveSubsystem.setDefaultCommand(driveFieldOrientedAnglularVelocity);
       }
 
       if (Robot.isSimulation()) {
-        //driverXbox.start()
-        //    .onTrue(Commands.runOnce(() -> swerveSubsystem.resetOdometry(new Pose2d(3, 3, new Rotation2d()))));
-        //driverXbox.button(1).whileTrue(swerveSubsystem.sysIdDriveMotorCommand());
+        // driverXbox.start()
+        // .onTrue(Commands.runOnce(() -> swerveSubsystem.resetOdometry(new Pose2d(3, 3,
+        // new Rotation2d()))));
+        // driverXbox.button(1).whileTrue(swerveSubsystem.sysIdDriveMotorCommand());
       }
 
       /*
-        note from Doug:
-        this looks kind of incorrect; we will NEVER be in test mode when the robot is
-        coming up
+       * note from Doug:
+       * this looks kind of incorrect; we will NEVER be in test mode when the robot is
+       * coming up
        */
       /*
-      if (DriverStation.isTest()) {
-        swerveSubsystem.setDefaultCommand(driveFieldOrientedAnglularVelocity); // Overrides drive command above!
-
-        driverXbox.x().whileTrue(Commands.runOnce(swerveSubsystem::lock, swerveSubsystem).repeatedly());
-        driverXbox.y().whileTrue(swerveSubsystem.driveToDistanceCommand(1.0, 0.2));
-        driverXbox.start().onTrue((Commands.runOnce(swerveSubsystem::zeroGyro)));
-        driverXbox.back().whileTrue(swerveSubsystem.centerModulesCommand());
-        driverXbox.leftBumper().onTrue(Commands.none());
-        driverXbox.rightBumper().onTrue(Commands.none());
-      } else {
-        driverXbox.a().onTrue((Commands.runOnce(swerveSubsystem::zeroGyro)));
-        driverXbox.x().onTrue(Commands.runOnce(swerveSubsystem::addFakeVisionReading));
-        driverXbox.b().whileTrue(
-            swerveSubsystem.driveToPose(
-                new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0))));
-        driverXbox.start().whileTrue(Commands.none());
-        driverXbox.back().whileTrue(Commands.none());
-        driverXbox.leftBumper().whileTrue(Commands.runOnce(swerveSubsystem::lock, swerveSubsystem).repeatedly());
-        driverXbox.rightBumper().onTrue(Commands.none());
-      }*/
+       * if (DriverStation.isTest()) {
+       * swerveSubsystem.setDefaultCommand(driveFieldOrientedAnglularVelocity); //
+       * Overrides drive command above!
+       * 
+       * driverXbox.x().whileTrue(Commands.runOnce(swerveSubsystem::lock,
+       * swerveSubsystem).repeatedly());
+       * driverXbox.y().whileTrue(swerveSubsystem.driveToDistanceCommand(1.0, 0.2));
+       * driverXbox.start().onTrue((Commands.runOnce(swerveSubsystem::zeroGyro)));
+       * driverXbox.back().whileTrue(swerveSubsystem.centerModulesCommand());
+       * driverXbox.leftBumper().onTrue(Commands.none());
+       * driverXbox.rightBumper().onTrue(Commands.none());
+       * } else {
+       * driverXbox.a().onTrue((Commands.runOnce(swerveSubsystem::zeroGyro)));
+       * driverXbox.x().onTrue(Commands.runOnce(swerveSubsystem::addFakeVisionReading)
+       * );
+       * driverXbox.b().whileTrue(
+       * swerveSubsystem.driveToPose(
+       * new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0))));
+       * driverXbox.start().whileTrue(Commands.none());
+       * driverXbox.back().whileTrue(Commands.none());
+       * driverXbox.leftBumper().whileTrue(Commands.runOnce(swerveSubsystem::lock,
+       * swerveSubsystem).repeatedly());
+       * driverXbox.rightBumper().onTrue(Commands.none());
+       * }
+       */
     }
 
-    //driverJoystick = new Joystick(0);
+    // driverJoystick = new Joystick(0);
     operatorJoystick = new Joystick(1);
 
-   driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH)
-      .onTrue( 
-        
-        swerveSubsystem.pathFinderCommand()
+    driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH)
+        .onTrue(
 
-      );
+            swerveSubsystem.pathFinderCommand()
 
-    //new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A)
-    //    .onTrue(new LogCommand("'A' button hit"));
+        );
+    new JoystickAnalogButton(operatorJoystick, XBoxConstants.BUTTON_A)
+        .onTrue(new AFIRollerSetSpeedUntilInCommand(0.5, afiSubsystem));
+    // new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A)
+    // .onTrue(new LogCommand("'A' button hit"));
+    new JoystickAnalogButton(operatorJoystick, XBoxConstants.BUTTON_B)
+        .onTrue(new AFIRollerSetSpeedCommand(-0.05, afiSubsystem));
+
+    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_Y)
+        .onTrue(new SetPivotPositionCommand(Degrees.of(70), afiSubsystem));
+    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_X)
+        .onTrue(new SetPivotPositionCommand(Degrees.of(20), afiSubsystem));
 
   }
 
@@ -360,23 +380,15 @@ public class RobotContainer {
     SmartDashboard.putData("ShoulderSetPosition2", new SetShoulderPositionCommand(Degrees.of(30), esefSubsystem));
     SmartDashboard.putData("ShoulderSetPosition3", new SetShoulderPositionCommand(Degrees.of(60), esefSubsystem));
     SmartDashboard.putData("ShoulderSetPosition4", new SetShoulderPositionCommand(Degrees.of(90), esefSubsystem));
-    
+
     SmartDashboard.putData("ElevatorSetPosition1", new SetElevatorPositionCommand(Inches.of(8.0), esefSubsystem));
     SmartDashboard.putData("ElevatorSetPosition2", new SetElevatorPositionCommand(Inches.of(12.0), esefSubsystem));
     SmartDashboard.putData("ElevatorSetPosition3", new SetElevatorPositionCommand(Inches.of(20.0), esefSubsystem));
     SmartDashboard.putData("ElevatorSetPositionHome", new SetElevatorPositionCommand(Inches.of(0.0), esefSubsystem));
     SmartDashboard.putData("move End Effector", new SetEndEffectorSpeedCommand(0.5, esefSubsystem));
 
-    SmartDashboard.putData("PivotPositionUp", new SetPivotPositionCommand(Degrees.of(70), afiSubsystem));
-    SmartDashboard.putData("PivotPosition2", new SetPivotPositionCommand(Degrees.of(20), afiSubsystem));
-    SmartDashboard.putData("PivotPositionDown", new SetPivotPositionCommand(Degrees.of(10), afiSubsystem));
     SmartDashboard.putNumber("Elevator.ManualPosition", 5);
     SmartDashboard.putData("Elevator.ManualControl", new SetManualElevatorCommand());
-
-    SmartDashboard.putData("AFISetRollerSpeed1", new AFIRollerSetSpeedCommand(0.1, afiSubsystem));
-    SmartDashboard.putData("AFISetRollerSpeed2", new AFIRollerSetSpeedCommand(0.5, afiSubsystem));
-    SmartDashboard.putData("AFIStopRoller", new AFIRollerSetSpeedCommand(0.0, afiSubsystem));
-
     // SmartDashboard.putData('CoralSpeed');
 
     // SmartDashboard.putData(new xxxxCommand());
@@ -385,7 +397,8 @@ public class RobotContainer {
 
     SmartDashboard.putData("Reset IMU from Limelight data", new SetIMUFromMegaTag1Command());
 
-    //SmartDashboard.putData("Drive 10 feet", swerveSubsystem.driveToDistanceCommand(Units.feetToMeters(10), 0.5));
+    // SmartDashboard.putData("Drive 10 feet",
+    // swerveSubsystem.driveToDistanceCommand(Units.feetToMeters(10), 0.5));
     SmartDashboard.putData("Test Drive To Pose", swerveSubsystem.pathFinderCommand());
 
   }
@@ -510,10 +523,10 @@ public class RobotContainer {
     if (driverJoystick.getCurrentControllerType() == ControllerType.B) {
       deadzone = 0.02;
     }
-    
+
     SmartDashboard.putNumber("driver.spin.raw", axisValue);
 
-    //axisValue = 0;
+    // axisValue = 0;
 
     double rv = 0;
     if (Math.abs(axisValue) >= deadzone) {
