@@ -48,6 +48,9 @@ public class AFISubsystem extends SubsystemBase {
   //Front Encoder is backwards use rear until fixed.
   WhichEncoderToUse whichEncoderToUse = WhichEncoderToUse.REAR;
 
+  boolean relativeEncoderSet = false;
+  Timer relativeEncoderTimer = new Timer();
+
   final PositionVoltage pivotRequest = new PositionVoltage(0).withSlot(0);
   final DutyCycleOut rollerRequest = new DutyCycleOut(0);
 
