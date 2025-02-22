@@ -10,6 +10,7 @@ import org.usfirst.frc3620.CANDeviceType;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 //import com.ctre.phoenix6.hardware.CANcoder;
@@ -26,6 +27,9 @@ import frc.robot.RobotContainer;
 
 /** Add your docs here. */
 public class ESEFShoulderMechanism {
+
+    private final MotionMagicVoltage shoulderMotionMagicRequest = new MotionMagicVoltage(0).withSlot(0);
+
     public static final double kShoulderDefaultSetpointDegrees = 75.0;
 
     CANcoder shoulderEncoder;
@@ -61,11 +65,16 @@ public class ESEFShoulderMechanism {
 
             shoulderConfigs.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
+            shoulderConfigs.MotionMagic.MotionMagicCruiseVelocity = 75; // Max speed in Rotations per second
+            shoulderConfigs.MotionMagic.MotionMagicAcceleration = 60; // Max acceleration in Rotations per second^2
+            shoulderConfigs.MotionMagic.MotionMagicJerk = 200; // Smooth acceleration (optional)
+
+
             shoulderConfigs.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);
-            shoulderConfigs.MotorOutput.withPeakForwardDutyCycle(0.3);
-            shoulderConfigs.MotorOutput.withPeakReverseDutyCycle(-0.1);
-            shoulderConfigs.Voltage.withPeakForwardVoltage(12 * 0.3);
-            shoulderConfigs.Voltage.withPeakReverseVoltage(12 * -0.1);
+            shoulderConfigs.MotorOutput.withPeakForwardDutyCycle(0.6);
+            shoulderConfigs.MotorOutput.withPeakReverseDutyCycle(-0.5);
+            shoulderConfigs.Voltage.withPeakForwardVoltage(12 * 0.6);
+            shoulderConfigs.Voltage.withPeakReverseVoltage(12 * -0.5);
             
             
             // This CANcoder should report absolute position from [-0.5, 0.5) rotations,
@@ -101,7 +110,7 @@ public class ESEFShoulderMechanism {
         SmartDashboard.putNumber("frc3620/Shoulder/RequestedPosition", position.in(Degrees));
 
         if (shoulder != null) {
-            shoulder.setControl(shoulderRequest.withPosition(position));
+            shoulder.setControl(shoulderMotionMagicRequest.withPosition(position.in(Rotations)));
         }
     }
 
