@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,24 +39,36 @@ import org.usfirst.frc3620.Utilities;
 import org.usfirst.frc3620.XBoxConstants;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commandfactories.AFISubsystemCommandFactory;
+import frc.robot.commandfactories.ClimberCommandFactory;
+import frc.robot.commandfactories.ESEFSubsystemCommandFactory;
+import frc.robot.commandfactories.SwerveSubsystemCommandFactory;
 import frc.robot.commands.esefcommands.SetElevatorPositionCommand;
 import frc.robot.commands.esefcommands.SetEndEffectorSpeedCommand;
+import frc.robot.commands.esefcommands.RunEndEffectorUntilCoralGone;
 import frc.robot.commands.esefcommands.SetManualElevatorCommand;
+import frc.robot.commands.esefcommands.RunEndEffectorUntilHasCoral;
 import frc.robot.commands.esefcommands.SetShoulderPositionCommand;
+import frc.robot.commands.swervedrive.DriveToClosestStickCommand;
+import frc.robot.commands.swervedrive.DriveToClosestStickCommand.WhichStick;
 import frc.robot.commands.swervedrive.TestDriveToPoseCommand;
 import frc.robot.subsystems.AFISubsystem;
 import frc.robot.subsystems.BlinkySubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.HealthSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.esefsubsystem.ESEFPosition;
+import frc.robot.subsystems.VisionSubsystem.WhichBlueStick;
 import frc.robot.subsystems.esefsubsystem.ESEFSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.subsystems.swervedrive.Vision;
 import swervelib.SwerveInputStream;
 import swervelib.imu.SwerveIMU;
 import frc.robot.commands.ContinuousSetIMUFromMegaTag1Command;
 import frc.robot.commands.SetClimberPostionCommand;
 import frc.robot.commands.SetIMUFromMegaTag1Command;
 import frc.robot.commands.SetPivotPositionCommand;
+import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.AFI.AFIRollerSetSpeedCommand;
 import frc.robot.commands.AFI.AFIRollerSetSpeedContinuousCommand;
 import frc.robot.commands.AFI.AFIRollerSetSpeedUntilInCommand;
@@ -90,7 +103,7 @@ public class RobotContainer {
   Alert missingDevicesAlert = new Alert(HealthSubsystem.HARDWARE_ALERT_GROUP_NAME, "", Alert.AlertType.kError);
 
   // hardware here...
-  private static DigitalInput practiceBotJumper;
+  // private static DigitalInput practiceBotJumper;
 
   public static PowerDistribution powerDistribution = null;
   public static PneumaticsModuleType pneumaticModuleType = null;
@@ -100,9 +113,15 @@ public class RobotContainer {
   public static AFISubsystem afiSubsystem;
   public static SwerveSubsystem swerveSubsystem;
   public static HealthSubsystem healthSubsystem;
-  ClimberSubsystem climberSubsystem;
+  public static ClimberSubsystem climberSubsystem;
   public static BlinkySubsystem blinkySubsystem;
   public static VisionSubsystem visionSubsystem;
+
+  // command factories here
+  public static AFISubsystemCommandFactory afiCommandFactory;
+  public static SwerveSubsystemCommandFactory swerveCommandFactory;
+  public static ESEFSubsystemCommandFactory esefCommandFactory;
+  public static ClimberCommandFactory climberCommandFactory;
 
   // joysticks here....
   public static ChameleonController driverJoystick;
@@ -132,7 +151,7 @@ public class RobotContainer {
     logger.info("got parameters for chassis '{}'", robotParameters.getName());
     Utilities.logMetadataToDataLog("Robot", robotParameters.getName());
 
-    practiceBotJumper = new DigitalInput(0);
+    // practiceBotJumper = new DigitalInput(0);
     boolean iAmACompetitionRobot = amIACompBot();
     if (!iAmACompetitionRobot) {
       logger.warn("this is a test chassis, will try to deal with missing hardware!");
@@ -160,13 +179,19 @@ public class RobotContainer {
       missingDevicesAlert.set(true);
       missingDevicesAlert.setText("Missing from CAN bus: " + canDeviceFinder.getMissingDeviceSet());
     }
+    
+    makeCommandFactories();
 
-    autoChooser = AutoBuilder.buildAutoChooser();
     // Configure the button bindings
-    configureButtonBindings();
+    configureButtonBindingsAndDefaultCommands();
 
     setupSmartDashboardCommands();
 
+    if (swerveSubsystem != null) {
+      autoChooser = AutoBuilder.buildAutoChooser();
+    } else {
+      autoChooser = null;
+    }
     setupAutonomousCommands();
 
     DriverStation.silenceJoystickConnectionWarning(true);
@@ -187,22 +212,30 @@ public class RobotContainer {
       canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 8, "Swerve Drive 8");
 
       String swerveFolder = robotParameters.getSwerveDirectoryName();
+      if (swerveFolder == null) swerveFolder = "swerve/simulation";
 
-      SmartDashboard.putString("swerveFolder", swerveFolder);
+      SmartDashboard.putString("frc3620/swerveFolder", swerveFolder);
       logger.info("using swerveFolder '{}'", swerveFolder);
       swerveSubsystem = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), swerveFolder));
+      SmartDashboard.putData("frc3620/swerveSubsystem", swerveSubsystem);
     }
 
     esefSubsystem = new ESEFSubsystem();
     afiSubsystem = new AFISubsystem();
+    SmartDashboard.putData("frc3620/AFI/afiSubsystem", afiSubsystem);
     climberSubsystem = new ClimberSubsystem();
     blinkySubsystem = new BlinkySubsystem();
     visionSubsystem = new VisionSubsystem();
 
     // need to create healthSubsystem LAST!!!!!!!
     healthSubsystem = new HealthSubsystem();
+  }
 
-    CommandScheduler.getInstance().schedule(new ContinuousSetIMUFromMegaTag1Command());
+  private void makeCommandFactories() {
+    afiCommandFactory = new AFISubsystemCommandFactory(afiSubsystem);
+    swerveCommandFactory = new SwerveSubsystemCommandFactory(swerveSubsystem);
+    esefCommandFactory = new ESEFSubsystemCommandFactory(esefSubsystem);
+    climberCommandFactory = new ClimberCommandFactory(climberSubsystem);
   }
 
   public String getDriverControllerName() {
@@ -226,13 +259,17 @@ public class RobotContainer {
    * controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick
    * Flight joysticks}.
    */
-  private void configureButtonBindings() {
-
+  private void configureButtonBindingsAndDefaultCommands() {
     driverJoystick = new ChameleonController(new Joystick(0));
     operatorJoystick = new Joystick(1);
 
-    climberSubsystem.setDefaultCommand(climberSubsystem.makeSetClimberPowerCommand(
-        () -> MathUtil.applyDeadband(operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y), 0.1)));
+    // make sure this command gets run when we start up
+    CommandScheduler.getInstance().schedule(new ContinuousSetIMUFromMegaTag1Command());
+
+    climberSubsystem.setDefaultCommand(climberCommandFactory.makeSetClimberPowerCommand(
+        () -> MathUtil.applyDeadband(operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y), 0.1))
+        .withName("ControlClimberFromJoystick")
+    );
 
     if (swerveSubsystem != null) {
       /*
@@ -271,38 +308,12 @@ public class RobotContainer {
           .scaleTranslation(0.8)
           .allianceRelativeControl(true);
 
-      /*
-       * // Derive the heading axis with math!
-       * SwerveInputStream driveDirectAngleKeyboard =
-       * driveAngularVelocityKeyboard.copy()
-       * .withControllerHeadingAxis(() -> Math.sin(
-       * driverXbox.getRawAxis(
-       * 2) *
-       * Math.PI)
-       *
-       * (Math.PI *
-       * 2),
-       * () -> Math.cos(
-       * driverXbox.getRawAxis(
-       * 2) *
-       * Math.PI)
-       *
-       * (Math.PI *
-       * 2))
-       * .headingWhile(true);
-       */
+
       Command driveFieldOrientedDirectAngle = swerveSubsystem.driveFieldOriented(driveDirectAngle);
       Command driveFieldOrientedAnglularVelocity = swerveSubsystem.driveFieldOriented(driveAngularVelocity);
       Command driveRobotOrientedAngularVelocity = swerveSubsystem.driveFieldOriented(driveRobotOriented);
       Command driveSetpointGen = swerveSubsystem.driveWithSetpointGeneratorFieldRelative(
           driveDirectAngle);
-      // Command driveFieldOrientedDirectAngleKeyboard =
-      // swerveSubsystem.driveFieldOriented(driveDirectAngleKeyboard);
-      Command driveFieldOrientedAnglularVelocityKeyboard = swerveSubsystem
-          .driveFieldOriented(driveAngularVelocityKeyboard);
-      // Command driveSetpointGenKeyboard =
-      // swerveSubsystem.driveWithSetpointGeneratorFieldRelative(
-      // driveDirectAngleKeyboard);
 
       if (RobotBase.isSimulation()) {
         // swerveSubsystem.setDefaultCommand(driveFieldOrientedDirectAngleKeyboard);
@@ -310,101 +321,55 @@ public class RobotContainer {
         swerveSubsystem.setDefaultCommand(driveFieldOrientedAnglularVelocity);
       }
 
-      if (Robot.isSimulation()) {
-        // driverXbox.start()
-        // .onTrue(Commands.runOnce(() -> swerveSubsystem.resetOdometry(new Pose2d(3, 3,
-        // new Rotation2d()))));
-        // driverXbox.button(1).whileTrue(swerveSubsystem.sysIdDriveMotorCommand());
-      }
+      driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH)
+          .onTrue(swerveSubsystem.pathFinderCommand());
 
-      /*
-       * note from Doug:
-       * this looks kind of incorrect; we will NEVER be in test mode when the robot is
-       * coming up
-       */
-      /*
-       * if (DriverStation.isTest()) {
-       * swerveSubsystem.setDefaultCommand(driveFieldOrientedAnglularVelocity); //
-       * Overrides drive command above!
-       * 
-       * driverXbox.x().whileTrue(Commands.runOnce(swerveSubsystem::lock,
-       * swerveSubsystem).repeatedly());
-       * driverXbox.y().whileTrue(swerveSubsystem.driveToDistanceCommand(1.0, 0.2));
-       * driverXbox.start().onTrue((Commands.runOnce(swerveSubsystem::zeroGyro)));
-       * driverXbox.back().whileTrue(swerveSubsystem.centerModulesCommand());
-       * driverXbox.leftBumper().onTrue(Commands.none());
-       * driverXbox.rightBumper().onTrue(Commands.none());
-       * } else {
-       * driverXbox.a().onTrue((Commands.runOnce(swerveSubsystem::zeroGyro)));
-       * driverXbox.x().onTrue(Commands.runOnce(swerveSubsystem::addFakeVisionReading)
-       * );
-       * driverXbox.b().whileTrue(
-       * swerveSubsystem.driveToPose(
-       * new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0))));
-       * driverXbox.start().whileTrue(Commands.none());
-       * driverXbox.back().whileTrue(Commands.none());
-       * driverXbox.leftBumper().whileTrue(Commands.runOnce(swerveSubsystem::lock,
-       * swerveSubsystem).repeatedly());
-       * driverXbox.rightBumper().onTrue(Commands.none());
-       * }
-       */
-    }
-
-    // driverJoystick = new Joystick(0);
-    operatorJoystick = new Joystick(1);
-
-    driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH)
-        .onTrue(
-
-            swerveSubsystem.pathFinderCommand()
-
-        );
-    new JoystickAnalogButton(operatorJoystick, XBoxConstants.BUTTON_A)
+      new JoystickAnalogButton(operatorJoystick, XBoxConstants.BUTTON_A)
         .onTrue(new AFIRollerSetSpeedUntilInCommand(0.5, afiSubsystem));
-    // new JoystickButton(driverJoystick, XBoxConstants.BUTTON_A)
-    // .onTrue(new LogCommand("'A' button hit"));
-    new JoystickAnalogButton(operatorJoystick, XBoxConstants.BUTTON_B)
+        
+      new JoystickAnalogButton(operatorJoystick, XBoxConstants.BUTTON_B)
         .onTrue(new AFIRollerSetSpeedCommand(-0.05, afiSubsystem));
 
-    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_Y)
+      new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_Y)
         .onTrue(new SetPivotPositionCommand(Degrees.of(70), afiSubsystem));
-    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_X)
+
+      new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_X)
         .onTrue(new SetPivotPositionCommand(Degrees.of(20), afiSubsystem));
+
+    }
 
   }
 
   private void setupSmartDashboardCommands() throws FileVersionException, IOException, ParseException {
-    // SmartDashboard.putData("Shoulder.P1", new SetShoulderPositionCommand(null,
-    // null));
-    SmartDashboard.putData("ShoulderSetPosition1", new SetShoulderPositionCommand(Degrees.of(0), esefSubsystem));
-    SmartDashboard.putData("ShoulderSetPosition2", new SetShoulderPositionCommand(Degrees.of(30), esefSubsystem));
-    SmartDashboard.putData("ShoulderSetPosition3", new SetShoulderPositionCommand(Degrees.of(60), esefSubsystem));
-    SmartDashboard.putData("ShoulderSetPosition4", new SetShoulderPositionCommand(Degrees.of(90), esefSubsystem));
+    // ESEF commands
+    esefCommandFactory.setupSmartDashboardCommands();
 
-    SmartDashboard.putData("ElevatorSetPosition1", new SetElevatorPositionCommand(Inches.of(8.0), esefSubsystem));
-    SmartDashboard.putData("ElevatorSetPosition2", new SetElevatorPositionCommand(Inches.of(12.0), esefSubsystem));
-    SmartDashboard.putData("ElevatorSetPosition3", new SetElevatorPositionCommand(Inches.of(20.0), esefSubsystem));
-    SmartDashboard.putData("ElevatorSetPositionHome", new SetElevatorPositionCommand(Inches.of(0.0), esefSubsystem));
-    SmartDashboard.putData("move End Effector", new SetEndEffectorSpeedCommand(0.5, esefSubsystem));
+    // AFI commands
+    afiCommandFactory.setupSmartDashboardCommands();
 
-    SmartDashboard.putNumber("Elevator.ManualPosition", 5);
-    SmartDashboard.putData("Elevator.ManualControl", new SetManualElevatorCommand());
-    // SmartDashboard.putData('CoralSpeed');
+    // Swerve commands
+    if (swerveSubsystem != null) {
+      swerveCommandFactory.setupSmartDashboardCommands();
+    }
 
-    // SmartDashboard.putData(new xxxxCommand());
-    SmartDashboard.putData("climber:p1", new SetClimberPostionCommand(ClimberSubsystem.pos1, climberSubsystem));
-    SmartDashboard.putData("climber:p2", new SetClimberPostionCommand(ClimberSubsystem.pos2, climberSubsystem));
+    // ESEF commands
+    esefCommandFactory.setupSmartDashboardCommands();
 
-    SmartDashboard.putData("Reset IMU from Limelight data", new SetIMUFromMegaTag1Command());
+    // climber commands
+    climberCommandFactory.setupSmartDashboardCommands();
 
-    // SmartDashboard.putData("Drive 10 feet",
-    // swerveSubsystem.driveToDistanceCommand(Units.feetToMeters(10), 0.5));
-    SmartDashboard.putData("Test Drive To Pose", swerveSubsystem.pathFinderCommand());
+    if (swerveSubsystem != null) {
+      SmartDashboard.putData("Reset IMU from Limelight data", new SetIMUFromMegaTag1Command());
 
+      swerveCommandFactory.setupSmartDashboardCommands();
+    }
+    
   }
 
   public void setupAutonomousCommands() {
-    SmartDashboard.putData("Auto mode", autoChooser);
+    if (autoChooser != null) {
+      SmartDashboard.putData("Auto mode", autoChooser);
+    }
 
     // chooser.addOption("Example Command", new ExampleCommand(exampleSubsystem));
   }
@@ -418,7 +383,10 @@ public class RobotContainer {
     // An ExampleCommand will run in autonomous
     // return new GoldenAutoCommand(driveSubsystem, shooterSubsystem,
     // VisionSubsystem, intakeSubsystem);
-    return autoChooser.getSelected();
+    if (autoChooser != null) {
+      return autoChooser.getSelected();
+    } 
+    return null;
   }
 
   /**
@@ -445,11 +413,17 @@ public class RobotContainer {
       return true;
     }
 
+    /*
     if (practiceBotJumper.get() == true) {
+      return true;
+    }*/
+
+    if (robotParameters.isCompetitionRobot()) {
       return true;
     }
 
-    if (robotParameters.isCompetitionRobot()) {
+    // right now, we only put roboRIO2s on a competition bot. This could change
+    if (RobotBase.getRuntimeType() == RuntimeType.kRoboRIO2) {
       return true;
     }
 
