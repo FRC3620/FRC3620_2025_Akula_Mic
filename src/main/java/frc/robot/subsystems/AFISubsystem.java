@@ -10,6 +10,7 @@ import static edu.wpi.first.units.Units.Rotations;
 
 import org.tinylog.TaggedLogger;
 import org.usfirst.frc3620.CANDeviceType;
+import org.usfirst.frc3620.Utilities;
 import org.usfirst.frc3620.logger.LoggingMaster;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -58,6 +59,9 @@ public class AFISubsystem extends SubsystemBase {
 
   final int AFIPIVOTMOTORID = 14;
   final int AFIROLLERMOTORID = 15;
+
+  final Angle AFIMINPOSITION = Degrees.of(0);
+  final Angle AFIMAXPOSITION = Degrees.of(85);
 
   PIDController pid;
 
@@ -116,7 +120,7 @@ public class AFISubsystem extends SubsystemBase {
       roller.setNeutralMode(NeutralModeValue.Brake);
     }
 
-    setPivotPosition(Degrees.of(45));
+    setPivotPosition(Degrees.of(85));
   }
 
   @Override
@@ -168,9 +172,11 @@ public class AFISubsystem extends SubsystemBase {
     // set the shoulder to the desired position Cat
     SmartDashboard.putNumber("frc3620/AFI/PivotRequestedPosition", position.in(Degrees));
 
+
+
     if (pivot != null) {
       // pivot.setControl(pivotRequest.withPosition(position.times(MOTOR_TO_INTAKE_RATIO)));
-      pid.setSetpoint(position.in(Rotations));
+      pid.setSetpoint(Utilities.clamp(position, AFIMINPOSITION, AFIMAXPOSITION).in(Rotations));
     }
   }
 
