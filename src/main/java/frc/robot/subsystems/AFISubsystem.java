@@ -49,8 +49,6 @@ public class AFISubsystem extends SubsystemBase {
   //Front Encoder is backwards use rear until fixed.
   WhichEncoderToUse whichEncoderToUse = WhichEncoderToUse.REAR;
 
-  boolean relativeEncoderSet = false;
-  Timer relativeEncoderTimer = new Timer();
   
   final PositionVoltage pivotRequest = new PositionVoltage(0).withSlot(0);
   final DutyCycleOut rollerRequest = new DutyCycleOut(0);
@@ -128,20 +126,7 @@ public class AFISubsystem extends SubsystemBase {
     SmartDashboard.putNumber("frc3620/AFI/PivotFrontAbsolutePosition", getFrontAbsoluteIntakeAngle().in(Degrees));
     SmartDashboard.putNumber("frc3620/AFI/PivotRearAbsolutePosition", getRearAbsoluteIntakeAngle().in(Degrees));
 
-    if (!relativeEncoderSet) {
-      if (relativeEncoderTimer.hasElapsed(5)) {
-        if (isEncoderConnected()) {
-          logger.info("AFI absolute angle is {}", getAbsoluteIntakeAngle().in(Degrees));
-          logger.info("AFI relative angle is before {}", pivot.getPosition().getValue().in(Degrees));
-          logger.info("setting the posistion {}", getAbsoluteIntakeAngle().times(MOTOR_TO_INTAKE_RATIO).in(Degrees));
-          pivot.setPosition(getAbsoluteIntakeAngle().times(MOTOR_TO_INTAKE_RATIO));
-          logger.info("AFI relative angle is after {}", pivot.getPosition().getValue().in(Degrees));
-
-          relativeEncoderSet = true;
-
-        }
-      }
-    }
+  
     if (pivot != null) {
       double ffoutput = ffg * Math.cos(getAbsoluteIntakeAngle().in(Radian));
       double pidoutput = pid.calculate(getAbsoluteIntakeAngle().in(Rotations));
