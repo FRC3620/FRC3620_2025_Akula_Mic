@@ -24,8 +24,8 @@
     "serialNumber": "0326F30D",
     "makeAllCANDevices": true,
     "swerveDirectoryName": "swerve/Compbot",
-    "intakeFrontEncoderOffset": -73,
-    "intakeRearEncoderOffset": 207
+    "intakeFrontEncoderOffset": 254.2,
+    "intakeRearEncoderOffset": 204
   },
   {
     "name": "Muleboard",

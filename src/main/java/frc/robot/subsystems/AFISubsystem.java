@@ -10,6 +10,7 @@ import static edu.wpi.first.units.Units.Rotations;
 
 import org.tinylog.TaggedLogger;
 import org.usfirst.frc3620.CANDeviceType;
+import org.usfirst.frc3620.Utilities;
 import org.usfirst.frc3620.logger.LoggingMaster;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -48,8 +49,6 @@ public class AFISubsystem extends SubsystemBase {
   //Front Encoder is backwards use rear until fixed.
   WhichEncoderToUse whichEncoderToUse = WhichEncoderToUse.REAR;
 
-  boolean relativeEncoderSet = false;
-  Timer relativeEncoderTimer = new Timer();
   
   final PositionVoltage pivotRequest = new PositionVoltage(0).withSlot(0);
   final DutyCycleOut rollerRequest = new DutyCycleOut(0);
@@ -58,6 +57,9 @@ public class AFISubsystem extends SubsystemBase {
 
   final int AFIPIVOTMOTORID = 14;
   final int AFIROLLERMOTORID = 15;
+
+  final Angle AFIMINPOSITION = Degrees.of(0);
+  final Angle AFIMAXPOSITION = Degrees.of(85);
 
   PIDController pid;
 
@@ -116,7 +118,7 @@ public class AFISubsystem extends SubsystemBase {
       roller.setNeutralMode(NeutralModeValue.Brake);
     }
 
-    setPivotPosition(Degrees.of(45));
+    setPivotPosition(Degrees.of(85));
   }
 
   @Override
@@ -124,20 +126,7 @@ public class AFISubsystem extends SubsystemBase {
     SmartDashboard.putNumber("frc3620/AFI/PivotFrontAbsolutePosition", getFrontAbsoluteIntakeAngle().in(Degrees));
     SmartDashboard.putNumber("frc3620/AFI/PivotRearAbsolutePosition", getRearAbsoluteIntakeAngle().in(Degrees));
 
-    if (!relativeEncoderSet) {
-      if (relativeEncoderTimer.hasElapsed(5)) {
-        if (isEncoderConnected()) {
-          logger.info("AFI absolute angle is {}", getAbsoluteIntakeAngle().in(Degrees));
-          logger.info("AFI relative angle is before {}", pivot.getPosition().getValue().in(Degrees));
-          logger.info("setting the posistion {}", getAbsoluteIntakeAngle().times(MOTOR_TO_INTAKE_RATIO).in(Degrees));
-          pivot.setPosition(getAbsoluteIntakeAngle().times(MOTOR_TO_INTAKE_RATIO));
-          logger.info("AFI relative angle is after {}", pivot.getPosition().getValue().in(Degrees));
-
-          relativeEncoderSet = true;
-
-        }
-      }
-    }
+  
     if (pivot != null) {
       double ffoutput = ffg * Math.cos(getAbsoluteIntakeAngle().in(Radian));
       double pidoutput = pid.calculate(getAbsoluteIntakeAngle().in(Rotations));
@@ -168,9 +157,11 @@ public class AFISubsystem extends SubsystemBase {
     // set the shoulder to the desired position Cat
     SmartDashboard.putNumber("frc3620/AFI/PivotRequestedPosition", position.in(Degrees));
 
+
+
     if (pivot != null) {
       // pivot.setControl(pivotRequest.withPosition(position.times(MOTOR_TO_INTAKE_RATIO)));
-      pid.setSetpoint(position.in(Rotations));
+      pid.setSetpoint(Utilities.clamp(position, AFIMINPOSITION, AFIMAXPOSITION).in(Rotations));
     }
   }
 
