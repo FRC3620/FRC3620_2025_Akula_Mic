@@ -180,7 +180,7 @@ public class RobotContainer {
       missingDevicesAlert.set(true);
       missingDevicesAlert.setText("Missing from CAN bus: " + canDeviceFinder.getMissingDeviceSet());
     }
-    
+
     makeCommandFactories();
 
     // Configure the button bindings
@@ -213,7 +213,8 @@ public class RobotContainer {
       canDeviceFinder.isDevicePresent(CANDeviceType.SPARK_MAX, 8, "Swerve Drive 8");
 
       String swerveFolder = robotParameters.getSwerveDirectoryName();
-      if (swerveFolder == null) swerveFolder = "swerve/simulation";
+      if (swerveFolder == null)
+        swerveFolder = "swerve/simulation";
 
       SmartDashboard.putString("frc3620/swerveFolder", swerveFolder);
       logger.info("using swerveFolder '{}'", swerveFolder);
@@ -269,8 +270,7 @@ public class RobotContainer {
 
     climberSubsystem.setDefaultCommand(climberCommandFactory.makeSetClimberPowerCommand(
         () -> MathUtil.applyDeadband(operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y), 0.1))
-        .withName("ControlClimberFromJoystick")
-    );
+        .withName("ControlClimberFromJoystick"));
 
     if (swerveSubsystem != null) {
       /*
@@ -298,8 +298,12 @@ public class RobotContainer {
        * Clone's the angular velocity input stream and converts it to a robotRelative
        * input stream.
        */
-      SwerveInputStream driveRobotOriented = driveAngularVelocity.copy().robotRelative(true)
+      SwerveInputStream driveRobotOriented = driveAngularVelocity.copy()
+          .robotRelative(true)
           .allianceRelativeControl(false);
+
+      SwerveInputStream driveRobotOrientedSlow = driveRobotOriented.copy()
+          .scaleTranslation(0.3);
 
       SwerveInputStream driveAngularVelocityKeyboard = SwerveInputStream.of(swerveSubsystem.getSwerveDrive(),
           () -> -getDriveVerticalJoystick(),
@@ -309,12 +313,12 @@ public class RobotContainer {
           .scaleTranslation(0.8)
           .allianceRelativeControl(true);
 
-
       Command driveFieldOrientedDirectAngle = swerveSubsystem.driveFieldOriented(driveDirectAngle);
       Command driveFieldOrientedAnglularVelocity = swerveSubsystem.driveFieldOriented(driveAngularVelocity);
       Command driveRobotOrientedAngularVelocity = swerveSubsystem.driveFieldOriented(driveRobotOriented);
       Command driveSetpointGen = swerveSubsystem.driveWithSetpointGeneratorFieldRelative(
           driveDirectAngle);
+      Command driveRobotOrientedSlowCommand = swerveSubsystem.driveFieldOriented(driveRobotOrientedSlow);
 
       if (RobotBase.isSimulation()) {
         // swerveSubsystem.setDefaultCommand(driveFieldOrientedDirectAngleKeyboard);
@@ -322,23 +326,26 @@ public class RobotContainer {
         swerveSubsystem.setDefaultCommand(driveFieldOrientedAnglularVelocity);
       }
 
-      //driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH)
-      //    .onTrue(swerveSubsystem.pathFinderCommand());
+      // driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER,
+      // FlySkyConstants.AXIS_SWH)
+      // .onTrue(swerveSubsystem.pathFinderCommand());
 
-      new JoystickAnalogButton(operatorJoystick, XBoxConstants.BUTTON_A)
-        .onTrue(new AFIRollerSetSpeedUntilInCommand(0.5, afiSubsystem));
-        
-      new JoystickAnalogButton(operatorJoystick, XBoxConstants.BUTTON_B)
-        .onTrue(new AFIRollerSetSpeedCommand(-0.05, afiSubsystem));
-
-      new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_Y)
-        .onTrue(new SetPivotPositionCommand(Degrees.of(70), afiSubsystem));
-
-      new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_X)
-        .onTrue(new SetPivotPositionCommand(Degrees.of(20), afiSubsystem));
+      driverJoystick.button(XBoxConstants.BUTTON_LEFT_BUMPER, FlySkyConstants.BUTTON_SWF)
+                .whileTrue(driveRobotOrientedSlowCommand);
 
     }
 
+    new JoystickAnalogButton(operatorJoystick, XBoxConstants.BUTTON_A)
+        .onTrue(new AFIRollerSetSpeedUntilInCommand(0.5, afiSubsystem));
+
+    new JoystickAnalogButton(operatorJoystick, XBoxConstants.BUTTON_B)
+        .onTrue(new AFIRollerSetSpeedCommand(-0.05, afiSubsystem));
+
+    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_Y)
+        .onTrue(new SetPivotPositionCommand(Degrees.of(70), afiSubsystem));
+
+    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_X)
+        .onTrue(new SetPivotPositionCommand(Degrees.of(20), afiSubsystem));
   }
 
   private void setupSmartDashboardCommands() throws FileVersionException, IOException, ParseException {
@@ -364,7 +371,7 @@ public class RobotContainer {
 
       swerveCommandFactory.setupSmartDashboardCommands();
     }
-    
+
   }
 
   public void setupAutonomousCommands() {
@@ -386,7 +393,7 @@ public class RobotContainer {
     // VisionSubsystem, intakeSubsystem);
     if (autoChooser != null) {
       return autoChooser.getSelected();
-    } 
+    }
     return null;
   }
 
@@ -415,9 +422,10 @@ public class RobotContainer {
     }
 
     /*
-    if (practiceBotJumper.get() == true) {
-      return true;
-    }*/
+     * if (practiceBotJumper.get() == true) {
+     * return true;
+     * }
+     */
 
     if (robotParameters.isCompetitionRobot()) {
       return true;
@@ -494,10 +502,9 @@ public class RobotContainer {
 
     SmartDashboard.putNumber("driver.spin.raw", axisValue);
 
-
     axisValue = MathUtil.applyDeadband(axisValue, deadband);
     return axisValue * axisValue * Math.signum(axisValue);
-    
+
   }
 
 }
