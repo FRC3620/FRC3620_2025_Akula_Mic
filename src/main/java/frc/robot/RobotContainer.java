@@ -1,12 +1,14 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -315,7 +317,20 @@ public class RobotContainer {
       Command driveRobotOrientedAngularVelocity = swerveSubsystem.driveFieldOriented(driveRobotOriented);
       Command driveSetpointGen = swerveSubsystem.driveWithSetpointGeneratorFieldRelative(
           driveDirectAngle);
-
+      
+      driveAngularVelocity.driveToPose(() -> new Pose2d(new Translation2d(14,
+                                                                          2),
+                                                                          Rotation2d.fromDegrees(0)),
+                                            new ProfiledPIDController(5,
+                                                                      0,
+                                                                      0,
+                                                                      new Constraints(1,0.5)),
+                                            new ProfiledPIDController(5,
+                                                                      0,
+                                                                      0,
+                                                                      new Constraints(Math.toRadians(360),
+                                                                                      Math.toRadians(90)))); 
+                                                                                  
       if (RobotBase.isSimulation()) {
         // swerveSubsystem.setDefaultCommand(driveFieldOrientedDirectAngleKeyboard);
       } else {
@@ -336,6 +351,10 @@ public class RobotContainer {
 
       new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_X)
         .onTrue(new SetPivotPositionCommand(Degrees.of(20), afiSubsystem));
+
+    driverJoystick.button(XBoxConstants.BUTTON_B, FlySkyConstants.BUTTON_SWD)
+                  .whileTrue(Commands.runEnd(() -> driveAngularVelocity.driveToPoseEnabled(true),
+                                             () -> driveAngularVelocity.driveToPoseEnabled(false)));
 
     }
 
