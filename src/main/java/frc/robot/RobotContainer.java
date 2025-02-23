@@ -146,7 +146,7 @@ public class RobotContainer {
 
     canDeviceFinder = new CANDeviceFinder();
 
-    aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+    aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 
     robotParameters = RobotParametersContainer.getRobotParameters(RobotParameters.class);
     logger.info("got parameters for chassis '{}'", robotParameters.getName());

@@ -33,7 +33,7 @@ import swervelib.SwerveDrive;
 public class VisionSubsystem extends SubsystemBase {
   NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
-  public static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+  public static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 
   private Map<Translation2d, Integer> translationToTagMap = new HashMap<>();
 
