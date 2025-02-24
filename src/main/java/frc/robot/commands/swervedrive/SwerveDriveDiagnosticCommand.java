@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.tinylog.TaggedLogger;
+import org.usfirst.frc3620.CompoundAlert;
 import org.usfirst.frc3620.Utilities.SlidingWindowStats;
 import org.usfirst.frc3620.logger.LoggingMaster;
 import org.usfirst.frc3620.motors.MotorWatcherFetcher;
@@ -42,7 +43,7 @@ public class SwerveDriveDiagnosticCommand extends Command {
     AZIMUTH_ZERO_BAD;
   }
 
-  Alert alert = new Alert(HealthSubsystem.HARDWARE_ALERT_GROUP_NAME, "", AlertType.kError);
+  CompoundAlert compoundAlert = new CompoundAlert(HealthSubsystem.CHECKLIST_GROUP_NAME, getClass());
 
   /** Creates a new SwerveDriveDiagnosticCommand. */
   public SwerveDriveDiagnosticCommand(SwerveSubsystem swerveSubsystem) {
@@ -65,6 +66,10 @@ public class SwerveDriveDiagnosticCommand extends Command {
       driveMotorCurrents.put(name, new SlidingWindowStats(slidingWindowSize));
       azimuthMotorCurrents.put(name, new SlidingWindowStats(slidingWindowSize));
     }
+
+    compoundAlert.warning("Pending");
+
+    postResultStringToSmartDashboard("pending");
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.swerveSubsystem);
@@ -122,11 +127,10 @@ public class SwerveDriveDiagnosticCommand extends Command {
         }
       }
 
-      if (maxCurrent == 0) {
+      if (maxCurrent == 0 || minCurrent == 0) {
         failure.add(Failures.DRIVE_CURRENT_BAD);
-
       } else {
-        if (minCurrent / maxCurrent < .9) {
+        if (minCurrent / maxCurrent < .25) {
           failure.add(Failures.DRIVE_CURRENT_BAD);
         }
       }
@@ -170,11 +174,10 @@ public class SwerveDriveDiagnosticCommand extends Command {
         }
       }
 
-      if (maxCurrent == 0) {
+      if (maxCurrent == 0 || minCurrent == 0) {
         failure.add(Failures.AZIMUTH_CURRENT_BAD);
-
       } else {
-        if (minCurrent / maxCurrent < .9) {
+        if (minCurrent / maxCurrent < .25) {
           failure.add(Failures.AZIMUTH_CURRENT_BAD);
         }
       }
@@ -186,15 +189,17 @@ public class SwerveDriveDiagnosticCommand extends Command {
 
     // handle FAILURE here
     if (failure.isEmpty()) {
-      alert.set(false);
-      alert.setText("");
-      SmartDashboard.putString("frc3620/" + getClass().getSimpleName() + "/result", "");
+      compoundAlert.info("Passed");
+      postResultStringToSmartDashboard("passed");
     } else {
-      alert.set(true);
-      String text = "Swerve Diagnostic failed: " + failure.toString();
-      alert.setText(text);
-      SmartDashboard.putString("frc3620/" + getClass().getSimpleName() + "/result", text);
+      String text = "Failed, " + failure.toString();
+      compoundAlert.error(text);
+      postResultStringToSmartDashboard(text);
     }
+  }
+
+  void postResultStringToSmartDashboard (String text) {
+    SmartDashboard.putString("frc3620/" + getClass().getSimpleName() + "/result", text);
   }
 
   // Called once the command ends or is interrupted.
