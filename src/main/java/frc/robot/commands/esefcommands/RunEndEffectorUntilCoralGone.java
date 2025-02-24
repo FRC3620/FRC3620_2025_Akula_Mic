@@ -4,6 +4,7 @@
 
 package frc.robot.commands.esefcommands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.esefsubsystem.ESEFSubsystem;
 
@@ -11,6 +12,7 @@ import frc.robot.subsystems.esefsubsystem.ESEFSubsystem;
 public class RunEndEffectorUntilCoralGone extends Command {
   double speed;
   ESEFSubsystem esefSubsystem;
+  Timer releaseTimer = new Timer();
   /** Creates a new SetEndEffectorSpeedCommand. */
   public RunEndEffectorUntilCoralGone(double _speed, ESEFSubsystem subsystem) {
     esefSubsystem = subsystem;
@@ -23,7 +25,9 @@ public class RunEndEffectorUntilCoralGone extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    releaseTimer.restart();
     esefSubsystem.setEndEffSpeed(speed);
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -35,11 +39,20 @@ public class RunEndEffectorUntilCoralGone extends Command {
   @Override
   public void end(boolean interrupted) {
     esefSubsystem.setEndEffSpeed(0);
+    releaseTimer.stop();
+    releaseTimer.restart();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !esefSubsystem.hasCoral();
+    if (!esefSubsystem.hasCoral()) {
+      releaseTimer.start();
+    }
+    if (releaseTimer.hasElapsed(0.5)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

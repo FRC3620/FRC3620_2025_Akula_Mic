@@ -62,6 +62,11 @@
 
 # Driver Controller
 
+* Slow Drive Mode 
+  * Robot Oriented limited to 30% power
+  * Xbox controller: Hold Left Bumper
+  * FlySky Controller: Toggle SWF
+
 # Programming Requirnements
 * Mechanisms
   * Eleveator 
