@@ -82,6 +82,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -359,31 +360,52 @@ public class RobotContainer {
         .onTrue(new SetPivotPositionCommand(Degrees.of(20), afiSubsystem));
 
     buttonBox.addButtonMapping(ButtonId.A1, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem), 
-                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
+                                            new SequentialCommandGroup(
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
                     
     buttonBox.addButtonMapping(ButtonId.A2, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem), 
-                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
+                                            new SequentialCommandGroup(
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
 
     buttonBox.addButtonMapping(ButtonId.A3, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem), 
-                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
+                                            new SequentialCommandGroup(
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
 
     buttonBox.addButtonMapping(ButtonId.A4, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem), 
-                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
+                                            new SequentialCommandGroup(
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
 
     buttonBox.addButtonMapping(ButtonId.D1, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem), 
-                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
+                                            new SequentialCommandGroup(
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
 
     buttonBox.addButtonMapping(ButtonId.D2, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem), 
-                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
+                                            new SequentialCommandGroup(
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
 
     buttonBox.addButtonMapping(ButtonId.D3, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem), 
-                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
+                                            new SequentialCommandGroup(
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
 
     buttonBox.addButtonMapping(ButtonId.D4, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem), 
-                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
-                                            
+                                            new SequentialCommandGroup(
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+
     buttonBox.addButtonMapping(ButtonId.B1, new PrintCommand("trigger pulled"), 
                                             new PrintCommand("trigger released"));
+
+    buttonBox.addButtonMapping(ButtonId.C2, new SequentialCommandGroup(
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem),
+                                            new RunEndEffectorUntilHasCoral(0.7, esefSubsystem)), 
+                                            new SetEndEffectorSpeedCommand(0.0, esefSubsystem));
   }
 
 
