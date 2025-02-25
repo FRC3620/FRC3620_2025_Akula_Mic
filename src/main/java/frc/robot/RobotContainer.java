@@ -127,6 +127,9 @@ public class RobotContainer {
   // joysticks here....
   public static ChameleonController driverJoystick;
   public static Joystick operatorJoystick;
+  public static GenericHID buttonboxHID;
+
+  public static ButtonBox buttonBox;
 
   // We'll be using this
   public static AprilTagFieldLayout aprilTagFieldLayout;
@@ -264,6 +267,8 @@ public class RobotContainer {
   private void configureButtonBindingsAndDefaultCommands() {
     driverJoystick = new ChameleonController(new Joystick(0));
     operatorJoystick = new Joystick(1);
+    buttonboxHID = new Joystick(2);
+    buttonBox = new ButtonBox(buttonboxHID);
 
     // make sure this command gets run when we start up
     CommandScheduler.getInstance().schedule(new ContinuousSetIMUFromMegaTag1Command());
