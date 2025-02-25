@@ -80,6 +80,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -380,6 +381,9 @@ public class RobotContainer {
 
     buttonBox.addButtonMapping(ButtonId.D4, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem), 
                                             new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
+                                            
+    buttonBox.addButtonMapping(ButtonId.B1, new PrintCommand("trigger pulled"), 
+                                            new PrintCommand("trigger released"));
   }
 
 
