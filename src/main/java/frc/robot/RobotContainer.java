@@ -66,6 +66,7 @@ import frc.robot.subsystems.swervedrive.Vision;
 import swervelib.SwerveInputStream;
 import swervelib.imu.SwerveIMU;
 import frc.robot.commands.ContinuousSetIMUFromMegaTag1Command;
+import frc.robot.commands.HankPullTheTriggerCommand;
 import frc.robot.commands.SetClimberPostionCommand;
 import frc.robot.commands.SetIMUFromMegaTag1Command;
 import frc.robot.commands.SetPivotPositionCommand;
@@ -337,7 +338,9 @@ public class RobotContainer {
 
       driverJoystick.button(XBoxConstants.BUTTON_LEFT_BUMPER, FlySkyConstants.BUTTON_SWF)
                 .whileTrue(driveRobotOrientedSlowCommand);
-
+               
+       driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH)
+                .whileTrue(new HankPullTheTriggerCommand());
     }
 
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.BUTTON_A)
