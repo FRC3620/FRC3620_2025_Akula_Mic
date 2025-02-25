@@ -7,6 +7,7 @@ public class RobotParameters extends RobotParametersBase {
 
     double intakeFrontEncoderOffset = 0;
     double intakeRearEncoderOffset = 0;
+    double climberEncoderOffset = 0;
 
     public String getSwerveDirectoryName() {
         return swerveDirectoryName;
@@ -20,6 +21,10 @@ public class RobotParameters extends RobotParametersBase {
         return intakeRearEncoderOffset;
     }
 
+    public double getClimberEncoderOffset() {
+        return climberEncoderOffset; 
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(super.toString());
@@ -27,6 +32,7 @@ public class RobotParameters extends RobotParametersBase {
         sb.append (", swerveDirectoryName=" + swerveDirectoryName);
         sb.append (", intakeFrontEncoderOffset=" + intakeFrontEncoderOffset);
         sb.append (", intakeRearEncoderOffset=" + intakeRearEncoderOffset);
+        sb.append(", climberEncoderOffset=" + climberEncoderOffset);
         sb.append ("]");
         return sb.toString();
     }

@@ -45,7 +45,7 @@ public class ClimberSubsystem extends SubsystemBase {
             motor.setNeutralMode(NeutralModeValue.Brake);
         }
         absEncoder = new DutyCycleEncoder(9);
-        absEncoderOffset = Degrees.of(120);
+        absEncoderOffset = Degrees.of(RobotContainer.robotParameters.getClimberEncoderOffset());
     }
 
     @Override
