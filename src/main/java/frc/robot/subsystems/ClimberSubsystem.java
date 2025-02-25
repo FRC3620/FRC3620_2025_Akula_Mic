@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Rotations;
+
 import java.util.function.DoubleSupplier;
 
 import org.usfirst.frc3620.CANDeviceType;
@@ -9,6 +12,8 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,6 +26,8 @@ public class ClimberSubsystem extends SubsystemBase {
     static public double pos1 = 0;
     static public double pos2 = 2;
     TalonFX motor;
+    public DutyCycleEncoder absEncoder;
+    Angle absEncoderOffset;
 
     public ClimberSubsystem() {
 
@@ -37,6 +44,8 @@ public class ClimberSubsystem extends SubsystemBase {
             motor.getConfigurator().apply(slot0Configs);
             motor.setNeutralMode(NeutralModeValue.Brake);
         }
+        absEncoder = new DutyCycleEncoder(9);
+        absEncoderOffset = Degrees.of(RobotContainer.robotParameters.getClimberEncoderOffset());
     }
 
     @Override
@@ -44,6 +53,7 @@ public class ClimberSubsystem extends SubsystemBase {
         if (motor != null) {
             SmartDashboard.putNumber("frc3620/climer postion", motor.getPosition().getValueAsDouble());
         }
+        SmartDashboard.putNumber("frc3620/climerabsoluteposition", getClimberAngle().in(Degrees));
     }
 
     public void setPostion(Double cpos) {
@@ -66,5 +76,9 @@ public class ClimberSubsystem extends SubsystemBase {
         if (motor != null) {
             motor.set(power);
         }
+    }
+
+    Angle getClimberAngle() {
+        return Rotations.of(absEncoder.get()).minus(absEncoderOffset);
     }
 }
