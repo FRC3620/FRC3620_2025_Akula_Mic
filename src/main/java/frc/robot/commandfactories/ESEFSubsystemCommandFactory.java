@@ -37,7 +37,8 @@ public class ESEFSubsystemCommandFactory {
 
     SmartDashboard.putData("Run EndEffector until has coral", new RunEndEffectorUntilHasCoral(0.7, esefSubsystem));
     SmartDashboard.putData("Run EndEffector until coral gone", new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
-    SmartDashboard.putData("move End Effector", new SetEndEffectorSpeedCommand(0.5, esefSubsystem));
+    SmartDashboard.putData("rUN End Effector +0.5", new SetEndEffectorSpeedCommand(0.5, esefSubsystem));
+    SmartDashboard.putData("move End Effector -0.5", new SetEndEffectorSpeedCommand(-0.8, esefSubsystem));
 
     SmartDashboard.putData("Bump Elevator + 1", new InstantCommand(() -> esefSubsystem.bumpElevatorHeight(Inches.of(1))));
     SmartDashboard.putData("Bump Elevator - 1", new InstantCommand(() -> esefSubsystem.bumpElevatorHeight(Inches.of(-1))));
