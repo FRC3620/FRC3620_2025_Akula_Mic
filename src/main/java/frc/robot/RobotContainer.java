@@ -67,6 +67,7 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
 import swervelib.SwerveInputStream;
 import swervelib.imu.SwerveIMU;
+import frc.robot.commands.ChecklistCommand;
 import frc.robot.commands.ContinuousSetIMUFromMegaTag1Command;
 import frc.robot.commands.HankPullTheTriggerCommand;
 import frc.robot.commands.SetClimberPostionCommand;
@@ -422,6 +423,7 @@ public class RobotContainer {
 
     // Swerve commands
     if (swerveSubsystem != null) {
+      SmartDashboard.putData("Reset IMU from Limelight data", new SetIMUFromMegaTag1Command());
       swerveCommandFactory.setupSmartDashboardCommands();
     }
 
@@ -431,12 +433,8 @@ public class RobotContainer {
     // climber commands
     climberCommandFactory.setupSmartDashboardCommands();
 
-    if (swerveSubsystem != null) {
-      SmartDashboard.putData("Reset IMU from Limelight data", new SetIMUFromMegaTag1Command());
-
-      swerveCommandFactory.setupSmartDashboardCommands();
-    }
-
+    // misc
+    SmartDashboard.putData(new ChecklistCommand("Lift").withName("Lift Mechanism Diagnostic Check"));
   }
 
   public void setupAutonomousCommands() {

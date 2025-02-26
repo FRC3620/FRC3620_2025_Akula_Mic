@@ -17,7 +17,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 
 public class HealthSubsystem extends SubsystemBase {
-  public static final String HARDWARE_ALERT_GROUP_NAME = "Hardware Alert";
+  public static final String HARDWARE_ALERT_GROUP_NAME = "frc3620/Hardware Alert";
+  public static final String CHECKLIST_GROUP_NAME = "frc3620/Checklist";
   public final static TaggedLogger logger = LoggingMaster.getLogger(HealthSubsystem.class);
 
   // this stuff is for watching encoders

@@ -4,6 +4,7 @@
     "serialNumber": "(simulation)",
     "makeAllCANDevices": true,
     "swerveDirectoryName": "swerve/simulation",
+    "competitionRobot": true,
     "intakeFrontEncoderOffset": -1,
     "intakeRearEncoderOffset": -1
   },
@@ -23,6 +24,7 @@
     "name": "Compbot",
     "serialNumber": "0326F30D",
     "makeAllCANDevices": true,
+    "competitionRobot": true,
     "swerveDirectoryName": "swerve/Compbot",
     "intakeFrontEncoderOffset": 254.2,
     "intakeRearEncoderOffset": 204,
