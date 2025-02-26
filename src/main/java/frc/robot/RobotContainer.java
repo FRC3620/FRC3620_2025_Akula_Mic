@@ -482,6 +482,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("L3",new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem));
     NamedCommands.registerCommand("L4",new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem));
     NamedCommands.registerCommand("Deposit", new RunEndEffectorUntilCoralGone(0.9, esefSubsystem) );
+    NamedCommands.registerCommand("Test1", new LogCommand("test 1"));
+    NamedCommands.registerCommand("Test2", new LogCommand("test 2"));
+
   }
 
   public static double getDriveVerticalJoystick() {
