@@ -15,7 +15,8 @@ public class SetClimberPostionCommand extends Command {
     
     @Override
     public void initialize() {
-        climberSubsystem.setPostion(postion);
+        climberSubsystem.setPosition(postion);
+        climberSubsystem.setPosition(postion);
         
     }
     @Override
