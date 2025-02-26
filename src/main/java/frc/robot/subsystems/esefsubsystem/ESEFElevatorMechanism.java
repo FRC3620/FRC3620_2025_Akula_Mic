@@ -130,6 +130,9 @@ public class ESEFElevatorMechanism {
           }
         }
       }
+      if(homeSwitchHit()) {
+        elevatorA.setPosition(0);
+      }
     }
 
     if (elevatorA != null) {
