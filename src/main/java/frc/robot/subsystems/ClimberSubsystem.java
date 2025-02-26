@@ -40,17 +40,18 @@ public class ClimberSubsystem extends SubsystemBase {
 
             // Configure PID for Motion Magic
             Slot0Configs slot0Configs = new Slot0Configs();
-            slot0Configs.kP = 500;  // Proportional gain (TUNE THIS)
+            slot0Configs.kP = 15;  // Proportional gain (TUNE THIS)
             slot0Configs.kI = 0.0;  // Integral gain
             slot0Configs.kD = 0.0;  // Derivative gain
-            slot0Configs.kV = 0.1;  // Velocity feedforward
+            slot0Configs.kS = 0.1;
+            slot0Configs.kV = 1.0;  // Velocity feedforward
             slot0Configs.kA = 0.0;  // Acceleration feedforward
             motor.getConfigurator().apply(slot0Configs);
 
             // Configure Motion Magic
             MotionMagicConfigs mmConfigs = new MotionMagicConfigs();
-            mmConfigs.MotionMagicCruiseVelocity = 50; // Max speed (TUNE THIS)
-            mmConfigs.MotionMagicAcceleration = 30;   // Acceleration (TUNE THIS)
+            mmConfigs.MotionMagicCruiseVelocity = 100; // Max speed (TUNE THIS)
+            mmConfigs.MotionMagicAcceleration = 90;   // Acceleration (TUNE THIS)
             mmConfigs.MotionMagicJerk = 5;            // Jerk smoothing (Optional)
             motor.getConfigurator().apply(mmConfigs);
 
