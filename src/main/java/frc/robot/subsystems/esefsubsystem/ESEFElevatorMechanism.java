@@ -70,8 +70,8 @@ public class ESEFElevatorMechanism {
       elevatorAConfigs.Slot0.kD = 0;
       elevatorAConfigs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
 
-      elevatorAConfigs.MotionMagic.MotionMagicCruiseVelocity = 95; // Max speed in Rotations per second
-      elevatorAConfigs.MotionMagic.MotionMagicAcceleration = 70; // Max acceleration in Rotations per second^2
+      elevatorAConfigs.MotionMagic.MotionMagicCruiseVelocity = 125; // Max speed in Rotations per second
+      elevatorAConfigs.MotionMagic.MotionMagicAcceleration = 100; // Max acceleration in Rotations per second^2
       elevatorAConfigs.MotionMagic.MotionMagicJerk = 200; // Smooth out acceleration (optional)
 
       elevatorAConfigs.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);
