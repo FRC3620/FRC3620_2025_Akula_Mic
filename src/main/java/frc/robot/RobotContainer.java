@@ -94,7 +94,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
 
-  private final SendableChooser<Command> autoChooser;
+  private SendableChooser<Command> autoChooser;
 
   public final static TaggedLogger logger = LoggingMaster.getLogger(RobotContainer.class);
 
@@ -189,24 +189,20 @@ public class RobotContainer {
 
     setupSmartDashboardCommands();
 
-    if (swerveSubsystem != null) {
-      autoChooser = AutoBuilder.buildAutoChooser();
-    } else {
-      autoChooser = null;
-    }
-    setupAutonomousCommands();
+    // set up named commands
     setupPathPlannerCommands();
 
+    // need to do this AFTER the PathPlanner named commands are created
+    setupAutonomousCommands();
 
     DriverStation.silenceJoystickConnectionWarning(true);
-    NamedCommands.registerCommand("test", Commands.print("I EXIST"));
 
     Utilities.addDataLogForNT("SmartDashboard/swerve");
   }
 
   private void makeSubsystems() {
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 1, "Swerve Drive 1")
-        || shouldMakeAllCANDevices()) {
+        || shouldMakeAllCANDevices() || Robot.isSimulation()) {
       canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 3, "Swerve Drive 3");
       canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 5, "Swerve Drive 5");
       canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 7, "Swerve Drive 7");
@@ -378,11 +374,18 @@ public class RobotContainer {
   }
 
   public void setupAutonomousCommands() {
+    if (swerveSubsystem != null) {
+      autoChooser = AutoBuilder.buildAutoChooser();
+    } else {
+      autoChooser = null; // should make an empty autoChooser
+    }
+
+    // chooser.addOption("Example Command", new ExampleCommand(exampleSubsystem));
+
     if (autoChooser != null) {
       SmartDashboard.putData("Auto mode", autoChooser);
     }
 
-    // chooser.addOption("Example Command", new ExampleCommand(exampleSubsystem));
   }
 
   /**
@@ -484,7 +487,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Deposit", new RunEndEffectorUntilCoralGone(0.9, esefSubsystem) );
     NamedCommands.registerCommand("Test1", new LogCommand("test 1"));
     NamedCommands.registerCommand("Test2", new LogCommand("test 2"));
-
+    NamedCommands.registerCommand("Test", Commands.print("I EXIST"));
   }
 
   public static double getDriveVerticalJoystick() {

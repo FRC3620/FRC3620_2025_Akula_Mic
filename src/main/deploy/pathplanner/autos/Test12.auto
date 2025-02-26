@@ -13,13 +13,25 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 3.0
+            "waitTime": 0.1
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Test2"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.1
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Test"
           }
         }
       ]
