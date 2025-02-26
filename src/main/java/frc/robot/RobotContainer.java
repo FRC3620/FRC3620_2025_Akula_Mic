@@ -49,6 +49,7 @@ import frc.robot.commands.esefcommands.SetEndEffectorSpeedCommand;
 import frc.robot.commands.esefcommands.RunEndEffectorUntilCoralGone;
 import frc.robot.commands.esefcommands.SetManualElevatorCommand;
 import frc.robot.commands.esefcommands.RunEndEffectorUntilHasCoral;
+import frc.robot.commands.esefcommands.SetESEFPositionCommand;
 import frc.robot.commands.esefcommands.SetShoulderPositionCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand.WhichStick;
@@ -194,6 +195,8 @@ public class RobotContainer {
       autoChooser = null;
     }
     setupAutonomousCommands();
+    setupPathPlannerCommands();
+
 
     DriverStation.silenceJoystickConnectionWarning(true);
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
@@ -469,6 +472,16 @@ public class RobotContainer {
     }
 
     return false;
+  }
+
+  public static void setupPathPlannerCommands() {
+    NamedCommands.registerCommand("Intake",new RunEndEffectorUntilHasCoral(0.7, esefSubsystem) );
+    NamedCommands.registerCommand("Home",new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home .getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("L1",new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("L2",new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("L3",new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("L4",new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("Deposit", new RunEndEffectorUntilCoralGone(0.9, esefSubsystem) );
   }
 
   public static double getDriveVerticalJoystick() {
