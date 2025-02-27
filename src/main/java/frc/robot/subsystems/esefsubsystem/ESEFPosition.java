@@ -21,7 +21,9 @@ public class ESEFPosition {
     L2(10, 57),     // Low scoring position
     L3(31, 57),     // Mid scoring position
     L4(57.5, 63.25),    // High scoring position
-    CLIMB(16.9, 142);        // Position for climbing
+    CLIMB(16.9, 142),
+    AlgaeL2(8, 50),
+    AlgaeL3(20, 50);      // Position for climbing
 
     private final ESEFPosition position;
 

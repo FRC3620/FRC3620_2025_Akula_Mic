@@ -71,6 +71,7 @@ import frc.robot.commands.ChecklistCommand;
 import frc.robot.commands.ContinuousSetIMUFromMegaTag1Command;
 import frc.robot.commands.HankPullTheTriggerCommand;
 import frc.robot.commands.SetClimberPostionCommand;
+import frc.robot.commands.SetClimberPowerCommand;
 import frc.robot.commands.SetIMUFromMegaTag1Command;
 import frc.robot.commands.SetPivotPositionCommand;
 import frc.robot.commands.TurnToAngleCommand;
@@ -135,7 +136,8 @@ public class RobotContainer {
   public static Joystick operatorJoystick;
   public static GenericHID buttonboxHID;
 
-  public static ButtonBox buttonBox;
+  public static ButtonBox buttonBoxRightTrigger;
+  public static ButtonBox buttonBoxLeftTrigger;
 
   // We'll be using this
   public static AprilTagFieldLayout aprilTagFieldLayout;
@@ -273,8 +275,11 @@ public class RobotContainer {
   private void configureButtonBindingsAndDefaultCommands() {
     driverJoystick = new ChameleonController(new Joystick(0));
     operatorJoystick = new Joystick(1);
-    buttonboxHID = new Joystick(2);
-    buttonBox = new ButtonBox(buttonboxHID);
+    Joystick buttonboxHIDLeft = new Joystick(2);
+    Joystick buttonboxHIDRight = new Joystick(3);
+    
+    buttonBoxRightTrigger = new ButtonBox(buttonboxHIDRight);
+    buttonBoxLeftTrigger = new ButtonBox(buttonboxHIDLeft);
 
     // make sure this command gets run when we start up
     CommandScheduler.getInstance().schedule(new ContinuousSetIMUFromMegaTag1Command());
@@ -345,7 +350,11 @@ public class RobotContainer {
                 .whileTrue(driveRobotOrientedSlowCommand);
                
        driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH)
-                .whileTrue(new HankPullTheTriggerCommand());
+                .whileTrue(new HankPullTheTriggerCommand(buttonBoxRightTrigger));
+
+       driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE)
+                .whileTrue(new HankPullTheTriggerCommand(buttonBoxLeftTrigger));
+
     }
 
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.BUTTON_A)
@@ -360,56 +369,69 @@ public class RobotContainer {
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_X)
         .onTrue(new SetPivotPositionCommand(Degrees.of(20), afiSubsystem));
 
-    buttonBox.addButtonMapping(ButtonId.A1, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem), 
-                                            new SequentialCommandGroup(
-                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
-                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
-                    
-    buttonBox.addButtonMapping(ButtonId.A2, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem), 
-                                            new SequentialCommandGroup(
-                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
-                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
 
-    buttonBox.addButtonMapping(ButtonId.A3, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem), 
-                                            new SequentialCommandGroup(
-                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
-                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+    buttonBoxLeftTrigger.addButtonMapping(ButtonId.A1, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
+    buttonBoxRightTrigger.addButtonMapping(ButtonId.A1, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
+                                            new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
-    buttonBox.addButtonMapping(ButtonId.A4, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem), 
-                                            new SequentialCommandGroup(
-                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
-                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+    buttonBoxLeftTrigger.addButtonMapping(ButtonId.A2, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
+    buttonBoxRightTrigger.addButtonMapping(ButtonId.A2, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
+                                            new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
-    buttonBox.addButtonMapping(ButtonId.D1, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem), 
-                                            new SequentialCommandGroup(
-                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
-                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+    buttonBoxLeftTrigger.addButtonMapping(ButtonId.A3, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
+    buttonBoxRightTrigger.addButtonMapping(ButtonId.A3, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
+                                            new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
-    buttonBox.addButtonMapping(ButtonId.D2, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem), 
-                                            new SequentialCommandGroup(
-                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
-                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+    buttonBoxLeftTrigger.addButtonMapping(ButtonId.A4, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
+    buttonBoxRightTrigger.addButtonMapping(ButtonId.A4, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
+                                            new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
-    buttonBox.addButtonMapping(ButtonId.D3, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem), 
-                                            new SequentialCommandGroup(
-                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
-                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+    buttonBoxLeftTrigger.addButtonMapping(ButtonId.C1, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
+    buttonBoxRightTrigger.addButtonMapping(ButtonId.C1, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
+                                            new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
-    buttonBox.addButtonMapping(ButtonId.D4, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem), 
-                                            new SequentialCommandGroup(
-                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
-                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+    buttonBoxLeftTrigger.addButtonMapping(ButtonId.C2, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
+    buttonBoxRightTrigger.addButtonMapping(ButtonId.C2, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
+                                            new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
-    buttonBox.addButtonMapping(ButtonId.B1, new PrintCommand("trigger pulled"), 
-                                            new PrintCommand("trigger released"));
+    buttonBoxLeftTrigger.addButtonMapping(ButtonId.C3, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
+    buttonBoxRightTrigger.addButtonMapping(ButtonId.C3, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
+                                            new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
-    buttonBox.addButtonMapping(ButtonId.C2, new SequentialCommandGroup(
-                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem),
+    buttonBoxLeftTrigger.addButtonMapping(ButtonId.C4, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
+    buttonBoxRightTrigger.addButtonMapping(ButtonId.C4, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
+                                            new SetEndEffectorSpeedCommand(0, esefSubsystem));
+  
+    buttonBoxRightTrigger.addButtonMapping(ButtonId.D2, new SequentialCommandGroup(
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.StationPickup.getPosition(), esefSubsystem),
                                             new RunEndEffectorUntilHasCoral(0.7, esefSubsystem)), 
                                             new SetEndEffectorSpeedCommand(0.0, esefSubsystem));
 
     //this is for the algae claw.                                    
-    buttonBox.addButtonMapping(ButtonId.B4, new RunEndEffectorUntilCoralGone(-0.95, esefSubsystem), new RunEndEffectorUntilHasCoral(0, esefSubsystem));
+    buttonBoxRightTrigger.addButtonMapping(ButtonId.B4, new SetEndEffectorSpeedCommand(-0.95, esefSubsystem), new SetEndEffectorSpeedCommand(0, esefSubsystem));
+    buttonBoxLeftTrigger.addButtonMapping(ButtonId.B4, new SetEndEffectorSpeedCommand(0.95, esefSubsystem), new SetEndEffectorSpeedCommand(0, esefSubsystem));
+
+    buttonBoxLeftTrigger.addButtonMapping(ButtonId.B2, new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2.getPosition(), esefSubsystem), new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
+    buttonBoxRightTrigger.addButtonMapping(ButtonId.B2,  new SetEndEffectorSpeedCommand(0.95, esefSubsystem), new  SetEndEffectorSpeedCommand(0, esefSubsystem));
+
+    buttonBoxLeftTrigger.addButtonMapping(ButtonId.B3, new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3.getPosition(), esefSubsystem), new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
+    buttonBoxRightTrigger.addButtonMapping(ButtonId.B3,  new SetEndEffectorSpeedCommand(0.95, esefSubsystem), new  SetEndEffectorSpeedCommand(0, esefSubsystem));
+
+    buttonBoxLeftTrigger.addButtonMapping(ButtonId.B1, new SetPivotPositionCommand(Degrees.of(45), afiSubsystem).andThen(new AFIRollerSetSpeedUntilInCommand(0.5, afiSubsystem)), new SetPivotPositionCommand(Degrees.of(90), afiSubsystem).andThen(new AFIRollerSetSpeedCommand(0, afiSubsystem)));
+    buttonBoxRightTrigger.addButtonMapping(ButtonId.B1,  new AFIRollerSetSpeedCommand(-0.5, afiSubsystem), new AFIRollerSetSpeedCommand(0, afiSubsystem));
+
+    buttonBoxRightTrigger.addButtonMapping(ButtonId.D1, new SetClimberPowerCommand(0.6, climberSubsystem), new SetClimberPowerCommand(0.0, climberSubsystem));
+    buttonBoxLeftTrigger.addButtonMapping(ButtonId.D1, new SetClimberPowerCommand(-0.6, climberSubsystem), new SetClimberPowerCommand(0.0, climberSubsystem));
+ 
+ 
   }
 
 
