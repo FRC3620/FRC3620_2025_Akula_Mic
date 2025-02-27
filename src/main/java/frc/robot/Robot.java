@@ -75,16 +75,10 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     try {
       m_robotContainer = new RobotContainer();
-    } catch (FileVersionException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    } catch (ParseException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+    } catch (FileVersionException | IOException | ParseException e) {
+      throw new RuntimeException(e);
     }
+    logCANBusIfNecessary();
 
     FileSaver.add("networktables.json");
 

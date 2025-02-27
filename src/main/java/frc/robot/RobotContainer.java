@@ -39,6 +39,7 @@ import org.usfirst.frc3620.RobotParametersContainer;
 import org.usfirst.frc3620.Utilities;
 import org.usfirst.frc3620.XBoxConstants;
 
+import frc.robot.ButtonBox.ButtonId;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commandfactories.AFISubsystemCommandFactory;
 import frc.robot.commandfactories.ClimberCommandFactory;
@@ -49,6 +50,7 @@ import frc.robot.commands.esefcommands.SetEndEffectorSpeedCommand;
 import frc.robot.commands.esefcommands.RunEndEffectorUntilCoralGone;
 import frc.robot.commands.esefcommands.SetManualElevatorCommand;
 import frc.robot.commands.esefcommands.RunEndEffectorUntilHasCoral;
+import frc.robot.commands.esefcommands.SetESEFPositionCommand;
 import frc.robot.commands.esefcommands.SetShoulderPositionCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand.WhichStick;
@@ -65,7 +67,10 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
 import swervelib.SwerveInputStream;
 import swervelib.imu.SwerveIMU;
+import frc.robot.commands.ChecklistCommand;
 import frc.robot.commands.ContinuousSetIMUFromMegaTag1Command;
+import frc.robot.commands.HankPullTheTriggerCommand;
+import frc.robot.commands.SetClimberPostionCommand;
 import frc.robot.commands.SetIMUFromMegaTag1Command;
 import frc.robot.commands.SetPivotPositionCommand;
 import frc.robot.commands.TurnToAngleCommand;
@@ -76,7 +81,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -126,6 +133,9 @@ public class RobotContainer {
   // joysticks here....
   public static ChameleonController driverJoystick;
   public static Joystick operatorJoystick;
+  public static GenericHID buttonboxHID;
+
+  public static ButtonBox buttonBox;
 
   // We'll be using this
   public static AprilTagFieldLayout aprilTagFieldLayout;
@@ -263,6 +273,8 @@ public class RobotContainer {
   private void configureButtonBindingsAndDefaultCommands() {
     driverJoystick = new ChameleonController(new Joystick(0));
     operatorJoystick = new Joystick(1);
+    buttonboxHID = new Joystick(2);
+    buttonBox = new ButtonBox(buttonboxHID);
 
     // make sure this command gets run when we start up
     CommandScheduler.getInstance().schedule(new ContinuousSetIMUFromMegaTag1Command());
@@ -331,7 +343,9 @@ public class RobotContainer {
 
       driverJoystick.button(XBoxConstants.BUTTON_LEFT_BUMPER, FlySkyConstants.BUTTON_SWF)
                 .whileTrue(driveRobotOrientedSlowCommand);
-
+               
+       driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH)
+                .whileTrue(new HankPullTheTriggerCommand());
     }
 
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.BUTTON_A)
@@ -345,7 +359,60 @@ public class RobotContainer {
 
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_X)
         .onTrue(new SetPivotPositionCommand(Degrees.of(20), afiSubsystem));
+
+    buttonBox.addButtonMapping(ButtonId.A1, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem), 
+                                            new SequentialCommandGroup(
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+                    
+    buttonBox.addButtonMapping(ButtonId.A2, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem), 
+                                            new SequentialCommandGroup(
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+
+    buttonBox.addButtonMapping(ButtonId.A3, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem), 
+                                            new SequentialCommandGroup(
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+
+    buttonBox.addButtonMapping(ButtonId.A4, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem), 
+                                            new SequentialCommandGroup(
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+
+    buttonBox.addButtonMapping(ButtonId.D1, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem), 
+                                            new SequentialCommandGroup(
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+
+    buttonBox.addButtonMapping(ButtonId.D2, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem), 
+                                            new SequentialCommandGroup(
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+
+    buttonBox.addButtonMapping(ButtonId.D3, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem), 
+                                            new SequentialCommandGroup(
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+
+    buttonBox.addButtonMapping(ButtonId.D4, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem), 
+                                            new SequentialCommandGroup(
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+
+    buttonBox.addButtonMapping(ButtonId.B1, new PrintCommand("trigger pulled"), 
+                                            new PrintCommand("trigger released"));
+
+    buttonBox.addButtonMapping(ButtonId.C2, new SequentialCommandGroup(
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem),
+                                            new RunEndEffectorUntilHasCoral(0.7, esefSubsystem)), 
+                                            new SetEndEffectorSpeedCommand(0.0, esefSubsystem));
+
+    //this is for the algae claw.                                    
+    buttonBox.addButtonMapping(ButtonId.B4, new RunEndEffectorUntilCoralGone(-0.95, esefSubsystem), new RunEndEffectorUntilHasCoral(0, esefSubsystem));
   }
+
+
 
   private void setupSmartDashboardCommands() throws FileVersionException, IOException, ParseException {
     // ESEF commands
@@ -356,6 +423,7 @@ public class RobotContainer {
 
     // Swerve commands
     if (swerveSubsystem != null) {
+      SmartDashboard.putData("Reset IMU from Limelight data", new SetIMUFromMegaTag1Command());
       swerveCommandFactory.setupSmartDashboardCommands();
     }
 
@@ -365,12 +433,8 @@ public class RobotContainer {
     // climber commands
     climberCommandFactory.setupSmartDashboardCommands();
 
-    if (swerveSubsystem != null) {
-      SmartDashboard.putData("Reset IMU from Limelight data", new SetIMUFromMegaTag1Command());
-
-      swerveCommandFactory.setupSmartDashboardCommands();
-    }
-
+    // misc
+    SmartDashboard.putData(new ChecklistCommand("Lift").withName("Lift Mechanism Diagnostic Check"));
   }
 
   public void setupAutonomousCommands() {

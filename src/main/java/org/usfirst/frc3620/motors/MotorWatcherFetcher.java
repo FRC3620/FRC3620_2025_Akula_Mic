@@ -2,13 +2,31 @@ package org.usfirst.frc3620.motors;
 
 import java.util.*;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.spark.SparkMax;
+
 /**
  * if you add fields to this, make sure you add to MotorWatcherMetric!
  */
-abstract class MotorWatcherFetcher {
+abstract public class MotorWatcherFetcher {
   Double temperature;
   Double position;
   Double outputCurrent;
+  Double velocity;
+
+  public static MotorWatcherFetcher create(Object motor) {
+    if (motor == null) throw new NullPointerException();
+
+    if (motor instanceof TalonFX) {
+      return new TalonFetcher((TalonFX) motor);
+    } else if (motor instanceof SparkMax) {
+      return new SparkMAXFetcher((SparkMax) motor);
+    }
+
+    throw new IllegalArgumentException("need a TalonFx or SparkMax, got a " + motor.getClass());
+  }
+
+  abstract public void setPower(double power);
 
   /**
    * this should measure, save, and return the motor temperature.
@@ -20,7 +38,7 @@ abstract class MotorWatcherFetcher {
    * this returns the last measured temperature
    * @return last measured temperature
    */
-  final Double getTemperature() {
+  final public Double getTemperature() {
     return temperature;
   };
 
@@ -34,7 +52,7 @@ abstract class MotorWatcherFetcher {
    * this returns the last measured position.
    * @return last measured position
    */
-  final Double getPosition() {
+  final public Double getPosition() {
     return position;
   }
 
@@ -48,9 +66,15 @@ abstract class MotorWatcherFetcher {
    * return the last measured output current.
    * @return last measured output current
    */
-  final Double getOutputCurrent() {
+  final public Double getOutputCurrent() {
     return outputCurrent;
   };
+
+  abstract Double measureVelocity();
+  
+  final public Double getVelocity() {
+    return velocity;
+  }
 
   /**
    * override this if needed. this would be used in the case where some work
@@ -65,7 +89,7 @@ abstract class MotorWatcherFetcher {
   void finalizeMeasurements() {
   }
 
-  void collect(EnumSet<MotorWatcherMetric> metrics) {
+  public void collect(EnumSet<MotorWatcherMetric> metrics) {
     startMeasurements();
     for (var metric : metrics) {
       metric.measure(this);
