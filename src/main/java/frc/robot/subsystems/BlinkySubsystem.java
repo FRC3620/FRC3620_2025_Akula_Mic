@@ -1,9 +1,12 @@
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Hertz;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Value;
+
+import java.util.Map;
 
 import org.tinylog.TaggedLogger;
 import org.usfirst.frc3620.logger.LoggingMaster;
@@ -29,36 +32,31 @@ public class BlinkySubsystem extends SubsystemBase {
   AddressableLEDBufferView left, right, top;
   LEDPattern leftPattern, rightPattern, topPattern;
 
-  private final LEDPattern m_rainbow = LEDPattern.rainbow(255, 32);
-  // Our LED strip has a density of 120 LEDs per meter
-  private static final Distance kLedSpacing = Meters.of(1 / 120.0);
+  private static final LEDPattern PATTERN_SCROLLING_RAINBOW = LEDPattern.rainbow(255, 32)
+      .scrollAtRelativeSpeed(Hertz.of(2)).atBrightness(BRIGHTNESS);
 
-  // Create a new pattern that scrolls the rainbow pattern across the LED strip,
-  // moving at a speed
-  // of 1 meter per second.
-  private final LEDPattern PATTERN_SCROLLING_RAINBOW = m_rainbow
-      .scrollAtAbsoluteSpeed(MetersPerSecond.of(.01), kLedSpacing).atBrightness(BRIGHTNESS);
+  private static final LEDPattern PATTERN_RED = LEDPattern.solid(Color.kRed).atBrightness(BRIGHTNESS);
+  private static final LEDPattern PATTERN_BLUE = LEDPattern.solid(Color.kBlue).atBrightness(BRIGHTNESS);
 
-  private final LEDPattern PATTERN_RED = LEDPattern.solid(Color.kRed).atBrightness(BRIGHTNESS);
-  private final LEDPattern PATTERN_BLUE = LEDPattern.solid(Color.kBlue).atBrightness(BRIGHTNESS);
+  private static final LEDPattern PATTERN_POLICE = PATTERN_BLUE.blink(Seconds.of(0.6)).overlayOn(PATTERN_RED);
 
-  private final LEDPattern PATTERN_POLICE = PATTERN_BLUE.blink(Seconds.of(1)).overlayOn(PATTERN_RED);
+  private static final LEDPattern PATTERN_STEP_DEMO = LEDPattern.steps(Map.of(0.00, Color.kGreen, 0.33, Color.kViolet, 0.67, Color.kBlueViolet)).scrollAtRelativeSpeed(Hertz.of(2)).atBrightness(BRIGHTNESS);
 
   public BlinkySubsystem() {
     addressableLED = new AddressableLED(0);
-    addressableLEDBuffer = new AddressableLEDBuffer(6);
+    addressableLEDBuffer = new AddressableLEDBuffer(12);
 
     addressableLED.setLength(addressableLEDBuffer.getLength());
     addressableLED.setData(addressableLEDBuffer);
     addressableLED.start();
 
-    left = addressableLEDBuffer.createView(0, 1);
-    right = addressableLEDBuffer.createView(2, 3);
-    top = addressableLEDBuffer.createView(4, 5);
+    left = addressableLEDBuffer.createView(0, 3);
+    right = addressableLEDBuffer.createView(4, 7);
+    top = addressableLEDBuffer.createView(8, 11);
 
     leftPattern = PATTERN_SCROLLING_RAINBOW;
     rightPattern = PATTERN_POLICE;
-    topPattern = PATTERN_RED;
+    topPattern = PATTERN_STEP_DEMO;
   }
 
   @Override
