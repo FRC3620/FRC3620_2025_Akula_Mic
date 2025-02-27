@@ -488,6 +488,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Test1", new LogCommand("test 1"));
     NamedCommands.registerCommand("Test2", new LogCommand("test 2"));
     NamedCommands.registerCommand("Test", Commands.print("I EXIST"));
+    NamedCommands.registerCommand("Reset IMU", new SetIMUFromMegaTag1Command());
   }
 
   public static double getDriveVerticalJoystick() {

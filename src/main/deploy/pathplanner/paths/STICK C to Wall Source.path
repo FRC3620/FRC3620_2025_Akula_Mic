@@ -3,48 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.485,
-        "y": 5.82875
+        "x": 5.2845,
+        "y": 5.08775
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.195499999999999,
-        "y": 5.84825
+        "x": 4.3035860655737705,
+        "y": 6.230737704918033
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "STICK C"
     },
     {
       "anchor": {
-        "x": 4.485,
-        "y": 2.094499999999999
+        "x": 1.690266393442623,
+        "y": 7.297643442622951
       },
       "prevControl": {
-        "x": 7.16625,
-        "y": 2.02625
-      },
-      "nextControl": {
-        "x": 1.9020682528376205,
-        "y": 2.1602473535641313
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 4.485,
-        "y": 5.82875
-      },
-      "prevControl": {
-        "x": 1.8232499999999998,
-        "y": 5.86775
+        "x": 2.913012295081967,
+        "y": 6.194774590163934
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Wall Source"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5394456289978613,
+      "rotationDegrees": -59.99999999999999
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -58,13 +47,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -52.765166018425305
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -119.42745640318965
   },
   "useDefaultConstraints": true
 }
