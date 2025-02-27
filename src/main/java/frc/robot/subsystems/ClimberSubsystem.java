@@ -3,14 +3,17 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Rotations;
 
+import java.security.Key;
 import java.util.function.DoubleSupplier;
 
 import org.usfirst.frc3620.CANDeviceType;
 import org.usfirst.frc3620.Utilities;
 
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.MathUtil;
@@ -42,6 +45,10 @@ public class ClimberSubsystem extends SubsystemBase {
         if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, CLIMBER_MOTORID, "Climber")
                 || RobotContainer.shouldMakeAllCANDevices()) {
             motor = new TalonFX(CLIMBER_MOTORID);
+            MotorOutputConfigs _MotorOutputConfigs = new MotorOutputConfigs();
+
+            _MotorOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
+            motor.getConfigurator().apply(_MotorOutputConfigs);
 
             // in init function, set slot 0 gains
             /*
@@ -51,15 +58,15 @@ public class ClimberSubsystem extends SubsystemBase {
             slot0Configs.kI = 1; // no output for integrated error
             slot0Configs.kD = 0.003; // A velocity of 1 rps results in 0.1 V output
             motor.getConfigurator().apply(slot0Configs);
-            motor.setNeutralMode(NeutralModeValue.Brake);
             */
+            motor.setNeutralMode(NeutralModeValue.Brake);
 
             pid = new PIDController(1, 0, 0);
         }
         absEncoder = new DutyCycleEncoder(9);
         absEncoderOffset = Degrees.of(RobotContainer.robotParameters.getClimberEncoderOffset());
 
-        setPostion(Degrees.of(90));
+        //setPostion(Degrees.of(90));
 
     }
 
@@ -68,9 +75,12 @@ public class ClimberSubsystem extends SubsystemBase {
         if (motor != null) {
             SmartDashboard.putNumber("frc3620/climer postion", motor.getPosition().getValueAsDouble());
             double pidoutput = pid.calculate(getClimberAngle().in(Rotations));
-            motor.set(MathUtil.clamp(pidoutput, -0.2, 0.2));
+            double motorpower = MathUtil.clamp(pidoutput, -0.2, 0.2);
+            //motor.set(motorpower);
+            SmartDashboard.putNumber("frc3620/climberPower",motorpower);
         }
         SmartDashboard.putNumber("frc3620/climerabsoluteposition", getClimberAngle().in(Degrees));
+
     }
 
     public void setPostion(Angle cpos) {
@@ -92,6 +102,8 @@ public class ClimberSubsystem extends SubsystemBase {
     }
 
     public void setClimberPower(double power) {
+        SmartDashboard.putNumber("frc3620/manualclimberPower",power);
+
         if (motor != null) {
             motor.set(power);
         }
