@@ -35,8 +35,6 @@ public class ClimberSubsystem extends SubsystemBase {
     public DutyCycleEncoder absEncoder;
     Angle absEncoderOffset;
 
-    PIDController pid;
-
     final Angle MINPOSITION = Degrees.of(0);
     final Angle MAXPOSITION = Degrees.of(180);
 
@@ -61,7 +59,6 @@ public class ClimberSubsystem extends SubsystemBase {
             */
             motor.setNeutralMode(NeutralModeValue.Brake);
 
-            pid = new PIDController(1, 0, 0);
         }
         absEncoder = new DutyCycleEncoder(9);
         absEncoderOffset = Degrees.of(RobotContainer.robotParameters.getClimberEncoderOffset());
@@ -74,30 +71,8 @@ public class ClimberSubsystem extends SubsystemBase {
     public void periodic() {
         if (motor != null) {
             SmartDashboard.putNumber("frc3620/climer postion", motor.getPosition().getValueAsDouble());
-            double pidoutput = pid.calculate(getClimberAngle().in(Rotations));
-            double motorpower = MathUtil.clamp(pidoutput, -0.2, 0.2);
-            //motor.set(motorpower);
-            SmartDashboard.putNumber("frc3620/climberPower",motorpower);
         }
         SmartDashboard.putNumber("frc3620/climerabsoluteposition", getClimberAngle().in(Degrees));
-
-    }
-
-    public void setPostion(Angle cpos) {
-
-        // create a position closed-loop request, voltage output, slot 0 configs
-        //final PositionVoltage m_request = new PositionVoltage(0).withSlot(0);
-
-        if (motor != null) {
-
-            pid.setSetpoint(Utilities.clamp(cpos, MINPOSITION, MAXPOSITION).in(Degrees));
-
-            // set position to 10 rotations
-            //motor.setControl(m_request.withPosition(cpos));
-            // motor.set(0.4);
-
-        }
-        SmartDashboard.putNumber("frc3620/requested climer postion", cpos.in(Degrees));
 
     }
 
