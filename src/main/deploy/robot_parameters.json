@@ -27,7 +27,8 @@
     "competitionRobot": true,
     "swerveDirectoryName": "swerve/Compbot",
     "intakeFrontEncoderOffset": 254.2,
-    "intakeRearEncoderOffset": 204
+    "intakeRearEncoderOffset": 204,
+    "climberEncoderOffset": 120
   },
   {
     "name": "Muleboard",
