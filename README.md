@@ -1,7 +1,7 @@
 # IO Assignments
 
 ## Digital IO
-* DIO 0: Addressible LEDs
+* DIO 0: Practice Bot Jumper
 * DIO 1: FL Absolute Encoder
 * DIO 2: FR Absolute Encoder
 * DIO 3: RL Absolute Encoder
@@ -9,13 +9,14 @@
 * DIO 5: Intake Front Encoder
 * DIO 6: Intake Rear Encoder
 * DIO 7: Algae Beam Break
-* DIO 8: Encoder Bram Break
+* DIO 8: Encoder Beam Break
 * DIO 9: Climber Encoder
 
 ## Analog IO
 * ANA 0: Elevator bottom switch
 
 ## PWM
+* PWM 0: Addressable LED strip
 
 ## Motor Controllers
 * 1-8: Drive
