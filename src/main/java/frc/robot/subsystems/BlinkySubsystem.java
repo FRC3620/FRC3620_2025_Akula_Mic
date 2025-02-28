@@ -24,19 +24,23 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class BlinkySubsystem extends SubsystemBase {
   TaggedLogger logger = LoggingMaster.getLogger(getClass());
 
-  static final Dimensionless BRIGHTNESS = Value.of(0.1);
+  static final Dimensionless BRIGHTNESS = Value.of(0.25);
 
   AddressableLED addressableLED;
   AddressableLEDBuffer addressableLEDBuffer;
 
-  AddressableLEDBufferView left, right, top;
-  LEDPattern leftPattern, rightPattern, topPattern;
+  AddressableLEDBufferView lowerLeft, lowerRight, topBar, upperLeft, upperRight;
+  LEDPattern lowerLeftPattern, upperLeftPattern, lowerRightPattern, upperRightPattern, topBarPattern;
 
   private static final LEDPattern PATTERN_SCROLLING_RAINBOW = LEDPattern.rainbow(255, 32)
       .scrollAtRelativeSpeed(Hertz.of(2)).atBrightness(BRIGHTNESS);
 
   private static final LEDPattern PATTERN_RED = LEDPattern.solid(Color.kRed).atBrightness(BRIGHTNESS);
   private static final LEDPattern PATTERN_BLUE = LEDPattern.solid(Color.kBlue).atBrightness(BRIGHTNESS);
+  private static final LEDPattern PATTERN_MAIZE = LEDPattern.solid(Color.kYellow).atBrightness(BRIGHTNESS);
+
+  private final LEDPattern PATTERN_BREATHE_BLUE = LEDPattern.solid(Color.kBlue).breathe(Seconds.of(2)).atBrightness(BRIGHTNESS);
+  private final LEDPattern PATTERN_BREATHE_MAIZE = LEDPattern.solid(Color.kYellow).breathe(Seconds.of(2)).atBrightness(BRIGHTNESS);
 
   private static final LEDPattern PATTERN_POLICE = PATTERN_BLUE.blink(Seconds.of(0.6)).overlayOn(PATTERN_RED);
 
@@ -44,29 +48,30 @@ public class BlinkySubsystem extends SubsystemBase {
 
   public BlinkySubsystem() {
     addressableLED = new AddressableLED(0);
-    addressableLEDBuffer = new AddressableLEDBuffer(12);
+    addressableLEDBuffer = new AddressableLEDBuffer(18);
 
     addressableLED.setLength(addressableLEDBuffer.getLength());
     addressableLED.setData(addressableLEDBuffer);
     addressableLED.start();
 
-    left = addressableLEDBuffer.createView(0, 3);
-    right = addressableLEDBuffer.createView(4, 7);
-    top = addressableLEDBuffer.createView(8, 11);
+    lowerLeft = addressableLEDBuffer.createView(0, 3);
+    lowerRight = addressableLEDBuffer.createView(4, 7);
+    topBar = addressableLEDBuffer.createView(8, 11);
 
-    leftPattern = PATTERN_SCROLLING_RAINBOW;
-    rightPattern = PATTERN_POLICE;
-    topPattern = PATTERN_STEP_DEMO;
+    lowerLeftPattern = PATTERN_BREATHE_BLUE;
+    lowerRightPattern = PATTERN_BREATHE_MAIZE;
+    topBarPattern = PATTERN_STEP_DEMO;
   }
 
   @Override
   public void periodic() {
-    leftPattern.applyTo(left);
-    rightPattern.applyTo(right);
-    topPattern.applyTo(top);
+    lowerLeftPattern.applyTo(lowerLeft);
+    lowerRightPattern.applyTo(lowerRight);
+    topBarPattern.applyTo(topBar);
 
     // Set the LEDs
     addressableLED.setData(addressableLEDBuffer);
   }
+
 
 }
