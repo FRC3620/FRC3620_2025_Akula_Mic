@@ -70,7 +70,6 @@ import swervelib.imu.SwerveIMU;
 import frc.robot.commands.ChecklistCommand;
 import frc.robot.commands.ContinuousSetIMUFromMegaTag1Command;
 import frc.robot.commands.HankPullTheTriggerCommand;
-import frc.robot.commands.SetClimberPostionCommand;
 import frc.robot.commands.SetClimberPowerCommand;
 import frc.robot.commands.SetIMUFromMegaTag1Command;
 import frc.robot.commands.SetPivotPositionCommand;
@@ -275,11 +274,10 @@ public class RobotContainer {
   private void configureButtonBindingsAndDefaultCommands() {
     driverJoystick = new ChameleonController(new Joystick(0));
     operatorJoystick = new Joystick(1);
-    Joystick buttonboxHIDLeft = new Joystick(2);
-    Joystick buttonboxHIDRight = new Joystick(3);
+    Joystick buttonboxHID = new Joystick(2);
     
-    buttonBoxRightTrigger = new ButtonBox(buttonboxHIDRight);
-    buttonBoxLeftTrigger = new ButtonBox(buttonboxHIDLeft);
+    buttonBoxRightTrigger = new ButtonBox(buttonboxHID);
+    buttonBoxLeftTrigger = new ButtonBox(buttonboxHID);
 
     // make sure this command gets run when we start up
     CommandScheduler.getInstance().schedule(new ContinuousSetIMUFromMegaTag1Command());
