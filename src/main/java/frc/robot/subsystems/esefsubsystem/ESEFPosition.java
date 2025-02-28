@@ -20,7 +20,7 @@ public class ESEFPosition {
     L1(0, 80),        // Fully retracted, shoulder at 90°
     L2(13.5, 57),     // Low scoring position
     L3(31, 57),     // Mid scoring position
-    L4(57.5, 70.5),    // High scoring position
+    L4(57.5, 63.25),    // High scoring position
     CLIMB(16.9, 142);        // Position for climbing
 
     private final ESEFPosition position;

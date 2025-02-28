@@ -478,7 +478,7 @@ public class RobotContainer {
   }
 
   public static void setupPathPlannerCommands() {
-    NamedCommands.registerCommand("Intake",new RunEndEffectorUntilHasCoral(0.7, esefSubsystem) );
+    NamedCommands.registerCommand("Intake",new RunEndEffectorUntilHasCoral(0.5, esefSubsystem));
     NamedCommands.registerCommand("Home",new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home .getPosition(), esefSubsystem));
     NamedCommands.registerCommand("L1",new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem));
     NamedCommands.registerCommand("L2",new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem));

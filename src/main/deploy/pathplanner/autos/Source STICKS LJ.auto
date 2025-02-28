@@ -5,9 +5,21 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Reset IMU"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.25
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "RightStartToK"
+            "pathName": "Source STICK L"
           }
         },
         {
@@ -19,43 +31,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "KToRightSource"
+            "pathName": "Stick L to Bottom Source"
           }
         },
         {
           "type": "wait",
           "data": {
             "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RightSourceToI"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "IToRightSource"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RightSourceToJ"
           }
         }
       ]
