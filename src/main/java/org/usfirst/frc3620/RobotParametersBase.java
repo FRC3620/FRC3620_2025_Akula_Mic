@@ -1,6 +1,7 @@
 package org.usfirst.frc3620;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Container for RobotParameters; designed to be subclassed.
@@ -10,7 +11,7 @@ public class RobotParametersBase {
     protected String serialNumber;
     protected boolean competitionRobot;
     protected String name;
-    protected boolean makeAllCANDevices;
+    @JsonProperty("makeAllCANDevices") protected boolean makeAllCANDevices;
 
     public RobotParametersBase() {
         serialNumber = "";
@@ -32,7 +33,6 @@ public class RobotParametersBase {
         return name;
     }
 
-    // TODO, looks like Jackson is not serializing this field.
     public boolean shouldMakeAllCANDevices() {
         return makeAllCANDevices;
     }

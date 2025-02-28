@@ -68,7 +68,9 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
 import swervelib.SwerveInputStream;
 import swervelib.imu.SwerveIMU;
+import frc.robot.commands.ChecklistCommand;
 import frc.robot.commands.ContinuousSetIMUFromMegaTag1Command;
+import frc.robot.commands.HankPullTheTriggerCommand;
 import frc.robot.commands.SetClimberPostionCommand;
 import frc.robot.commands.SetIMUFromMegaTag1Command;
 import frc.robot.commands.SetPivotPositionCommand;
@@ -80,7 +82,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -339,8 +343,10 @@ public class RobotContainer {
       // .onTrue(swerveSubsystem.pathFinderCommand());
 
       driverJoystick.button(XBoxConstants.BUTTON_LEFT_BUMPER, FlySkyConstants.BUTTON_SWF)
-          .whileTrue(driveRobotOrientedSlowCommand);
-
+                .whileTrue(driveRobotOrientedSlowCommand);
+               
+       driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH)
+                .whileTrue(new HankPullTheTriggerCommand());
     }
 
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.BUTTON_A)
@@ -387,7 +393,58 @@ public class RobotContainer {
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem),
         new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
 
-        //light color based on button pressed.
+    buttonBox.addButtonMapping(ButtonId.A1, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem), 
+                                            new SequentialCommandGroup(
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+                    
+    buttonBox.addButtonMapping(ButtonId.A2, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem), 
+                                            new SequentialCommandGroup(
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+
+    buttonBox.addButtonMapping(ButtonId.A3, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem), 
+                                            new SequentialCommandGroup(
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+
+    buttonBox.addButtonMapping(ButtonId.A4, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem), 
+                                            new SequentialCommandGroup(
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+
+    buttonBox.addButtonMapping(ButtonId.D1, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem), 
+                                            new SequentialCommandGroup(
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+
+    buttonBox.addButtonMapping(ButtonId.D2, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem), 
+                                            new SequentialCommandGroup(
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+
+    buttonBox.addButtonMapping(ButtonId.D3, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem), 
+                                            new SequentialCommandGroup(
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+
+    buttonBox.addButtonMapping(ButtonId.D4, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem), 
+                                            new SequentialCommandGroup(
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem), 
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+
+    buttonBox.addButtonMapping(ButtonId.B1, new PrintCommand("trigger pulled"), 
+                                            new PrintCommand("trigger released"));
+
+    buttonBox.addButtonMapping(ButtonId.C2, new SequentialCommandGroup(
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem),
+                                            new RunEndEffectorUntilHasCoral(0.7, esefSubsystem)), 
+                                            new SetEndEffectorSpeedCommand(0.0, esefSubsystem));
+
+    //this is for the algae claw.                                    
+    buttonBox.addButtonMapping(ButtonId.B4, new RunEndEffectorUntilCoralGone(-0.95, esefSubsystem), new RunEndEffectorUntilHasCoral(0, esefSubsystem));
+    
+    //light color based on button pressed.
     new JoystickButton(buttonBox.hid, ButtonBox.ButtonId.A1.joystickButtonId())
         .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L1)));
     new JoystickButton(buttonBox.hid, ButtonBox.ButtonId.A2.joystickButtonId())
@@ -406,7 +463,6 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L4)));
   }
 
-  
   private void setupSmartDashboardCommands() throws FileVersionException, IOException, ParseException {
     // ESEF commands
     esefCommandFactory.setupSmartDashboardCommands();
@@ -416,6 +472,7 @@ public class RobotContainer {
 
     // Swerve commands
     if (swerveSubsystem != null) {
+      SmartDashboard.putData("Reset IMU from Limelight data", new SetIMUFromMegaTag1Command());
       swerveCommandFactory.setupSmartDashboardCommands();
     }
 
@@ -425,12 +482,8 @@ public class RobotContainer {
     // climber commands
     climberCommandFactory.setupSmartDashboardCommands();
 
-    if (swerveSubsystem != null) {
-      SmartDashboard.putData("Reset IMU from Limelight data", new SetIMUFromMegaTag1Command());
-
-      swerveCommandFactory.setupSmartDashboardCommands();
-    }
-
+    // misc
+    SmartDashboard.putData(new ChecklistCommand("Lift").withName("Lift Mechanism Diagnostic Check"));
   }
 
   public void setupAutonomousCommands() {
