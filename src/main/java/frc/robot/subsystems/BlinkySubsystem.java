@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.Value;
 import java.util.Map;
 
 import org.tinylog.TaggedLogger;
+import org.usfirst.frc3620.RobotMode;
 import org.usfirst.frc3620.logger.LoggingMaster;
 
 import edu.wpi.first.units.measure.Dimensionless;
@@ -57,8 +58,6 @@ public class BlinkySubsystem extends SubsystemBase {
   private static final LEDPattern PATTERN_L2 = LEDPattern.steps(Map.of(0.5, heightColor)).reversed();
   private static final LEDPattern PATTERN_L3 = LEDPattern.steps(Map.of(0.25, heightColor)).reversed();
   private static final LEDPattern PATTERN_L4 = LEDPattern.solid(heightColor);
-
-
 
   private final LEDPattern PATTERN_BREATHE_BLUE = LEDPattern.solid(Color.kBlue).breathe(Seconds.of(2))
       .atBrightness(BRIGHTNESS);
@@ -137,6 +136,19 @@ public class BlinkySubsystem extends SubsystemBase {
         break;
       default:
         topBarPattern = OFF;
+        break;
+    }
+  }
+
+  public void setRobotMode(RobotMode mode) {
+    switch (mode) {
+      case DISABLED:
+        lowerLeftPattern = PATTERN_BREATHE_BLUE;
+        lowerRightPattern = PATTERN_BREATHE_MAIZE;
+        break;
+      default:
+        lowerLeftPattern = PATTERN_BLUE;
+        lowerRightPattern = PATTERN_MAIZE;
         break;
     }
   }

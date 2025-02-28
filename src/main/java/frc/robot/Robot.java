@@ -199,6 +199,8 @@ public class Robot extends TimedRobot {
     // if any subsystems need to know about mode changes, let
     // them know here.
     // exampleSubsystem.processRobotModeChange(newMode);
+
+    RobotContainer.blinkySubsystem.setRobotMode(newMode);
     
   }
 
