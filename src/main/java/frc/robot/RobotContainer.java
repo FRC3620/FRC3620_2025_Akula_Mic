@@ -39,6 +39,7 @@ import org.usfirst.frc3620.RobotParametersContainer;
 import org.usfirst.frc3620.Utilities;
 import org.usfirst.frc3620.XBoxConstants;
 
+import frc.robot.ButtonBox.ButtonId;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commandfactories.AFISubsystemCommandFactory;
 import frc.robot.commandfactories.ClimberCommandFactory;
@@ -49,6 +50,7 @@ import frc.robot.commands.esefcommands.SetEndEffectorSpeedCommand;
 import frc.robot.commands.esefcommands.RunEndEffectorUntilCoralGone;
 import frc.robot.commands.esefcommands.SetManualElevatorCommand;
 import frc.robot.commands.esefcommands.RunEndEffectorUntilHasCoral;
+import frc.robot.commands.esefcommands.SetESEFPositionCommand;
 import frc.robot.commands.esefcommands.SetShoulderPositionCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand.WhichStick;
@@ -127,6 +129,9 @@ public class RobotContainer {
   // joysticks here....
   public static ChameleonController driverJoystick;
   public static Joystick operatorJoystick;
+  public static GenericHID buttonboxHID;
+
+  public static ButtonBox buttonBox;
 
   // We'll be using this
   public static AprilTagFieldLayout aprilTagFieldLayout;
@@ -264,6 +269,8 @@ public class RobotContainer {
   private void configureButtonBindingsAndDefaultCommands() {
     driverJoystick = new ChameleonController(new Joystick(0));
     operatorJoystick = new Joystick(1);
+    buttonboxHID = new Joystick(2);
+    buttonBox = new ButtonBox(buttonboxHID);
 
     // make sure this command gets run when we start up
     CommandScheduler.getInstance().schedule(new ContinuousSetIMUFromMegaTag1Command());
@@ -346,7 +353,33 @@ public class RobotContainer {
 
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_X)
         .onTrue(new SetPivotPositionCommand(Degrees.of(20), afiSubsystem));
+
+    buttonBox.addButtonMapping(ButtonId.A1, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem), 
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
+                    
+    buttonBox.addButtonMapping(ButtonId.A2, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem), 
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
+
+    buttonBox.addButtonMapping(ButtonId.A3, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem), 
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
+
+    buttonBox.addButtonMapping(ButtonId.A4, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem), 
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
+
+    buttonBox.addButtonMapping(ButtonId.D1, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem), 
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
+
+    buttonBox.addButtonMapping(ButtonId.D2, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem), 
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
+
+    buttonBox.addButtonMapping(ButtonId.D3, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem), 
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
+
+    buttonBox.addButtonMapping(ButtonId.D4, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem), 
+                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
   }
+
+
 
   private void setupSmartDashboardCommands() throws FileVersionException, IOException, ParseException {
     // ESEF commands
