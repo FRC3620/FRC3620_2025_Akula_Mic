@@ -22,6 +22,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**/
 public class BlinkySubsystem extends SubsystemBase {
+
+  public enum BlinkyStickHeight {
+    L1, L2, L3, L4;
+  }
   TaggedLogger logger = LoggingMaster.getLogger(getClass());
 
   static final Dimensionless BRIGHTNESS = Value.of(0.25);
@@ -38,6 +42,8 @@ public class BlinkySubsystem extends SubsystemBase {
   private static final LEDPattern PATTERN_RED = LEDPattern.solid(Color.kRed).atBrightness(BRIGHTNESS);
   private static final LEDPattern PATTERN_BLUE = LEDPattern.solid(Color.kBlue).atBrightness(BRIGHTNESS);
   private static final LEDPattern PATTERN_MAIZE = LEDPattern.solid(Color.kYellow).atBrightness(BRIGHTNESS);
+  private static final LEDPattern OFF = LEDPattern.solid(Color.kBlack).atBrightness(BRIGHTNESS);
+
 
   private final LEDPattern PATTERN_BREATHE_BLUE = LEDPattern.solid(Color.kBlue).breathe(Seconds.of(2)).atBrightness(BRIGHTNESS);
   private final LEDPattern PATTERN_BREATHE_MAIZE = LEDPattern.solid(Color.kYellow).breathe(Seconds.of(2)).atBrightness(BRIGHTNESS);
@@ -48,19 +54,24 @@ public class BlinkySubsystem extends SubsystemBase {
 
   public BlinkySubsystem() {
     addressableLED = new AddressableLED(0);
-    addressableLEDBuffer = new AddressableLEDBuffer(18);
+    addressableLEDBuffer = new AddressableLEDBuffer(20);
 
     addressableLED.setLength(addressableLEDBuffer.getLength());
     addressableLED.setData(addressableLEDBuffer);
     addressableLED.start();
 
     lowerLeft = addressableLEDBuffer.createView(0, 3);
-    lowerRight = addressableLEDBuffer.createView(4, 7);
-    topBar = addressableLEDBuffer.createView(8, 11);
+    upperLeft = addressableLEDBuffer.createView(4, 7);
+    topBar = addressableLEDBuffer.createView(8, 11);    
+    upperRight = addressableLEDBuffer.createView(12, 15);
+    lowerRight = addressableLEDBuffer.createView(16,19);
 
     lowerLeftPattern = PATTERN_BREATHE_BLUE;
     lowerRightPattern = PATTERN_BREATHE_MAIZE;
     topBarPattern = PATTERN_STEP_DEMO;
+    upperLeftPattern = OFF;
+    upperRightPattern = OFF;
+  
   }
 
   @Override
@@ -68,10 +79,26 @@ public class BlinkySubsystem extends SubsystemBase {
     lowerLeftPattern.applyTo(lowerLeft);
     lowerRightPattern.applyTo(lowerRight);
     topBarPattern.applyTo(topBar);
+    upperLeftPattern.applyTo(upperLeft);
+    upperRightPattern.applyTo(upperRight);
 
     // Set the LEDs
     addressableLED.setData(addressableLEDBuffer);
   }
 
+  public void setESEF (BlinkyStickHeight l) {
+    if(l == BlinkyStickHeight.L1){
+      upperLeftPattern = upperRightPattern = PATTERN_BLUE;
+    }
+    if(l == BlinkyStickHeight.L2){
+      upperLeftPattern = upperRightPattern = PATTERN_MAIZE;
+    }
+    if(l == BlinkyStickHeight.L3){
+      upperLeftPattern = upperRightPattern = PATTERN_RED;
+    }
+    if(l == BlinkyStickHeight.L4){
+      upperLeftPattern = upperRightPattern = PATTERN_SCROLLING_RAINBOW;
+    }
 
+  }
 }

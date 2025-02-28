@@ -60,6 +60,7 @@ import frc.robot.subsystems.BlinkySubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.HealthSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.BlinkySubsystem.BlinkyStickHeight;
 import frc.robot.subsystems.esefsubsystem.ESEFPosition;
 import frc.robot.subsystems.VisionSubsystem.WhichBlueStick;
 import frc.robot.subsystems.esefsubsystem.ESEFSubsystem;
@@ -338,7 +339,7 @@ public class RobotContainer {
       // .onTrue(swerveSubsystem.pathFinderCommand());
 
       driverJoystick.button(XBoxConstants.BUTTON_LEFT_BUMPER, FlySkyConstants.BUTTON_SWF)
-                .whileTrue(driveRobotOrientedSlowCommand);
+          .whileTrue(driveRobotOrientedSlowCommand);
 
     }
 
@@ -354,33 +355,58 @@ public class RobotContainer {
     new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_X)
         .onTrue(new SetPivotPositionCommand(Degrees.of(20), afiSubsystem));
 
-    buttonBox.addButtonMapping(ButtonId.A1, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem), 
-                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
-                    
-    buttonBox.addButtonMapping(ButtonId.A2, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem), 
-                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
+    buttonBox.addButtonMapping(ButtonId.A1,
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem),
+        new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
 
-    buttonBox.addButtonMapping(ButtonId.A3, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem), 
-                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
+    buttonBox.addButtonMapping(ButtonId.A2,
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem),
+        new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
 
-    buttonBox.addButtonMapping(ButtonId.A4, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem), 
-                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
+    buttonBox.addButtonMapping(ButtonId.A3,
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem),
+        new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
 
-    buttonBox.addButtonMapping(ButtonId.D1, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem), 
-                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
+    buttonBox.addButtonMapping(ButtonId.A4,
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem),
+        new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
 
-    buttonBox.addButtonMapping(ButtonId.D2, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem), 
-                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
+    buttonBox.addButtonMapping(ButtonId.D1,
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem),
+        new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
 
-    buttonBox.addButtonMapping(ButtonId.D3, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem), 
-                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
+    buttonBox.addButtonMapping(ButtonId.D2,
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem),
+        new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
 
-    buttonBox.addButtonMapping(ButtonId.D4, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem), 
-                                            new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
+    buttonBox.addButtonMapping(ButtonId.D3,
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem),
+        new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
+
+    buttonBox.addButtonMapping(ButtonId.D4,
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem),
+        new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
+
+        //light color based on button pressed.
+    new JoystickButton(buttonBox.hid, ButtonBox.ButtonId.A1.joystickButtonId())
+        .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L1)));
+    new JoystickButton(buttonBox.hid, ButtonBox.ButtonId.A2.joystickButtonId())
+        .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L2)));
+    new JoystickButton(buttonBox.hid, ButtonBox.ButtonId.A3.joystickButtonId())
+        .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L3)));
+    new JoystickButton(buttonBox.hid, ButtonBox.ButtonId.A4.joystickButtonId())
+        .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L4)));
+    new JoystickButton(buttonBox.hid, ButtonBox.ButtonId.D1.joystickButtonId())
+        .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L1)));
+    new JoystickButton(buttonBox.hid, ButtonBox.ButtonId.D2.joystickButtonId())
+        .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L2)));
+    new JoystickButton(buttonBox.hid, ButtonBox.ButtonId.D3.joystickButtonId())
+        .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L3)));
+    new JoystickButton(buttonBox.hid, ButtonBox.ButtonId.D4.joystickButtonId())
+        .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L4)));
   }
 
-
-
+  
   private void setupSmartDashboardCommands() throws FileVersionException, IOException, ParseException {
     // ESEF commands
     esefCommandFactory.setupSmartDashboardCommands();
