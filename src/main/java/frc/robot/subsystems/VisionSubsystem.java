@@ -33,7 +33,8 @@ import swervelib.SwerveDrive;
 public class VisionSubsystem extends SubsystemBase {
   NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
-  public static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
+  public static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout
+      .loadField(AprilTagFields.k2025ReefscapeWelded);
 
   private Map<Translation2d, Integer> translationToTagMap = new HashMap<>();
 
@@ -49,7 +50,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   double maxDistanceFromCenterToBeClose = 3;// Distance in meters
 
-  String lastLoggedError;
+  String lastLoggedError = "Initial Logged Value";
 
   public enum Camera {
     FRONT("limelight-front"), BACK("limelight-back");
@@ -216,7 +217,7 @@ public class VisionSubsystem extends SubsystemBase {
     double yaw = 0;
     double yawRate = 0;
     double pitch = 0;
-    boolean doRejectUpdate = false;
+    // boolean doRejectUpdate = false;
     SwerveDrive sd = null;
     if (RobotContainer.swerveSubsystem != null) {
       sd = RobotContainer.swerveSubsystem.getSwerveDrive();
@@ -226,49 +227,50 @@ public class VisionSubsystem extends SubsystemBase {
       // yawRate = sd.getGyro().getYawAngularVelocity();
     }
     for (var cameraData : allCameraData.values()) {
-
+      boolean doRejectUpdate = false;
+      var prefix = "SmartDashboard/frc3620/vision/" + cameraData.limelightName + "/" + cameraData.megaTag2.megaTagName
+          + "/";
       LimelightHelpers.SetRobotOrientation(cameraData.limelightName, yaw, yawRate, pitch, 0, 0, 0);
       processMegaTag(cameraData.megaTag1, () -> LimelightHelpers.getBotPoseEstimate_wpiBlue(cameraData.limelightName));
       processMegaTag(cameraData.megaTag2,
           () -> LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(cameraData.limelightName));
 
       // update robot odometry from vision
-      if (Math.abs(yawRate) > 720) // if our angular velocity is greater than 720 degrees per second, ignore
-                                   // vision updates
-      {
+
+      double tagsSeen = NTPublisher.getNumber(prefix + "targetCount", 0);
+      if (Math.abs(yawRate) > 720) {
+        // if our angular velocity is greater than 720 degrees per second, ignore vision
+        // updates
         doRejectUpdate = true;
         if (lastLoggedError != "Angular Velocity") {
-          Logger.info("Vision Reject : Angular Velocity", "");
+          // Logger.info("Vision Reject : Angular Velocity", "");
           lastLoggedError = "Angular Velocity";
         }
       } else if (cameraData.megaTag2.poseEstimate == null) {
         doRejectUpdate = true;
         if (lastLoggedError != "megaTag2Pose = null") {
-          Logger.info("Vision Reject : megaTag2 Pose = null", "");
+          Logger.info("Vision Reject : megaTag2 null pose -- Camera: {}", cameraData.limelightName);
           lastLoggedError = "megaTag2Pose = null";
         }
-      } else if (cameraData.megaTag2.poseEstimate.tagCount == 0) {
+      } else if (tagsSeen == 0) {
         doRejectUpdate = true;
         if (lastLoggedError != "No Visible Tags") {
-          Logger.info("Vision Reject : No Visible Tags", "");
+          // Logger.info("Vision Reject : No Visible Tags", "");
           lastLoggedError = "No Visible Tags";
         }
       } else if (sd == null) {
         doRejectUpdate = true;
         if (lastLoggedError != "No Swerve Drive") {
-          Logger.info("Vision Reject : No Swerve Drive", "");
+          // Logger.info("Vision Reject : No Swerve Drive", "");
           lastLoggedError = "No Swerve Drive";
         }
       }
       if (!doRejectUpdate) {
-        if (lastLoggedError != "No Error") {
-          Logger.info("Vision Reject: No Error", "");
-          lastLoggedError = "No Error";
-        }
-        sd.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
+        
+        sd.setVisionMeasurementStdDevs(VecBuilder.fill(.2, .2, 9999999));// originally 0.7, 0.7, 9999999
         sd.addVisionMeasurement(cameraData.megaTag2.poseEstimate.pose,
             cameraData.megaTag2.poseEstimate.timestampSeconds);
-      }
+      } 
     }
 
     if (RobotContainer.swerveSubsystem != null) {
