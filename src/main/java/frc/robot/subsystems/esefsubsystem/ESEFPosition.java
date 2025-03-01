@@ -18,7 +18,7 @@ public class ESEFPosition {
     Barge(0, 90),        // Fully retracted, shoulder at 90°
     StationPickup(0, 90),        // Fully retracted, shoulder at 90°
     L1(0, 80),        // Fully retracted, shoulder at 90°
-    L2(10, 57),     // Low scoring position
+    L2(12, 63),     // Low scoring position
     L3(31, 57),     // Mid scoring position
     L4(57.5, 63.25),    // High scoring position
     CLIMB(16.9, 142),

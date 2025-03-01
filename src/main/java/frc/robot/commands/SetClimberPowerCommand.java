@@ -14,7 +14,12 @@ public class SetClimberPowerCommand extends Command {
     
     @Override
     public void initialize() {
+<<<<<<< HEAD:src/main/java/frc/robot/commands/SetClimberPowerCommand.java
         climberSubsystem.setClimberPower(power);
+=======
+        climberSubsystem.setPosition(postion);
+        climberSubsystem.setPosition(postion);
+>>>>>>> ESEFTuning:src/main/java/frc/robot/commands/SetClimberPostionCommand.java
         
     }
     @Override

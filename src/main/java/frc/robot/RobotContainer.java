@@ -403,6 +403,7 @@ public class RobotContainer {
     buttonBoxRightTrigger.addButtonMapping(ButtonId.C3, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
                                             new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
+<<<<<<< HEAD
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.C4, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem), 
                                             new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.C4, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
@@ -411,6 +412,14 @@ public class RobotContainer {
     buttonBoxRightTrigger.addButtonMapping(ButtonId.D2, new SequentialCommandGroup(
                                             new SetESEFPositionCommand(ESEFPosition.PresetPosition.StationPickup.getPosition(), esefSubsystem),
                                             new RunEndEffectorUntilHasCoral(0.7, esefSubsystem)), 
+=======
+    buttonBox.addButtonMapping(ButtonId.B1, new PrintCommand("trigger pulled"), 
+                                            new PrintCommand("trigger released"));
+
+    buttonBox.addButtonMapping(ButtonId.C2, new SequentialCommandGroup(
+                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem),
+                                            new RunEndEffectorUntilHasCoral(0.4, esefSubsystem)), 
+>>>>>>> ESEFTuning
                                             new SetEndEffectorSpeedCommand(0.0, esefSubsystem));
 
     //this is for the algae claw.                                    
