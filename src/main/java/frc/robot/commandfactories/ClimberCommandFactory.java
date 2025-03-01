@@ -22,9 +22,7 @@ public class ClimberCommandFactory {
   public Command makeSetClimberPowerCommand(DoubleSupplier powerSupplier) {
     return new RunCommand(() -> {
         double power = powerSupplier.getAsDouble();
-        if (Math.abs(power) > 0.1) { // Only override if joystick moves
             climberSubsystem.setClimberPower(power);
-        }
     }, climberSubsystem);
   }
 

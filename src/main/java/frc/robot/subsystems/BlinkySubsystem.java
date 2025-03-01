@@ -29,7 +29,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class BlinkySubsystem extends SubsystemBase {
 
   public enum BlinkyStickHeight {
-    L1, L2, L3, L4, L2ALGAE, L3ALGAE;
+    L1, L2, L3, L4, L2ALGAE, L3ALGAE, BARGEALGAE;
   }
 
   public enum ModeState {
@@ -147,6 +147,9 @@ public class BlinkySubsystem extends SubsystemBase {
     }
     if (l == BlinkyStickHeight.L3ALGAE) {
       upperLeftPattern = upperRightPattern = PATTERN_L3_ALGAE;
+    }
+    if(l == BlinkyStickHeight.BARGEALGAE){
+      upperLeftPattern = upperRightPattern = PATTERN_GREEN;
     }
 
   }
