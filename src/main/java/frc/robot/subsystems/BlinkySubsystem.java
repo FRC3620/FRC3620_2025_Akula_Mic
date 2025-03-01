@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class BlinkySubsystem extends SubsystemBase {
 
   public enum BlinkyStickHeight {
-    L1, L2, L3, L4;
+    L1, L2, L3, L4, L2ALGAE, L3ALGAE;
   }
 
   public enum HealthStatus {
@@ -58,6 +58,8 @@ public class BlinkySubsystem extends SubsystemBase {
   private static final LEDPattern PATTERN_L2 = LEDPattern.steps(Map.of(0.5, heightColor)).reversed();
   private static final LEDPattern PATTERN_L3 = LEDPattern.steps(Map.of(0.25, heightColor)).reversed();
   private static final LEDPattern PATTERN_L4 = LEDPattern.solid(heightColor);
+  private static final LEDPattern PATTERN_L2_ALGAE = LEDPattern.steps(Map.of(0.33, Color.kTeal));
+  private static final LEDPattern PATTERN_L3_ALGAE = LEDPattern.steps(Map.of(0.66, Color.kTeal));
 
   private final LEDPattern PATTERN_BREATHE_BLUE = LEDPattern.solid(Color.kBlue).breathe(Seconds.of(2))
       .atBrightness(BRIGHTNESS);
@@ -116,6 +118,12 @@ public class BlinkySubsystem extends SubsystemBase {
     }
     if (l == BlinkyStickHeight.L4) {
       upperLeftPattern = upperRightPattern = PATTERN_L4;
+    }
+    if (l == BlinkyStickHeight.L2ALGAE) {
+      upperLeftPattern = upperRightPattern = PATTERN_L2_ALGAE;
+    }
+    if (l == BlinkyStickHeight.L3ALGAE) {
+      upperLeftPattern = upperRightPattern = PATTERN_L3_ALGAE;
     }
 
   }
