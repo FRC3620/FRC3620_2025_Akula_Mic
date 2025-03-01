@@ -6,11 +6,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-<<<<<<< HEAD
-=======
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import frc.robot.commands.SetClimberPostionCommand;
->>>>>>> ESEFTuning
 import frc.robot.subsystems.ClimberSubsystem;
 
 public class ClimberCommandFactory {

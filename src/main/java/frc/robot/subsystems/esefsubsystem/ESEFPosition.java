@@ -20,7 +20,8 @@ public class ESEFPosition {
     L1(0, 80),        // Fully retracted, shoulder at 90°
     L2(12, 63),     // Low scoring position
     L3(31, 57),     // Mid scoring position
-    L4(57.5, 63.25),    // High scoring position
+    // we pulled this down by an inch because the home switch doesn't trip at exactly 0.
+    L4(56.5, 65),    // High scoring position
     CLIMB(16.9, 142),
     AlgaeL2(8, 50),
     AlgaeL3(20, 50);      // Position for climbing

@@ -62,28 +62,19 @@ import frc.robot.subsystems.HealthSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.BlinkySubsystem.BlinkyStickHeight;
 import frc.robot.subsystems.esefsubsystem.ESEFPosition;
-import frc.robot.subsystems.VisionSubsystem.WhichBlueStick;
 import frc.robot.subsystems.esefsubsystem.ESEFSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import frc.robot.subsystems.swervedrive.Vision;
 import swervelib.SwerveInputStream;
-import swervelib.imu.SwerveIMU;
 import frc.robot.commands.ChecklistCommand;
 import frc.robot.commands.ContinuousSetIMUFromMegaTag1Command;
 import frc.robot.commands.HankPullTheTriggerCommand;
-import frc.robot.commands.SetClimberPowerCommand;
 import frc.robot.commands.SetIMUFromMegaTag1Command;
 import frc.robot.commands.SetPivotPositionCommand;
-import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.AFI.AFIRollerSetSpeedCommand;
-import frc.robot.commands.AFI.AFIRollerSetSpeedContinuousCommand;
 import frc.robot.commands.AFI.AFIRollerSetSpeedUntilInCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -403,24 +394,19 @@ public class RobotContainer {
     buttonBoxRightTrigger.addButtonMapping(ButtonId.C3, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
                                             new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
-<<<<<<< HEAD
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.C4, new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem), 
                                             new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.C4, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
                                             new SetEndEffectorSpeedCommand(0, esefSubsystem));
   
-    buttonBoxRightTrigger.addButtonMapping(ButtonId.D2, new SequentialCommandGroup(
-                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.StationPickup.getPosition(), esefSubsystem),
-                                            new RunEndEffectorUntilHasCoral(0.7, esefSubsystem)), 
-=======
-    buttonBox.addButtonMapping(ButtonId.B1, new PrintCommand("trigger pulled"), 
-                                            new PrintCommand("trigger released"));
-
-    buttonBox.addButtonMapping(ButtonId.C2, new SequentialCommandGroup(
-                                            new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem),
-                                            new RunEndEffectorUntilHasCoral(0.4, esefSubsystem)), 
->>>>>>> ESEFTuning
-                                            new SetEndEffectorSpeedCommand(0.0, esefSubsystem));
+    buttonBoxRightTrigger.addButtonMapping(ButtonId.D2,
+                                            new SequentialCommandGroup(
+                                              new SetESEFPositionCommand(ESEFPosition.PresetPosition.StationPickup.getPosition(), esefSubsystem),
+                                              new RunEndEffectorUntilHasCoral(0.4, esefSubsystem)
+                                            ), 
+                                            new SetEndEffectorSpeedCommand(0.0, esefSubsystem)); 
+                                            
+                                            
 
     //this is for the algae claw.                                    
     buttonBoxRightTrigger.addButtonMapping(ButtonId.B4, new SetEndEffectorSpeedCommand(-0.95, esefSubsystem), new SetEndEffectorSpeedCommand(0, esefSubsystem));
@@ -435,8 +421,8 @@ public class RobotContainer {
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.B1, new SetPivotPositionCommand(Degrees.of(45), afiSubsystem).andThen(new AFIRollerSetSpeedUntilInCommand(0.5, afiSubsystem)), new SetPivotPositionCommand(Degrees.of(90), afiSubsystem).andThen(new AFIRollerSetSpeedCommand(0, afiSubsystem)));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.B1,  new AFIRollerSetSpeedCommand(-0.5, afiSubsystem), new AFIRollerSetSpeedCommand(0, afiSubsystem));
 
-    buttonBoxRightTrigger.addButtonMapping(ButtonId.D1, new SetClimberPowerCommand(0.6, climberSubsystem), new SetClimberPowerCommand(0.0, climberSubsystem));
-    buttonBoxLeftTrigger.addButtonMapping(ButtonId.D1, new SetClimberPowerCommand(-0.6, climberSubsystem), new SetClimberPowerCommand(0.0, climberSubsystem));
+    //ttonBoxRightTrigger.addButtonMapping(ButtonId.D1, new SetClimberPowerCommand(0.6, climberSubsystem), new SetClimberPowerCommand(0.0, climberSubsystem));
+    //ttonBoxLeftTrigger.addButtonMapping(ButtonId.D1, new SetClimberPowerCommand(-0.6, climberSubsystem), new SetClimberPowerCommand(0.0, climberSubsystem));
  
     //light color based on button pressed.
     new JoystickButton(buttonboxHID, ButtonBox.ButtonId.A1.joystickButtonId())
