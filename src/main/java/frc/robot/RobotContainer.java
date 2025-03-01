@@ -284,7 +284,7 @@ public class RobotContainer {
     CommandScheduler.getInstance().schedule(new ContinuousSetIMUFromMegaTag1Command());
 
     climberSubsystem.setDefaultCommand(climberCommandFactory.makeSetClimberPowerCommand(
-        () -> MathUtil.applyDeadband(operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y), 0.1))
+        () -> -MathUtil.applyDeadband(operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y), 0.1))
         .withName("ControlClimberFromJoystick"));
 
     if (swerveSubsystem != null) {
