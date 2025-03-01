@@ -61,6 +61,7 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.HealthSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.BlinkySubsystem.BlinkyStickHeight;
+import frc.robot.subsystems.BlinkySubsystem.ModeState;
 import frc.robot.subsystems.esefsubsystem.ESEFPosition;
 import frc.robot.subsystems.esefsubsystem.ESEFSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -421,8 +422,8 @@ public class RobotContainer {
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.B1, new SetPivotPositionCommand(Degrees.of(45), afiSubsystem).andThen(new AFIRollerSetSpeedUntilInCommand(0.5, afiSubsystem)), new SetPivotPositionCommand(Degrees.of(90), afiSubsystem).andThen(new AFIRollerSetSpeedCommand(0, afiSubsystem)));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.B1,  new AFIRollerSetSpeedCommand(-0.5, afiSubsystem), new AFIRollerSetSpeedCommand(0, afiSubsystem));
 
-    //ttonBoxRightTrigger.addButtonMapping(ButtonId.D1, new SetClimberPowerCommand(0.6, climberSubsystem), new SetClimberPowerCommand(0.0, climberSubsystem));
-    //ttonBoxLeftTrigger.addButtonMapping(ButtonId.D1, new SetClimberPowerCommand(-0.6, climberSubsystem), new SetClimberPowerCommand(0.0, climberSubsystem));
+    buttonBoxRightTrigger.addButtonMapping(ButtonId.D1, climberCommandFactory.makeSetClimberPowerCommand(() -> 0.6), climberCommandFactory.makeSetClimberPowerCommand(() -> 0.0));
+    buttonBoxRightTrigger.addButtonMapping(ButtonId.D1, climberCommandFactory.makeSetClimberPowerCommand(() -> -0.6), climberCommandFactory.makeSetClimberPowerCommand(() -> 0.0));
  
     //light color based on button pressed.
     new JoystickButton(buttonboxHID, ButtonBox.ButtonId.A1.joystickButtonId())
@@ -433,14 +434,24 @@ public class RobotContainer {
         .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L3)));
     new JoystickButton(buttonboxHID, ButtonBox.ButtonId.A4.joystickButtonId())
         .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L4)));
-    new JoystickButton(buttonboxHID, ButtonBox.ButtonId.D1.joystickButtonId())
+    new JoystickButton(buttonboxHID, ButtonBox.ButtonId.C1.joystickButtonId())
         .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L1)));
-    new JoystickButton(buttonboxHID, ButtonBox.ButtonId.D2.joystickButtonId())
+    new JoystickButton(buttonboxHID, ButtonBox.ButtonId.C2.joystickButtonId())
         .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L2)));
-    new JoystickButton(buttonboxHID, ButtonBox.ButtonId.D3.joystickButtonId())
+    new JoystickButton(buttonboxHID, ButtonBox.ButtonId.C3.joystickButtonId())
         .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L3)));
-    new JoystickButton(buttonboxHID, ButtonBox.ButtonId.D4.joystickButtonId())
+    new JoystickButton(buttonboxHID, ButtonBox.ButtonId.C4.joystickButtonId())
         .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L4)));
+    new JoystickButton(buttonboxHID, ButtonBox.ButtonId.B2.joystickButtonId())
+        .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L2ALGAE)));
+    new JoystickButton(buttonboxHID, ButtonBox.ButtonId.B3.joystickButtonId())
+        .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L3ALGAE)));
+    new JoystickButton(buttonboxHID, ButtonBox.ButtonId.D1.joystickButtonId())
+        .onTrue(Commands.runOnce(() -> blinkySubsystem.setMode(ModeState.CLIMB)));
+    new JoystickButton(buttonboxHID, ButtonBox.ButtonId.B1.joystickButtonId())
+        .onTrue(Commands.runOnce(() -> blinkySubsystem.setMode(ModeState.FLOOR_PICKUP)));
+    new JoystickButton(buttonboxHID, ButtonBox.ButtonId.D2.joystickButtonId())
+        .onTrue(Commands.runOnce(() -> blinkySubsystem.setMode(ModeState.CORAL_PICKUP)));
   }
 
   private void setupSmartDashboardCommands() throws FileVersionException, IOException, ParseException {
