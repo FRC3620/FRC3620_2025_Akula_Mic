@@ -77,7 +77,7 @@ public class AFISubsystem extends SubsystemBase {
     rearEncoderOffset = Degrees.of(RobotContainer.robotParameters.getIntakeRearEncoderOffset());
 
     pid = new PIDController(
-        1,
+        0.75,
         0,
         0);
 
@@ -111,7 +111,7 @@ public class AFISubsystem extends SubsystemBase {
       this.roller = new TalonFX(AFIROLLERMOTORID);
 
       CurrentLimitsConfigs afiRollerLimit = new CurrentLimitsConfigs();
-      afiRollerLimit.SupplyCurrentLimit = 10;
+      afiRollerLimit.SupplyCurrentLimit = 20;
       afiRollerLimit.SupplyCurrentLimitEnable = true;
 
       roller.getConfigurator().apply(afiRollerLimit);
@@ -130,7 +130,7 @@ public class AFISubsystem extends SubsystemBase {
     if (pivot != null) {
       double ffoutput = ffg * Math.cos(getAbsoluteIntakeAngle().in(Radian));
       double pidoutput = pid.calculate(getAbsoluteIntakeAngle().in(Rotations));
-      pivot.set(MathUtil.clamp(pidoutput + ffoutput, -0.5, 0.1));
+      pivot.set(MathUtil.clamp(pidoutput + ffoutput, -0.5, 0.2));
 
       SmartDashboard.putNumber("frc3620/AFI/pivotpidOutput", pidoutput);
       SmartDashboard.putNumber("frc3620/AFI/pivotffOutput", ffoutput);

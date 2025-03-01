@@ -419,7 +419,7 @@ public class RobotContainer {
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.B3, new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3.getPosition(), esefSubsystem), new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.B3,  new SetEndEffectorSpeedCommand(0.95, esefSubsystem), new  SetEndEffectorSpeedCommand(0, esefSubsystem));
 
-    buttonBoxLeftTrigger.addButtonMapping(ButtonId.B1, new SetPivotPositionCommand(Degrees.of(45), afiSubsystem).andThen(new AFIRollerSetSpeedUntilInCommand(0.5, afiSubsystem)), new SetPivotPositionCommand(Degrees.of(90), afiSubsystem).andThen(new AFIRollerSetSpeedCommand(0, afiSubsystem)));
+    buttonBoxLeftTrigger.addButtonMapping(ButtonId.B1, new SetPivotPositionCommand(Degrees.of(15), afiSubsystem).andThen(new AFIRollerSetSpeedUntilInCommand(0.5, afiSubsystem)), new SetPivotPositionCommand(Degrees.of(80), afiSubsystem).andThen(new AFIRollerSetSpeedCommand(0, afiSubsystem)));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.B1,  new AFIRollerSetSpeedCommand(-0.5, afiSubsystem), new AFIRollerSetSpeedCommand(0, afiSubsystem));
 
     buttonBoxRightTrigger.addButtonMapping(ButtonId.D1, climberCommandFactory.makeSetClimberPowerCommand(() -> 0.6), climberCommandFactory.makeSetClimberPowerCommand(() -> 0.0));
