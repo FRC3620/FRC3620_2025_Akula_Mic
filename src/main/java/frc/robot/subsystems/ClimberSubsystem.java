@@ -28,7 +28,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
     static public Angle pos1 = Degrees.of(95);
     static public Angle pos2 = Degrees.of(180);
-    
+
     TalonFX motor;
     public DutyCycleEncoder absEncoder;
     Angle absEncoderOffset;
@@ -57,15 +57,24 @@ public class ClimberSubsystem extends SubsystemBase {
         if (motor != null) {
             SmartDashboard.putNumber("frc3620/climer postion", motor.getPosition().getValueAsDouble());
             SmartDashboard.putNumber("frc3620/Climber Output", motor.get());
+
         }
         SmartDashboard.putNumber("frc3620/climerabsoluteposition", getClimberAngle().in(Degrees));
     }
 
     public void setClimberPower(double power) {
-        SmartDashboard.putNumber("frc3620/manualclimberPower",power);
+        SmartDashboard.putNumber("frc3620/manualclimberPower", power);
 
         if (motor != null) {
-            motor.set(power);
+            if ((getClimberAngle().in(Degrees) < 0 && power < 0)
+                    || (getClimberAngle().in(Degrees) > 200 && power > 0)) {
+                motor.set(0);
+
+            } else {
+
+                motor.set(power);
+            }
+
         }
     }
 
