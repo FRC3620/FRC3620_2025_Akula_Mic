@@ -18,13 +18,10 @@ public class ESEFPosition {
     Barge(0, 90),        // Fully retracted, shoulder at 90°
     StationPickup(0, 90),        // Fully retracted, shoulder at 90°
     L1(0, 80),        // Fully retracted, shoulder at 90°
-    L2(12, 63),     // Low scoring position
+    L2(10, 57),     // Low scoring position
     L3(31, 57),     // Mid scoring position
-    // we pulled this down by an inch because the home switch doesn't trip at exactly 0.
-    L4(56.5, 65),    // High scoring position
-    CLIMB(16.9, 142),
-    AlgaeL2(8, 50),
-    AlgaeL3(20, 50);      // Position for climbing
+    L4(57.5, 63.25),    // High scoring position
+    CLIMB(16.9, 142);        // Position for climbing
 
     private final ESEFPosition position;
 

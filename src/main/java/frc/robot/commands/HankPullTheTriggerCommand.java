@@ -5,33 +5,31 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.ButtonBox;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.RobotContainer;
 import frc.robot.ButtonBox.CommandPair;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class HankPullTheTriggerCommand extends Command {
 
   CommandPair commandPair;
-  ButtonBox buttonBox;
 
   /** Creates a new HankPullTheTriggerCommand. */
-  public HankPullTheTriggerCommand(ButtonBox _buttonBox) {
+  public HankPullTheTriggerCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.buttonBox = _buttonBox;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
 
-    commandPair = buttonBox.getSelectedCommandPair();
+    commandPair = RobotContainer.buttonBox.getSelectedCommandPair();
     if (commandPair == null)
       return;
     Command firstCommand = commandPair.getFirstCommand();
     if (firstCommand == null)
       return;
-    //CommandScheduler.getInstance().schedule(firstCommand);
-    firstCommand.schedule();
+    CommandScheduler.getInstance().schedule(firstCommand);
 
   }
 
@@ -49,8 +47,7 @@ public class HankPullTheTriggerCommand extends Command {
     Command secondCommand = commandPair.getSecondCommand();
     if (secondCommand == null)
       return;
-    //CommandScheduler.getInstance().schedule(secondCommand);
-    secondCommand.schedule();
+    CommandScheduler.getInstance().schedule(secondCommand);
   }
 
   // Returns true when the command should end.

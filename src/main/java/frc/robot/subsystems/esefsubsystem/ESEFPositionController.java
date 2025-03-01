@@ -31,8 +31,8 @@ public class ESEFPositionController {
   ESEFMech intermediateSetpointMech = new ESEFMech();
   ESEFMech actualPositionMech = new ESEFMech();
 
-  Distance height_breakpoint = Inches.of(8);
-  Distance height_breakpoint_minimum = Inches.of(8);
+  Distance height_breakpoint = Inches.of(15);
+  Distance height_breakpoint_minimum = Inches.of(15);
   Angle shoulder_breakpoint_low = Degrees.of(70);
   Angle shoulder_breakpoint_high = Degrees.of(95);
 
@@ -161,7 +161,7 @@ public class ESEFPositionController {
   private Distance determineDynamicBreakpoint(Distance targetHeight) {
     Distance targetBreakpt;
     if (targetHeight.lt(Inches.of(40))) {
-        targetBreakpt = Inches.of(8); // Lower breakpoint for very low placements (will be overridden by min)
+        targetBreakpt = Inches.of(15); // Lower breakpoint for very low placements (will be overridden by min)
     } else if (targetHeight.lt(Inches.of(50))) {
         targetBreakpt = Inches.of(25); // Medium level breakpoint
     } else {

@@ -130,9 +130,6 @@ public class ESEFElevatorMechanism {
           }
         }
       }
-      if(homeSwitchHit()) {
-        elevatorA.setPosition(0);
-      }
     }
 
     if (elevatorA != null) {
@@ -145,7 +142,7 @@ public class ESEFElevatorMechanism {
           getCurrentHeight().in(Inches));
       SmartDashboard.putNumber("frc3620/Elevator/BMotorAppliedPower", elevatorB.get());
     }
-    SmartDashboard.putNumber("frc3620/Elevator/Height", getCurrentHeight().in(Inches));
+
     SmartDashboard.putBoolean("frc3620/Elevator/HomeLimitSwitchPressed", homeSwitchHit());
     SmartDashboard.putBoolean("frc3620/Elevator/Calibrated", encoderCalibrated);
 
@@ -159,7 +156,7 @@ public class ESEFElevatorMechanism {
     SmartDashboard.putNumber("frc3620/Elevator/RequestedPosition", position.in(Inches));
 
     double motorRotations = position.in(Inches) / positionConversion.in(Inches); // Convert inches to rotations
-    motorRotations = MathUtil.clamp(motorRotations, 0, 40.2);  // how was this magic number determined?????
+    motorRotations = MathUtil.clamp(motorRotations, 0, 40.2);
 
     if (elevatorA != null && encoderCalibrated) {
       elevatorA.setControl(elevatorMotionMagicRequest.withPosition(motorRotations));    }
