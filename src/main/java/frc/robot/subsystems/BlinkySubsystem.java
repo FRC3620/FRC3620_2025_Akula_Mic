@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Hertz;
+import static edu.wpi.first.units.Units.Inch;
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.InchesPerSecond;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
@@ -14,6 +17,7 @@ import org.usfirst.frc3620.logger.LoggingMaster;
 
 import edu.wpi.first.units.measure.Dimensionless;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.AddressableLEDBufferView;
@@ -25,7 +29,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class BlinkySubsystem extends SubsystemBase {
 
   public enum BlinkyStickHeight {
-    L1, L2, L3, L4;
+    L1, L2, L3, L4, L2ALGAE, L3ALGAE, BARGEALGAE;
+  }
+
+  public enum ModeState {
+    CLIMB, FLOOR_PICKUP, CORAL_PICKUP;
   }
 
   public enum HealthStatus {
@@ -58,6 +66,11 @@ public class BlinkySubsystem extends SubsystemBase {
   private static final LEDPattern PATTERN_L2 = LEDPattern.steps(Map.of(0.5, heightColor)).reversed();
   private static final LEDPattern PATTERN_L3 = LEDPattern.steps(Map.of(0.25, heightColor)).reversed();
   private static final LEDPattern PATTERN_L4 = LEDPattern.solid(heightColor);
+  private static final LEDPattern PATTERN_L2_ALGAE = LEDPattern.steps(Map.of(0.66, Color.kCyan)).reversed();
+  private static final LEDPattern PATTERN_L3_ALGAE = LEDPattern.steps(Map.of(0.33, Color.kCyan)).reversed();
+  private static final LEDPattern PATTERN_CLIMB = LEDPattern.solid(Color.kOrange).blink(Time.ofBaseUnits(0.2, Seconds));
+  private static final LEDPattern PATTERN_FLOOR_PICKUP = LEDPattern.solid(Color.kCyan).blink(Time.ofBaseUnits(0.2, Seconds));
+  private static final LEDPattern PATTERN_CORAL_PICKUP = LEDPattern.rainbow(255, 32).scrollAtRelativeSpeed(Hertz.of(5)).atBrightness(BRIGHTNESS);
 
   private final LEDPattern PATTERN_BREATHE_BLUE = LEDPattern.solid(Color.kBlue).breathe(Seconds.of(2))
       .atBrightness(BRIGHTNESS);
@@ -104,6 +117,18 @@ public class BlinkySubsystem extends SubsystemBase {
     addressableLED.setData(addressableLEDBuffer);
   }
 
+  public void setMode(ModeState m) {
+    if (m == ModeState.CLIMB) {
+      upperLeftPattern = upperRightPattern = PATTERN_CLIMB;
+    }
+    if (m == ModeState.FLOOR_PICKUP) {
+      upperLeftPattern = upperRightPattern = PATTERN_FLOOR_PICKUP;
+    }
+    if (m == ModeState.CORAL_PICKUP) {
+      upperLeftPattern = upperRightPattern = PATTERN_CORAL_PICKUP;
+    }
+  }
+
   public void setESEF(BlinkyStickHeight l) {
     if (l == BlinkyStickHeight.L1) {
       upperLeftPattern = upperRightPattern = PATTERN_L1;
@@ -116,6 +141,15 @@ public class BlinkySubsystem extends SubsystemBase {
     }
     if (l == BlinkyStickHeight.L4) {
       upperLeftPattern = upperRightPattern = PATTERN_L4;
+    }
+    if (l == BlinkyStickHeight.L2ALGAE) {
+      upperLeftPattern = upperRightPattern = PATTERN_L2_ALGAE;
+    }
+    if (l == BlinkyStickHeight.L3ALGAE) {
+      upperLeftPattern = upperRightPattern = PATTERN_L3_ALGAE;
+    }
+    if(l == BlinkyStickHeight.BARGEALGAE){
+      upperLeftPattern = upperRightPattern = PATTERN_GREEN;
     }
 
   }

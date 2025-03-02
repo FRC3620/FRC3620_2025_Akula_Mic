@@ -21,6 +21,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.simulation.DutyCycleSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -32,6 +33,8 @@ public class ESEFEndEffectorMechanism {
     DigitalInput beambreak = new DigitalInput(8);
 
     TalonFX endEff;
+
+    boolean algaeIn = false;
 
     //final DutyCycleOut endEffControl = new DutyCycleOut(0);
 
@@ -67,6 +70,7 @@ public class ESEFEndEffectorMechanism {
 
     public void periodic() {
         SmartDashboard.putBoolean("frc3620/EndEffector/hasCoral", hasCoral());
+        SmartDashboard.putNumber("frc3620/EndEffector/MotorVelocity", endEff.getVelocity().getValueAsDouble());
     }
 
     public void setEndEffSpeed(double speed) {
@@ -77,6 +81,10 @@ public class ESEFEndEffectorMechanism {
 
     public boolean hasCoral() {
         return !beambreak.get();
+    }
+
+    public double getEndEffectorVelocity() {
+        return endEff.getVelocity().getValueAsDouble();
     }
 
 }

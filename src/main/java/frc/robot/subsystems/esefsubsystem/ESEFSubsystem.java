@@ -28,6 +28,7 @@ public class ESEFSubsystem extends SubsystemBase {
     shoulderMechanism.periodic();
     elevatorMechanism.periodic();
     positionController.periodic();
+    endEffectorMechanism.periodic();
   }
 
   public void setPosition(ESEFPosition position) {
@@ -52,5 +53,7 @@ public class ESEFSubsystem extends SubsystemBase {
   public boolean hasCoral() {
     return endEffectorMechanism.hasCoral();
   }
-
+  public double getEndEffectorVelocity() {
+    return endEffectorMechanism.getEndEffectorVelocity();
+  }
 }
