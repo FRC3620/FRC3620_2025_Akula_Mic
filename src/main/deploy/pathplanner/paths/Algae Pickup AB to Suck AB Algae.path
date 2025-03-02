@@ -3,37 +3,49 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.5703893442622954,
-        "y": 7.261680327868852
+        "x": 7.071957236842105,
+        "y": 4.025
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9335341092205414,
-        "y": 6.870756511499201
+        "x": 6.590775503040839,
+        "y": 4.025
       },
       "isLocked": false,
-      "linkedName": "top source"
+      "linkedName": "Algae Pickup AB"
     },
     {
       "anchor": {
-        "x": 3.65625,
-        "y": 5.091905737704917
+        "x": 6.003947368421052,
+        "y": 4.025
       },
       "prevControl": {
-        "x": 3.4756414800690165,
-        "y": 5.274270016207837
+        "x": 7.003947368421052,
+        "y": 4.025
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "F"
+      "linkedName": "Suck Algae"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Suck Algae",
+      "waypointRelativePos": 0.9263913824057444,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Suck Algae"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 2.5,
+    "maxVelocity": 1.5,
     "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -42,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -56.070202577939384
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": -53.44752724790846
+    "velocity": 0.0,
+    "rotation": 180.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

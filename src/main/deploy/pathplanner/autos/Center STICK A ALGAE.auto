@@ -5,39 +5,39 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "Center to STICK A"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "Reset IMU"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.25
+            "name": "Deposit"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Source STICK L"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
+            "pathName": "STICK A to Algae Pickup AB"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Stick L to Bottom Source"
+            "pathName": "Algae Pickup AB to Suck AB Algae"
           }
         },
         {
-          "type": "wait",
+          "type": "path",
           "data": {
-            "waitTime": 0.5
+            "pathName": "Suck Algae to Barge Score"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Spit Balls and Home"
           }
         }
       ]

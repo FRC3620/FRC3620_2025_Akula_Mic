@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Seconds;
 
 import java.io.File;
 import java.io.IOException;
@@ -77,7 +78,9 @@ import frc.robot.commands.AFI.AFIRollerSetSpeedUntilInCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -609,17 +612,24 @@ public class RobotContainer {
   }
 
   public static void setupPathPlannerCommands() {
-    NamedCommands.registerCommand("Intake",new RunEndEffectorUntilHasCoral(0.5, esefSubsystem));
-    NamedCommands.registerCommand("Home",new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home .getPosition(), esefSubsystem));
-    NamedCommands.registerCommand("L1",new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem));
-    NamedCommands.registerCommand("L2",new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem));
-    NamedCommands.registerCommand("L3",new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem));
-    NamedCommands.registerCommand("L4",new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem));
-    NamedCommands.registerCommand("Deposit", new RunEndEffectorUntilCoralGone(0.9, esefSubsystem) );
+    NamedCommands.registerCommand("Intake", new RunEndEffectorUntilHasCoral(0.35, esefSubsystem).withTimeout(2.0));
+    NamedCommands.registerCommand("Suck Algae", new RunEndEffectorUntilHasCoral(0.5, esefSubsystem));
+    NamedCommands.registerCommand("Home", new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home .getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("L1", new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("L2", new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("L3", new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("L4", new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("L2 Algae", new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("L3 Algae", new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("Barge", new SetESEFPositionCommand(ESEFPosition.PresetPosition.Barge.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("Deposit and Home", new RunEndEffectorUntilCoralGone(0.9, esefSubsystem)
+                 .andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home .getPosition(), esefSubsystem)));
+    NamedCommands.registerCommand("Spit Balls and Home", new SetEndEffectorSpeedCommand(0.95, esefSubsystem).withTimeout(Seconds.of(0.25)).andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
     NamedCommands.registerCommand("Test1", new LogCommand("test 1"));
     NamedCommands.registerCommand("Test2", new LogCommand("test 2"));
     NamedCommands.registerCommand("Test", Commands.print("I EXIST"));
     NamedCommands.registerCommand("Reset IMU", new SetIMUFromMegaTag1Command());
+    NamedCommands.registerCommand("XMode", new InstantCommand(() -> swerveSubsystem.lock()));
   }
 
   public static double getDriveVerticalJoystick() {

@@ -23,7 +23,7 @@ public class ESEFPosition {
     // we pulled this down by an inch because the home switch doesn't trip at exactly 0.
     L4(56.5, 65),    // High scoring position
     CLIMB(25, 142),
-    AlgaeL2(22, 5),
+    AlgaeL2(26, 5),
     AlgaeL3(42, 5);      // Position for climbing
 
     private final ESEFPosition position;

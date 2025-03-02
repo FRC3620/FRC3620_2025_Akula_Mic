@@ -3,35 +3,47 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.5703893442622954,
-        "y": 7.261680327868852
+        "x": 6.003947368421052,
+        "y": 4.025
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8007699761072236,
-        "y": 7.14565940352439
+        "x": 6.706332236842105,
+        "y": 4.082730263157895
       },
       "isLocked": false,
-      "linkedName": "top source"
+      "linkedName": "Suck Algae"
     },
     {
       "anchor": {
-        "x": 3.8720286885245896,
-        "y": 5.307684426229509
+        "x": 7.697368421052631,
+        "y": 4.737006578947368
       },
       "prevControl": {
-        "x": 3.1926540386703333,
-        "y": 5.856463846294507
+        "x": 7.1489309210526315,
+        "y": 4.717763157894736
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "E"
+      "linkedName": "Barge Score"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Barge",
+      "waypointRelativePos": 0.3931777378815086,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Barge"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 2.5,
     "maxAcceleration": 2.0,
@@ -42,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -54.865806943084344
+    "rotation": -4.864514437760576
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -53.44752724790846
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

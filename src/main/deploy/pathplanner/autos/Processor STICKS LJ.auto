@@ -5,63 +5,51 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Left Start To C"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
+            "name": "Reset IMU"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "C to top source"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Top source to F"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "F to top source"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Top source to E"
+            "pathName": "Source STICK L"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": null
+            "name": "Deposit and Home"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Stick L to Bottom Source"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bottom Source to STICK J"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Deposit and Home"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "XMode"
           }
         }
       ]
