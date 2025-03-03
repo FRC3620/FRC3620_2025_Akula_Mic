@@ -153,7 +153,7 @@ public class VisionSubsystem extends SubsystemBase {
     setUpTagMaps();
   }
 
-  void processMegaTag(MegaTagData megaTagData, Supplier<PoseEstimate> supplier) {
+  void processMegaTag(MegaTagData megaTagData, Supplier<PoseEstimate> supplier, Pose2d currentPose) {
     if (megaTagData.haveNewPose.getAndSet(false)) {
       PoseEstimate m = supplier.get();
 
@@ -164,6 +164,9 @@ public class VisionSubsystem extends SubsystemBase {
             + "/";
         NTPublisher.putNumber(prefix + "targetCount", m.tagCount);
         NTStructs.publish(prefix + "poseEstimate", m.pose);
+        if (currentPose != null) {
+          NTPublisher.putNumber(prefix + "distanceFromSwervePose", currentPose.getTranslation().getDistance(m.pose.getTranslation()));
+        }
 
         if (aprilTagFieldLayout != null) {
           List<Pose3d> targetPoses = new ArrayList<>();
@@ -217,20 +220,22 @@ public class VisionSubsystem extends SubsystemBase {
     double yawRate = 0;
     double pitch = 0;
     SwerveDrive sd = null;
+    Pose2d currentSwervePose = null;
     if (RobotContainer.swerveSubsystem != null) {
       sd = RobotContainer.swerveSubsystem.getSwerveDrive();
       yaw = sd.getYaw().getDegrees();
       pitch = sd.getPitch().getDegrees();
       // need to convert this to degrees / s.
       // yawRate = sd.getGyro().getYawAngularVelocity();
+      currentSwervePose = sd.getPose();
     }
-    for (var cameraData : allCameraData.values()) {
 
+    for (var cameraData : allCameraData.values()) {
       boolean doRejectUpdate = false;
       LimelightHelpers.SetRobotOrientation(cameraData.limelightName, yaw, yawRate, pitch, 0, 0, 0);
-      processMegaTag(cameraData.megaTag1, () -> LimelightHelpers.getBotPoseEstimate_wpiBlue(cameraData.limelightName));
+      processMegaTag(cameraData.megaTag1, () -> LimelightHelpers.getBotPoseEstimate_wpiBlue(cameraData.limelightName), currentSwervePose);
       processMegaTag(cameraData.megaTag2,
-          () -> LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(cameraData.limelightName));
+          () -> LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(cameraData.limelightName), currentSwervePose);
 
       // update robot odometry from vision
       if (Math.abs(yawRate) > 720) // if our angular velocity is greater than 720 degrees per second, ignore

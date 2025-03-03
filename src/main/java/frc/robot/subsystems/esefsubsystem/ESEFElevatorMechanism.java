@@ -136,16 +136,12 @@ public class ESEFElevatorMechanism {
     }
 
     if (elevatorA != null) {
-      SmartDashboard.putNumber("frc3620/Elevator/AMotorActualPosition",
-          getCurrentHeight().in(Inches));
       SmartDashboard.putNumber("frc3620/Elevator/AMotorAppliedPower", elevatorA.get());
     }
     if (elevatorB != null) {
-      SmartDashboard.putNumber("frc3620/Elevator/BMotorActualPosition",
-          getCurrentHeight().in(Inches));
       SmartDashboard.putNumber("frc3620/Elevator/BMotorAppliedPower", elevatorB.get());
     }
-    SmartDashboard.putNumber("frc3620/Elevator/Height", getCurrentHeight().in(Inches));
+    SmartDashboard.putNumber("frc3620/Elevator/ActualPosition", getCurrentHeight().in(Inches));
     SmartDashboard.putBoolean("frc3620/Elevator/HomeLimitSwitchPressed", homeSwitchHit());
     SmartDashboard.putBoolean("frc3620/Elevator/Calibrated", encoderCalibrated);
 

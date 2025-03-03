@@ -3,15 +3,9 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Rotations;
 
-import java.util.function.DoubleSupplier;
-
 import org.usfirst.frc3620.CANDeviceType;
-import org.usfirst.frc3620.Utilities;
 
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
-import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.configs.MotionMagicConfigs;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -26,15 +20,12 @@ public class ClimberSubsystem extends SubsystemBase {
 
     final int CLIMBER_MOTORID = 13;
 
-    static public Angle pos1 = Degrees.of(95);
-    static public Angle pos2 = Degrees.of(180);
-
     TalonFX motor;
     public DutyCycleEncoder absEncoder;
     Angle absEncoderOffset;
 
     final Angle MINPOSITION = Degrees.of(0);
-    final Angle MAXPOSITION = Degrees.of(180);
+    final Angle MAXPOSITION = Degrees.of(200);
 
     public ClimberSubsystem() {
         if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, CLIMBER_MOTORID, "Climber")
@@ -55,26 +46,24 @@ public class ClimberSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         if (motor != null) {
-            SmartDashboard.putNumber("frc3620/climer postion", motor.getPosition().getValueAsDouble());
-            SmartDashboard.putNumber("frc3620/Climber Output", motor.get());
+            SmartDashboard.putNumber("frc3620/climber/motorPosition", motor.getPosition().getValueAsDouble());
+            SmartDashboard.putNumber("frc3620/climber/motorOutput", motor.get());
 
         }
-        SmartDashboard.putNumber("frc3620/climerabsoluteposition", getClimberAngle().in(Degrees));
+        SmartDashboard.putNumber("frc3620/climber/absolutePosition", getClimberAngle().in(Degrees));
     }
 
     public void setClimberPower(double power) {
-        SmartDashboard.putNumber("frc3620/manualclimberPower", power);
+        SmartDashboard.putNumber("frc3620/climber/manualClimberPower", power);
 
         if (motor != null) {
-            if ((getClimberAngle().in(Degrees) < 0 && power < 0)
-                    || (getClimberAngle().in(Degrees) > 200 && power > 0)) {
+            Angle climberAngle = getClimberAngle();
+            if ((climberAngle.lt(MINPOSITION) && power < 0)
+                    || (climberAngle.gt(MAXPOSITION) && power > 0)) {
                 motor.set(0);
-
             } else {
-
                 motor.set(power);
             }
-
         }
     }
 

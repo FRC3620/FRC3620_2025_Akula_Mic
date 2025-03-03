@@ -99,9 +99,7 @@ public class ESEFShoulderMechanism {
     public void periodic() {
         if (shoulder != null) {
             SmartDashboard.putNumber("frc3620/Shoulder/MotorAppliedOutput", shoulder.get());
-            SmartDashboard.putNumber("frc3620/Shoulder/AbsolutePosition", shoulderEncoder.getAbsolutePosition().getValue().in(Rotations));
-
-            SmartDashboard.putNumber("frc3620/Shoulder/ActualPositionDegrees", getCurrentAngle().in(Degrees));
+            SmartDashboard.putNumber("frc3620/Shoulder/ActualPosition", getCurrentAngle().in(Degrees));
         }
     }
 
