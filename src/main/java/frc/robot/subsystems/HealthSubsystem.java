@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -101,9 +102,14 @@ public class HealthSubsystem extends SubsystemBase {
     }
     HealthStatus healthStatus = Collections.max(healthMap.values());
     RobotContainer.blinkySubsystem.setHealthStatus(healthStatus);
-    SmartDashboard.putBoolean("frc3620/health/indicator/red", healthStatus.compareTo(HealthStatus.ERROR) >= 0);
-    SmartDashboard.putBoolean("frc3620/health/indicator/orange", healthStatus.equals(HealthStatus.WARNING));
-    SmartDashboard.putBoolean("frc3620/health/indicator/green", healthStatus.equals(HealthStatus.OKAY));
+
+    Color indicator = Color.kGreen;
+    if (healthStatus.compareTo(HealthStatus.ERROR) >= 0) {
+      indicator = Color.kRed;
+    } else if (healthStatus.equals(HealthStatus.WARNING)) {
+      indicator = Color.kYellow;
+    }
+    SmartDashboard.putString("frc3620/health/indicator/colored", indicator.toHexString());
   }
 
   /*
