@@ -10,7 +10,10 @@ import org.usfirst.frc3620.motors.MotorWatcherMetric;
 import edu.wpi.first.hal.PowerDistributionStickyFaults;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Tracer;
+import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -36,6 +39,8 @@ public class HealthSubsystem extends SubsystemBase {
 
   Timer timer_2s = new Timer();
 
+  Tracer tracer = new Tracer();
+
   /** Creates a new HealthSubsystem. */
   public HealthSubsystem() {
     encoderWatcher = new EncoderWatcher();
@@ -46,6 +51,7 @@ public class HealthSubsystem extends SubsystemBase {
 
     if (RobotContainer.swerveSubsystem != null) {
       swerveMotorWatcher = new MotorWatcher("SmartDashboard/frc3620/health/swerve");
+      swerveMotorWatcher.setTracer(tracer);
       for (var mapEntry : RobotContainer.swerveSubsystem.getSwerveDrive().getModuleMap().entrySet()) {
         var name = mapEntry.getKey();
 
@@ -71,14 +77,15 @@ public class HealthSubsystem extends SubsystemBase {
     timer_2s.start();
   }
 
-  Random r = new Random(); // only used for testing. creating it and then ignoring it doesn't hurt
-
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    long t0 = RobotController.getFPGATime();
+    tracer.clearEpochs();
+
     if (swerveMotorWatcher != null) {
       swerveMotorWatcher.collect(true);
     }
+    tracer.addEpoch("checking swerve motors");
 
     if (encoderWatcher != null) {
       boolean changed = processWatcher(encoderWatcher,
@@ -90,13 +97,20 @@ public class HealthSubsystem extends SubsystemBase {
         SmartDashboard.putStringArray("frc3620/health/disconnectedEncoders", pdWatcher.broken.toArray(String[]::new));
       }
     }
+    tracer.addEpoch("checking encoders");
 
     if (timer_2s.advanceIfElapsed(2.0)) {
       periodic_2s();
     }
 
     if (RobotContainer.powerDistribution != null) {
-      SmartDashboard.putNumber("frc3620/power/energy", RobotContainer.powerDistribution.getTotalCurrent());
+      SmartDashboard.putNumber("frc3620/power/energy", RobotContainer.powerDistribution.getTotalEnergy());
+    }
+    tracer.addEpoch("gather energy data");
+
+    long t = RobotController.getFPGATime() - t0; // microseconds
+    if (t > 10000) { // 10ms
+      tracer.printEpochs(out -> logger.info("HealthSubsystem.periodic ran long: {}us, {}", t, out));
     }
   }
 
@@ -111,6 +125,7 @@ public class HealthSubsystem extends SubsystemBase {
         SmartDashboard.putStringArray("frc3620/power/stickyFaults", pdWatcher.broken.toArray(String[]::new));
       }
     }
+    tracer.addEpoch("check sticky faults");
   }
 
   boolean processWatcher(Watcher w, Alert alert, String justBrokenLogMessage, String justFixedLogMessage,
