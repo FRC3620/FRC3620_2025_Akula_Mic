@@ -44,6 +44,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commandfactories.AFISubsystemCommandFactory;
 import frc.robot.commandfactories.ClimberCommandFactory;
 import frc.robot.commandfactories.ESEFSubsystemCommandFactory;
+import frc.robot.commandfactories.HealthCommandFactory;
 import frc.robot.commandfactories.SwerveSubsystemCommandFactory;
 import frc.robot.commands.esefcommands.SetElevatorPositionCommand;
 import frc.robot.commands.esefcommands.SetEndEffectorSpeedCommand;
@@ -129,6 +130,7 @@ public class RobotContainer {
   public static SwerveSubsystemCommandFactory swerveCommandFactory;
   public static ESEFSubsystemCommandFactory esefCommandFactory;
   public static ClimberCommandFactory climberCommandFactory;
+  public static HealthCommandFactory healthCommandFactory;
 
   // joysticks here....
   public static ChameleonController driverJoystick;
@@ -247,6 +249,7 @@ public class RobotContainer {
     swerveCommandFactory = new SwerveSubsystemCommandFactory(swerveSubsystem);
     esefCommandFactory = new ESEFSubsystemCommandFactory(esefSubsystem);
     climberCommandFactory = new ClimberCommandFactory(climberSubsystem);
+    healthCommandFactory = new HealthCommandFactory();
   }
 
   public String getDriverControllerName() {
@@ -433,8 +436,8 @@ public class RobotContainer {
     // climber commands
     climberCommandFactory.setupSmartDashboardCommands();
 
-    // misc
-    SmartDashboard.putData(new ChecklistCommand("Lift").withName("Lift Mechanism Diagnostic Check"));
+    // checklists
+    healthCommandFactory.setupSmartDashboardCommands();
   }
 
   public void setupAutonomousCommands() {

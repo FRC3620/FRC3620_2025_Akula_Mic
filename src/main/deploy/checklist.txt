@@ -1,0 +1,7 @@
+Can you set ESEF positions?
+Do end effectors work?
+Does the coral beam break work?
+Does the climber work?
+Can you set intake positions?
+Do the intake rollers work?
+Does the intake beam break work?

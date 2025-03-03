@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -41,6 +42,7 @@ public class HealthSubsystem extends SubsystemBase {
 
     encoderWatcher.addEncoder("Intake Front Absolute", RobotContainer.afiSubsystem.frontEncoder);
     encoderWatcher.addEncoder("Intake Rear Absolute", RobotContainer.afiSubsystem.rearEncoder);
+    encoderWatcher.addEncoder("Climber Absolute", RobotContainer.climberSubsystem.absEncoder);
 
     if (RobotContainer.swerveSubsystem != null) {
       swerveMotorWatcher = new MotorWatcher("SmartDashboard/frc3620/health/swerve");
@@ -79,33 +81,39 @@ public class HealthSubsystem extends SubsystemBase {
     }
 
     if (encoderWatcher != null) {
-      processWatcher(encoderWatcher,
+      boolean changed = processWatcher(encoderWatcher,
           disconnectedEncodersAlert,
           "Absolute encoder(s) disconnected: {}",
-          "Absolute encoder(s) disconnected: {}",
+          "Absolute encoder(s) reconnected: {}",
           "Absolute encoder(s) broken: ");
+      if (changed) {
+        SmartDashboard.putStringArray("frc3620/health/disconnectedEncoders", pdWatcher.broken.toArray(String[]::new));
+      }
     }
 
     if (timer_2s.advanceIfElapsed(2.0)) {
       periodic_2s();
     }
 
-    // need to look at contents of swerveMotorWatcher and disconnectedEncoders
-    // and do SmartDashboard and wpilib alerts, as well as lights
-
+    if (RobotContainer.powerDistribution != null) {
+      SmartDashboard.putNumber("frc3620/power/energy", RobotContainer.powerDistribution.getTotalCurrent());
+    }
   }
 
   void periodic_2s() {
     if (pdWatcher != null) {
-      processWatcher(pdWatcher,
+      boolean changed = processWatcher(pdWatcher,
           pdStickyFaultAlert,
           "New sticky PD faults: {}",
           "Cleared sticky PD faults: {}",
           "PD Sticky Faults: ");
+      if (changed) {
+        SmartDashboard.putStringArray("frc3620/power/stickyFaults", pdWatcher.broken.toArray(String[]::new));
+      }
     }
   }
 
-  void processWatcher(Watcher w, Alert alert, String justBrokenLogMessage, String justFixedLogMessage,
+  boolean processWatcher(Watcher w, Alert alert, String justBrokenLogMessage, String justFixedLogMessage,
       String currentBrokenMessagePrefix) {
     w.update();
 
@@ -127,7 +135,7 @@ public class HealthSubsystem extends SubsystemBase {
         alert.setText(currentBrokenMessagePrefix + w.broken);
       }
     }
-
+    return changed;
   }
 
   abstract class Watcher {
