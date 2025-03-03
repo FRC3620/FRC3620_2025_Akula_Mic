@@ -5,6 +5,7 @@ import java.util.*;
 import org.tinylog.TaggedLogger;
 import org.usfirst.frc3620.logger.LoggingMaster;
 import org.usfirst.frc3620.motors.MotorWatcher;
+import org.usfirst.frc3620.motors.MotorWatcherFetcher;
 import org.usfirst.frc3620.motors.MotorWatcherMetric;
 
 import edu.wpi.first.hal.PowerDistributionStickyFaults;
@@ -13,12 +14,13 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Tracer;
-import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.simulation.DutyCycleEncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.BlinkySubsystem.HealthStatus;
 
 public class HealthSubsystem extends SubsystemBase {
   public static final String HARDWARE_ALERT_GROUP_NAME = "frc3620/Hardware Alert";
@@ -41,9 +43,12 @@ public class HealthSubsystem extends SubsystemBase {
 
   Tracer tracer = new Tracer();
 
+  Map<String, HealthStatus> healthMap = new HashMap<>();
+
   /** Creates a new HealthSubsystem. */
   public HealthSubsystem() {
     encoderWatcher = new EncoderWatcher();
+    updateNTForDisconnectEncoders(new String[0]);
 
     encoderWatcher.addEncoder("Intake Front Absolute", RobotContainer.afiSubsystem.frontEncoder);
     encoderWatcher.addEncoder("Intake Rear Absolute", RobotContainer.afiSubsystem.rearEncoder);
@@ -82,25 +87,11 @@ public class HealthSubsystem extends SubsystemBase {
     long t0 = RobotController.getFPGATime();
     tracer.clearEpochs();
 
-    if (swerveMotorWatcher != null) {
-      swerveMotorWatcher.collect(true);
-    }
-    tracer.addEpoch("checking swerve motors");
-
-    if (encoderWatcher != null) {
-      boolean changed = processWatcher(encoderWatcher,
-          disconnectedEncodersAlert,
-          "Absolute encoder(s) disconnected: {}",
-          "Absolute encoder(s) reconnected: {}",
-          "Absolute encoder(s) broken: ");
-      if (changed) {
-        SmartDashboard.putStringArray("frc3620/health/disconnectedEncoders", pdWatcher.broken.toArray(String[]::new));
-      }
-    }
-    tracer.addEpoch("checking encoders");
+    checkSwerveMotors();
+    checkAbsoluteEncoders();
 
     if (timer_2s.advanceIfElapsed(2.0)) {
-      periodic_2s();
+      checkPowerDistribution();
     }
 
     if (RobotContainer.powerDistribution != null) {
@@ -108,13 +99,70 @@ public class HealthSubsystem extends SubsystemBase {
     }
     tracer.addEpoch("gather energy data");
 
+    for (var healthMapEntry : healthMap.entrySet()) {
+      SmartDashboard.putString("frc3620/health/status/" + healthMapEntry.getKey(), healthMapEntry.getValue().toString());
+    }
+    RobotContainer.blinkySubsystem.setHealthStatus(Collections.max(healthMap.values()));
+    tracer.addEpoch("calculate healthStatus");
+
     long t = RobotController.getFPGATime() - t0; // microseconds
     if (t > 10000) { // 10ms
       tracer.printEpochs(out -> logger.info("HealthSubsystem.periodic ran long: {}us, {}", t, out));
     }
   }
 
-  void periodic_2s() {
+  /*
+  DutyCycleEncoderSim sim = new DutyCycleEncoderSim(RobotContainer.climberSubsystem.absEncoder);
+  @Override
+  public void simulationPeriodic() {
+    sim.setConnected(false);
+  }
+  */
+
+  void checkSwerveMotors() {
+    if (swerveMotorWatcher != null) {
+      swerveMotorWatcher.collect(true);
+
+      Set<HealthStatus> healthStati = new HashSet<>();
+      healthStati.add(HealthStatus.OKAY);
+      for (var mwi : swerveMotorWatcher.getCollectedInformation()) {
+        MotorWatcherFetcher f = mwi.getFetcher();
+        for (var datum : mwi.getMetrics()) {
+          if (datum == MotorWatcherMetric.TEMPERATURE) {
+            double temperature = datum.getValue(f);
+            if (temperature > 100) {
+              healthStati.add(HealthStatus.ERROR);
+            } else if (temperature > 70) {
+              healthStati.add(HealthStatus.WARNING);
+            }
+          }
+        }
+      }
+      healthMap.put("motorTemperature", Collections.max(healthStati));
+      tracer.addEpoch("checking swerve motors");
+    }
+  }
+
+  void checkAbsoluteEncoders() {
+    if (encoderWatcher != null) {
+      boolean changed = processWatcher(encoderWatcher,
+          disconnectedEncodersAlert,
+          "Absolute encoder(s) disconnected: {}",
+          "Absolute encoder(s) reconnected: {}",
+          "Absolute encoder(s) broken: ");
+      if (changed) {
+        updateNTForDisconnectEncoders(encoderWatcher.broken.toArray(String[]::new));
+      }
+      healthMap.put("encoders", encoderWatcher.broken.size() > 0 ? BlinkySubsystem.HealthStatus.HAIRONFIRE : BlinkySubsystem.HealthStatus.OKAY);
+      tracer.addEpoch("checking encoders");
+    }
+  }
+
+  void updateNTForDisconnectEncoders(String[] disconnectedEncoders) {
+    SmartDashboard.putStringArray("frc3620/health/disconnectedEncoders", disconnectedEncoders);
+  }
+
+  void checkPowerDistribution() {
     if (pdWatcher != null) {
       boolean changed = processWatcher(pdWatcher,
           pdStickyFaultAlert,
@@ -124,8 +172,8 @@ public class HealthSubsystem extends SubsystemBase {
       if (changed) {
         SmartDashboard.putStringArray("frc3620/power/stickyFaults", pdWatcher.broken.toArray(String[]::new));
       }
+      tracer.addEpoch("check sticky faults");
     }
-    tracer.addEpoch("check sticky faults");
   }
 
   boolean processWatcher(Watcher w, Alert alert, String justBrokenLogMessage, String justFixedLogMessage,

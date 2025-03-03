@@ -1,5 +1,10 @@
 package org.usfirst.frc3620.motors;
 
+import static edu.wpi.first.units.Units.Amps;
+import static edu.wpi.first.units.Units.Celsius;
+import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Rotation;
+
 import com.ctre.phoenix6.hardware.TalonFX;
 
 public class TalonFetcher extends MotorWatcherFetcher {
@@ -17,21 +22,21 @@ public class TalonFetcher extends MotorWatcherFetcher {
 
   @Override
   Double measureTemperature() {
-    return temperature = talonFX.getDeviceTemp().getValueAsDouble();
+    return temperature = talonFX.getDeviceTemp().getValue().in(Celsius);
   }
 
   @Override
   Double measurePosition() {
-    return position = talonFX.getPosition().getValueAsDouble();
+    return position = talonFX.getPosition().getValue().in(Rotation);
   }
 
   @Override
   Double measureOutputCurrent() {
-    return outputCurrent = talonFX.getStatorCurrent().getValueAsDouble();
+    return outputCurrent = talonFX.getStatorCurrent().getValue().in(Amps);
   }
 
   @Override
   Double measureVelocity() {
-    return velocity = talonFX.getVelocity().getValueAsDouble();
+    return velocity = talonFX.getVelocity().getValue().in(RPM);
   }
 }
