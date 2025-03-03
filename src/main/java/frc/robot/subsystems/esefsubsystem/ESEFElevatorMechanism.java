@@ -6,8 +6,10 @@ package frc.robot.subsystems.esefsubsystem;
 
 import static edu.wpi.first.units.Units.Inches;
 
+import org.tinylog.TaggedLogger;
 import org.usfirst.frc3620.CANDeviceType;
 import org.usfirst.frc3620.RobotMode;
+import org.usfirst.frc3620.logger.LoggingMaster;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -21,13 +23,13 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
 /** Add your docs here. */
 public class ESEFElevatorMechanism {
+  TaggedLogger logger = LoggingMaster.getLogger(getClass());
   private final MotionMagicVoltage elevatorMotionMagicRequest = new MotionMagicVoltage(0).withSlot(0);
   
   public static final Distance kElevatorMinHeight = Inches.of(0.0);
@@ -39,6 +41,8 @@ public class ESEFElevatorMechanism {
   Distance requestedPositionWhileCalibrating = null;
 
   AnalogInput homeLimitSwitch = new AnalogInput(0);
+
+  int resetCounter = 0;
 
   TalonFXConfiguration elevatorAConfig = new TalonFXConfiguration();
   TalonFXConfiguration elevatorBConfig = new TalonFXConfiguration();
@@ -130,24 +134,24 @@ public class ESEFElevatorMechanism {
           }
         }
       }
-      if(homeSwitchHit()) {
+      if(homeSwitchHit() && getCurrentHeight().in(Inches) > 0.5) {
+        logger.info ("reset elevator because of home switch");
         elevatorA.setPosition(0);
+        resetCounter++;
+        SmartDashboard.putNumber("frc3620/Elevator/ResetCount", ++resetCounter);
+        encoderCalibrated = true;
       }
     }
 
     if (elevatorA != null) {
-      SmartDashboard.putNumber("frc3620/Elevator/AMotorActualPosition",
-          getCurrentHeight().in(Inches));
       SmartDashboard.putNumber("frc3620/Elevator/AMotorAppliedPower", elevatorA.get());
     }
     if (elevatorB != null) {
-      SmartDashboard.putNumber("frc3620/Elevator/BMotorActualPosition",
-          getCurrentHeight().in(Inches));
       SmartDashboard.putNumber("frc3620/Elevator/BMotorAppliedPower", elevatorB.get());
     }
-    SmartDashboard.putNumber("frc3620/Elevator/Height", getCurrentHeight().in(Inches));
     SmartDashboard.putBoolean("frc3620/Elevator/HomeLimitSwitchPressed", homeSwitchHit());
     SmartDashboard.putBoolean("frc3620/Elevator/Calibrated", encoderCalibrated);
+    SmartDashboard.putNumber("frc3620/Elevator/ActualPosition", getCurrentHeight().in(Inches));
 
   }
 
