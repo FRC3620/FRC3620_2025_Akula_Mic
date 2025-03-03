@@ -45,6 +45,8 @@ public class HealthSubsystem extends SubsystemBase {
 
   /** Creates a new HealthSubsystem. */
   public HealthSubsystem() {
+    healthMap.put("CANbus", RobotContainer.canDeviceFinder.getMissingDeviceSet().size() > 0 ? HealthStatus.HAIRONFIRE : HealthStatus.OKAY);
+
     encoderWatcher = new EncoderWatcher();
     updateNTForDisconnectEncoders(new String[0]);
 
@@ -97,7 +99,11 @@ public class HealthSubsystem extends SubsystemBase {
       SmartDashboard.putString("frc3620/health/status/" + healthMapEntry.getKey(),
           healthMapEntry.getValue().toString());
     }
-    RobotContainer.blinkySubsystem.setHealthStatus(Collections.max(healthMap.values()));
+    HealthStatus healthStatus = Collections.max(healthMap.values());
+    RobotContainer.blinkySubsystem.setHealthStatus(healthStatus);
+    SmartDashboard.putBoolean("frc3620/health/indicator/red", healthStatus.compareTo(HealthStatus.ERROR) >= 0);
+    SmartDashboard.putBoolean("frc3620/health/indicator/orange", healthStatus.equals(HealthStatus.WARNING));
+    SmartDashboard.putBoolean("frc3620/health/indicator/green", healthStatus.equals(HealthStatus.OKAY));
   }
 
   /*
