@@ -33,7 +33,7 @@ public class ESEFPositionController {
 
   Distance height_breakpoint = Inches.of(8);
   Distance height_breakpoint_minimum = Inches.of(8);
-  Angle shoulder_breakpoint_low = Degrees.of(70);
+  Angle shoulder_breakpoint_low = Degrees.of(52);
   Angle shoulder_breakpoint_high = Degrees.of(95);
 
   public ESEFPositionController(ESEFElevatorMechanism elevatorMechanism, ESEFShoulderMechanism shoulderMechanism) {

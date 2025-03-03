@@ -23,6 +23,8 @@ public class ESEFEndEffectorMechanism {
 
     TalonFX endEff;
 
+    boolean algaeIn = false;
+
     final int ENDEFFECTORMOTORID = 12;
 
     public ESEFEndEffectorMechanism() {
@@ -48,7 +50,7 @@ public class ESEFEndEffectorMechanism {
     public void periodic() {
         SmartDashboard.putBoolean("frc3620/EndEffector/HasCoral", hasCoral());
         if (endEff != null) {
-            SmartDashboard.putNumber("frc3620/EndEffector/Velocity", endEff.getVelocity().getValue().in(RPM));
+            SmartDashboard.putNumber("frc3620/EndEffector/MotorVelocity", endEff.getVelocity().getValue().in(RPM));
             SmartDashboard.putNumber("frc3620/EndEffector/ActualPower", endEff.get());
         }
     }
@@ -62,6 +64,10 @@ public class ESEFEndEffectorMechanism {
 
     public boolean hasCoral() {
         return !beambreak.get();
+    }
+
+    public double getEndEffectorVelocity() {
+        return endEff.getVelocity().getValueAsDouble();
     }
 
 }
