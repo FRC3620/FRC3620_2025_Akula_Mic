@@ -216,7 +216,6 @@ public class VisionSubsystem extends SubsystemBase {
     double yaw = 0;
     double yawRate = 0;
     double pitch = 0;
-    boolean doRejectUpdate = false;
     SwerveDrive sd = null;
     if (RobotContainer.swerveSubsystem != null) {
       sd = RobotContainer.swerveSubsystem.getSwerveDrive();
@@ -227,6 +226,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
     for (var cameraData : allCameraData.values()) {
 
+      boolean doRejectUpdate = false;
       LimelightHelpers.SetRobotOrientation(cameraData.limelightName, yaw, yawRate, pitch, 0, 0, 0);
       processMegaTag(cameraData.megaTag1, () -> LimelightHelpers.getBotPoseEstimate_wpiBlue(cameraData.limelightName));
       processMegaTag(cameraData.megaTag2,

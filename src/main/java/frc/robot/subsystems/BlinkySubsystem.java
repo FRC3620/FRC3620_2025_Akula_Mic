@@ -1,166 +1,155 @@
 package frc.robot.subsystems;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.tinylog.TaggedLogger;
-import org.usfirst.frc3620.logger.LoggingMaster;
-import org.usfirst.frc3620.BlinkinColor;
+import static edu.wpi.first.units.Units.Hertz;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Value;
 
+import java.util.Map;
+
+import org.tinylog.TaggedLogger;
+import org.usfirst.frc3620.RobotMode;
+import org.usfirst.frc3620.logger.LoggingMaster;
+
+import edu.wpi.first.units.measure.Dimensionless;
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.AddressableLEDBufferView;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.blinky.Pattern;
 
 /**/
 public class BlinkySubsystem extends SubsystemBase {
+
+  public enum BlinkyStickHeight {
+    L1, L2, L3, L4;
+  }
+
+  public enum HealthStatus {
+    OKAY, WARNING, ERROR, HAIRONFIRE;
+  }
+
+  static Color heightColor = Color.kPurple;
+
   TaggedLogger logger = LoggingMaster.getLogger(getClass());
 
-  AddressableLED leds;
-  AddressableLEDBuffer lBuffer;
-  Timer timer;
-  List<LightSegment> lightSegments = new ArrayList<>();
+  static final Dimensionless BRIGHTNESS = Value.of(0.25);
 
-  Spark spark, s2;
+  AddressableLED addressableLED;
+  AddressableLEDBuffer addressableLEDBuffer;
 
-  BlinkinColor color = null;
+  AddressableLEDBufferView lowerLeft, lowerRight, topBar, upperLeft, upperRight;
+  LEDPattern lowerLeftPattern, upperLeftPattern, lowerRightPattern, upperRightPattern, topBarPattern;
 
-  boolean runningIntakeAtSource = false;
-  boolean readyToShoot = false;
+  private static final LEDPattern PATTERN_SCROLLING_RAINBOW = LEDPattern.rainbow(255, 32)
+      .scrollAtRelativeSpeed(Hertz.of(2)).atBrightness(BRIGHTNESS);
 
-  /** Creates a new BlinkySubsystem. */
+  private static final LEDPattern PATTERN_RED = LEDPattern.solid(Color.kRed).atBrightness(BRIGHTNESS);
+  private static final LEDPattern PATTERN_BLUE = LEDPattern.solid(Color.kBlue).atBrightness(BRIGHTNESS);
+  private static final LEDPattern PATTERN_MAIZE = LEDPattern.solid(Color.kYellow).atBrightness(BRIGHTNESS);
+  private static final LEDPattern OFF = LEDPattern.solid(Color.kBlack).atBrightness(BRIGHTNESS);
+  private static final LEDPattern PATTERN_GREEN = LEDPattern.solid(Color.kGreen).atBrightness(BRIGHTNESS);
+  private static final LEDPattern PATTERN_ORANGE = LEDPattern.solid(Color.kOrangeRed).atBrightness(BRIGHTNESS);
+
+  private static final LEDPattern PATTERN_L1 = LEDPattern.steps(Map.of(0.75, heightColor)).reversed();
+  private static final LEDPattern PATTERN_L2 = LEDPattern.steps(Map.of(0.5, heightColor)).reversed();
+  private static final LEDPattern PATTERN_L3 = LEDPattern.steps(Map.of(0.25, heightColor)).reversed();
+  private static final LEDPattern PATTERN_L4 = LEDPattern.solid(heightColor);
+
+  private final LEDPattern PATTERN_BREATHE_BLUE = LEDPattern.solid(Color.kBlue).breathe(Seconds.of(2))
+      .atBrightness(BRIGHTNESS);
+  private final LEDPattern PATTERN_BREATHE_MAIZE = LEDPattern.solid(Color.kYellow).breathe(Seconds.of(2))
+      .atBrightness(BRIGHTNESS);
+
+  private static final LEDPattern PATTERN_POLICE = PATTERN_BLUE.blink(Seconds.of(0.6)).overlayOn(PATTERN_RED);
+
+  private static final LEDPattern PATTERN_STEP_DEMO = LEDPattern
+      .steps(Map.of(0.00, Color.kGreen, 0.33, Color.kViolet, 0.67, Color.kBlueViolet))
+      .scrollAtRelativeSpeed(Hertz.of(2)).atBrightness(BRIGHTNESS);
+
   public BlinkySubsystem() {
-    spark = new Spark(1);
-    s2 = new Spark(2);
-    spark.addFollower(s2);
+    addressableLED = new AddressableLED(0);
+    addressableLEDBuffer = new AddressableLEDBuffer(76);
 
-    leds = new AddressableLED(0);
-    lBuffer = new AddressableLEDBuffer(20);
-    timer = new Timer();
-    leds.setLength(lBuffer.getLength());
-    leds.start();
+    addressableLED.setLength(addressableLEDBuffer.getLength());
+    addressableLED.setData(addressableLEDBuffer);
+    addressableLED.start();
+
+    lowerLeft = addressableLEDBuffer.createView(1, 15);
+    upperLeft = addressableLEDBuffer.createView(16, 34);
+    topBar = addressableLEDBuffer.createView(35, 37);
+    lowerRight = addressableLEDBuffer.createView(39, 53);
+    upperRight = addressableLEDBuffer.createView(54, 72);
+
+    lowerLeftPattern = PATTERN_BREATHE_BLUE;
+    lowerRightPattern = PATTERN_BREATHE_MAIZE;
+    topBarPattern = PATTERN_STEP_DEMO;
+    upperLeftPattern = OFF;
+    upperRightPattern = OFF;
+
   }
 
   @Override
   public void periodic() {
-    boolean changed = false;
-    for (var lightSegment : lightSegments) {
-      if (lightSegment.runPattern()) {
-        changed = true;
-      }
-    }
-    if (changed) {
-      leds.setData(lBuffer);
-    }
+    lowerLeftPattern.applyTo(lowerLeft);
+    lowerRightPattern.applyTo(lowerRight);
+    topBarPattern.applyTo(topBar);
+    upperLeftPattern.applyTo(upperLeft);
+    upperRightPattern.applyTo(upperRight);
 
-    blinkinPeriodic();
+    // Set the LEDs
+    addressableLED.setData(addressableLEDBuffer);
   }
 
-  void blinkinPeriodic() {
-    if (getCurrentCommand() == null) {
-      BlinkinColor c = BlinkinColor.BLUE;
-    
-      setBlinkin(c);
-    } else {
-      if (color == null) {
-        setBlinkin(null);
-      } else {
-        setBlinkin(color);
-      }
+  public void setESEF(BlinkyStickHeight l) {
+    if (l == BlinkyStickHeight.L1) {
+      upperLeftPattern = upperRightPattern = PATTERN_L1;
+    }
+    if (l == BlinkyStickHeight.L2) {
+      upperLeftPattern = upperRightPattern = PATTERN_L2;
+    }
+    if (l == BlinkyStickHeight.L3) {
+      upperLeftPattern = upperRightPattern = PATTERN_L3;
+    }
+    if (l == BlinkyStickHeight.L4) {
+      upperLeftPattern = upperRightPattern = PATTERN_L4;
+    }
+
+  }
+
+  public void setHealthStatus(HealthStatus h) {
+    switch (h) {
+      case OKAY:
+        topBarPattern = PATTERN_GREEN;
+        break;
+      case WARNING:
+        topBarPattern = PATTERN_ORANGE;
+        break;
+      case ERROR:
+        topBarPattern = PATTERN_RED;
+        break;
+      case HAIRONFIRE:
+        topBarPattern = PATTERN_POLICE;
+        break;
+      default:
+        topBarPattern = OFF;
+        break;
     }
   }
 
-  BlinkinColor currentBlinkinColor = null;
-  void setBlinkin(BlinkinColor c) {
-    if (currentBlinkinColor != c) {
-      logger.info ("Changing Blinkin to {}", c);
-      if (c == null) {
-        spark.disable();
-      } else {
-        spark.set(c.getPower());
-      }
-      currentBlinkinColor = c;
-    }
-  }
-
-  public LightSegment getLightSegment(int first, int last) {
-    LightSegment rv = new LightSegment(first, last);
-    lightSegments.add(rv);
-    return rv;
-  }
-
-  public void setRunningIntakeAtSource(boolean b) {
-    runningIntakeAtSource = b;
-  }
-
-  public void setReadyToShoot(boolean b) {
-    readyToShoot = b;
-  }
-
-  public void setColor(BlinkinColor color) {
-    this.color = color;
-  }
-
-  public class LightSegment extends SubsystemBase {
-    int segment_first;
-    int segment_length;
-
-    Pattern currentPattern;
-
-    boolean patternChanged = false;
-
-    public LightSegment(int first, int last) {
-      this.segment_first = first;
-      this.segment_length = (last - first) + 1;
-      setName(getName() + "[" + first + "-" + last + "]");
-    }
-
-    /**
-     * Define what pattern the light segment should display.
-     * 
-     * @param pattern
-     */
-    public void setPattern(Pattern pattern) {
-      if (pattern == currentPattern)
-        return;
-      // logger.info ("{} pattern set to {}", getName(), pattern.toString());
-      patternChanged = true;
-      if (currentPattern != null) {
-        currentPattern.done(this);
-      }
-      currentPattern = pattern;
-      currentPattern.start(this);
-    }
-
-    boolean runPattern() {
-      boolean rv = patternChanged;
-      patternChanged = false;
-      if (currentPattern != null) {
-        if (currentPattern.periodic(this)) {
-          rv = true;
-        }
-      }
-      return rv;
-    }
-
-    public void updateLEDs(Color color) {
-      updateLEDs(0, segment_length, color);
-    }
-
-    public void updateLEDs(int first, Color color) {
-      updateLEDs(first, first, color);
-    }
-
-    public void updateLEDs(int first, int last, Color color) {
-      for (int i = first; i < last; i++) {
-        lBuffer.setLED(i + segment_first, color);
-      }
-    }
-
-    public int getLength() {
-      return segment_length;
+  public void setRobotMode(RobotMode mode) {
+    switch (mode) {
+      case DISABLED:
+        lowerLeftPattern = PATTERN_BREATHE_BLUE;
+        lowerRightPattern = PATTERN_BREATHE_MAIZE;
+        break;
+      default:
+        lowerLeftPattern = PATTERN_BLUE;
+        lowerRightPattern = PATTERN_MAIZE;
+        break;
     }
   }
 }
