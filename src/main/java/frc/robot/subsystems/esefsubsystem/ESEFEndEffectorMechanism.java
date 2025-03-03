@@ -4,25 +4,15 @@
 
 package frc.robot.subsystems.esefsubsystem;
 
-import java.time.Period;
+import static edu.wpi.first.units.Units.RPM;
 
 import org.usfirst.frc3620.CANDeviceType;
 
-import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.PositionVoltage;
-//import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
-import edu.wpi.first.wpilibj.simulation.DutyCycleSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotContainer;
 
@@ -32,8 +22,6 @@ public class ESEFEndEffectorMechanism {
     DigitalInput beambreak = new DigitalInput(8);
 
     TalonFX endEff;
-
-    //final DutyCycleOut endEffControl = new DutyCycleOut(0);
 
     final int ENDEFFECTORMOTORID = 12;
 
@@ -52,24 +40,21 @@ public class ESEFEndEffectorMechanism {
             endEffConfigs.Voltage.withPeakForwardVoltage(12 * 0.8);
             endEffConfigs.Voltage.withPeakReverseVoltage(-12 * 0.8);
 
-            // elevatorAConfigs.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-            // elevatorAConfigs.MotorOutput.PeakForwardDutyCycle = 0.05;
-            // elevatorAConfigs.MotorOutput.PeakReverseDutyCycle = 0.025;
-            // elevatorAConfigs.Voltage.PeakForwardVoltage = (0.05 * 12);
-            // elevatorAConfigs.Voltage.PeakReverseVoltage = (0.025 * 12);
-
-            // elevatorA.setPosition(0);
-
             endEff.getConfigurator().apply(endEffConfigs);
         }
 
     }
 
     public void periodic() {
-        SmartDashboard.putBoolean("frc3620/EndEffector/hasCoral", hasCoral());
+        SmartDashboard.putBoolean("frc3620/EndEffector/HasCoral", hasCoral());
+        if (endEff != null) {
+            SmartDashboard.putNumber("frc3620/EndEffector/Velocity", endEff.getVelocity().getValue().in(RPM));
+            SmartDashboard.putNumber("frc3620/EndEffector/ActualPower", endEff.get());
+        }
     }
 
     public void setEndEffSpeed(double speed) {
+        SmartDashboard.putNumber("frc3620/EndEffector/RequestedPower", speed);
         if (endEff != null) {
             endEff.set(speed);
         }

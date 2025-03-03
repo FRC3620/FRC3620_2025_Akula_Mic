@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radian;
 import static edu.wpi.first.units.Units.Rotations;
 
@@ -24,7 +25,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -44,11 +44,9 @@ public class AFISubsystem extends SubsystemBase {
     FRONT, REAR
   }
 
-
   public double measuredRollerSpeed;
   //Front Encoder is backwards use rear until fixed.
   WhichEncoderToUse whichEncoderToUse = WhichEncoderToUse.REAR;
-
   
   final PositionVoltage pivotRequest = new PositionVoltage(0).withSlot(0);
   final DutyCycleOut rollerRequest = new DutyCycleOut(0);
@@ -87,8 +85,8 @@ public class AFISubsystem extends SubsystemBase {
     if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, AFIPIVOTMOTORID, "AFIPivot")
         || RobotContainer.shouldMakeAllCANDevices()) {
       this.pivot = new TalonFX(AFIPIVOTMOTORID);
-      // this.shoulderEncoder = new CANcoder(10);
-      TalonFXConfiguration configs = new TalonFXConfiguration();
+
+      //TalonFXConfiguration configs = new TalonFXConfiguration();
 
       // configs.Slot0.kG = 0.0; // Gravity FeedForward
       // configs.Slot0.kS = 0; // Friction FeedForward
@@ -130,16 +128,16 @@ public class AFISubsystem extends SubsystemBase {
     if (pivot != null) {
       double ffoutput = ffg * Math.cos(getAbsoluteIntakeAngle().in(Radian));
       double pidoutput = pid.calculate(getAbsoluteIntakeAngle().in(Rotations));
-      pivot.set(MathUtil.clamp(pidoutput + ffoutput, -0.5, 0.1));
+      double motorOutput = MathUtil.clamp(pidoutput + ffoutput, -0.5, 0.1);
+      pivot.set(motorOutput);
 
       SmartDashboard.putNumber("frc3620/AFI/pivotpidOutput", pidoutput);
       SmartDashboard.putNumber("frc3620/AFI/pivotffOutput", ffoutput);
-      SmartDashboard.putNumber("frc3620/AFI/pivotOutput", ffoutput + pidoutput);
-      SmartDashboard.putNumber("frc3620/AFI/pivotOutput", MathUtil.clamp(pidoutput + ffoutput, -0.1, 0.1));
+      SmartDashboard.putNumber("frc3620/AFI/pivotOutput", motorOutput);
     }
     
     if (roller != null) {
-      measuredRollerSpeed = roller.getVelocity().getValueAsDouble();
+      measuredRollerSpeed = roller.getVelocity().getValue().in(RPM);
       SmartDashboard.putNumber("frc3620/AFI/measureRollerVelocity", measuredRollerSpeed);
     }
 
@@ -149,15 +147,13 @@ public class AFISubsystem extends SubsystemBase {
     if (pivot != null) {
       SmartDashboard.putNumber("frc3620/AFI/PivotRelativePosition",
           pivot.getPosition().getValue().div(MOTOR_TO_INTAKE_RATIO).in(Degrees));
-      SmartDashboard.putNumber("frc3620/AFI/MotorVoltage", pivot.getMotorVoltage().getValueAsDouble());
+      SmartDashboard.putNumber("frc3620/AFI/PivotMotorVoltage", pivot.getMotorVoltage().getValueAsDouble());
     }
   }
 
   public void setPivotPosition(Angle position) {
     // set the shoulder to the desired position Cat
     SmartDashboard.putNumber("frc3620/AFI/PivotRequestedPosition", position.in(Degrees));
-
-
 
     if (pivot != null) {
       // pivot.setControl(pivotRequest.withPosition(position.times(MOTOR_TO_INTAKE_RATIO)));
@@ -187,10 +183,10 @@ public class AFISubsystem extends SubsystemBase {
     } else {
       return getRearAbsoluteIntakeAngle();
     }
-
   }
 
   public void setAFIRollerSpeed(double speed) {
+    SmartDashboard.putNumber("frc3620/AFI/RollerRequestedPower", speed);
     if (roller != null) {
       roller.setControl(rollerRequest.withOutput(speed));
     }

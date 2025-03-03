@@ -2,17 +2,25 @@ package org.usfirst.frc3620.motors;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkMax;
+
+import edu.wpi.first.wpilibj.Tracer;
+
 import org.usfirst.frc3620.NTPublisher;
 import org.usfirst.frc3620.Utilities;
 
 import java.util.*;
 
 public class MotorWatcher {
+  Tracer tracer;
 
   static class MotorWatcherInfo {
     MotorWatcherFetcher fetcher;
     EnumSet<MotorWatcherMetric> metrics;
     String name;
+  }
+
+  public void setTracer(Tracer t) {
+    tracer = t;
   }
 
   public MotorWatcher(String name) {
@@ -44,6 +52,9 @@ public class MotorWatcher {
     if (! collectedInformationListIsFrozen) freezeCollectedInformation();
     for (var mwi : collectedInformationList) {
       mwi.fetcher.collect(mwi.metrics);
+      if (tracer != null) {
+        tracer.addEpoch("fetching motor " + mwi.name);
+      }
     }
 
     if (publish) {
