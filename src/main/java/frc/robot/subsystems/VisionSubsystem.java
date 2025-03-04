@@ -154,6 +154,18 @@ public class VisionSubsystem extends SubsystemBase {
       else if(sd == null){
         doRejectUpdate = true;
       }
+      else if (cameraData.megaTag2.poseEstimate.pose.getX() >= 17){
+        doRejectUpdate = true;
+      }
+      else if (cameraData.megaTag2.poseEstimate.pose.getX() <= 0){
+        doRejectUpdate = true;
+      }
+      else if (cameraData.megaTag2.poseEstimate.pose.getY() >= 8.5){
+        doRejectUpdate = true;
+      }
+      else if (cameraData.megaTag2.poseEstimate.pose.getY() <= 0){
+        doRejectUpdate = true;
+      }
       if (!doRejectUpdate) {
         sd.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
         sd.addVisionMeasurement(cameraData.megaTag2.poseEstimate.pose, cameraData.megaTag2.poseEstimate.timestampSeconds);
