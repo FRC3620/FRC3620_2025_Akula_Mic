@@ -1,29 +1,34 @@
 package frc.robot.subsystems;
 
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.tinylog.TaggedLogger;
 import org.usfirst.frc3620.logger.LoggingMaster;
 import org.usfirst.frc3620.motors.MotorWatcher;
+import org.usfirst.frc3620.motors.MotorWatcherFetcher;
 import org.usfirst.frc3620.motors.MotorWatcherMetric;
 
 import edu.wpi.first.hal.PowerDistributionStickyFaults;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.Tracer;
-import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
+import frc.robot.subsystems.BlinkySubsystem.HealthStatus;
 
 public class HealthSubsystem extends SubsystemBase {
   public static final String HARDWARE_ALERT_GROUP_NAME = "frc3620/Hardware Alert";
   public static final String CHECKLIST_GROUP_NAME = "frc3620/Checklist";
   public final static TaggedLogger logger = LoggingMaster.getLogger(HealthSubsystem.class);
+
+  private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
   // this stuff is for watching encoders
   EncoderWatcher encoderWatcher;
@@ -37,13 +42,14 @@ public class HealthSubsystem extends SubsystemBase {
   PDWatcher pdWatcher;
   Alert pdStickyFaultAlert = new Alert(HARDWARE_ALERT_GROUP_NAME, "", AlertType.kWarning);
 
-  Timer timer_2s = new Timer();
-
-  Tracer tracer = new Tracer();
+  Map<String, HealthStatus> healthMap = new HashMap<>();
 
   /** Creates a new HealthSubsystem. */
   public HealthSubsystem() {
+    healthMap.put("CANbus", RobotContainer.canDeviceFinder.getMissingDeviceSet().size() > 0 ? HealthStatus.HAIRONFIRE : HealthStatus.OKAY);
+
     encoderWatcher = new EncoderWatcher();
+    updateNTForDisconnectEncoders(new String[0]);
 
     encoderWatcher.addEncoder("Intake Front Absolute", RobotContainer.afiSubsystem.frontEncoder);
     encoderWatcher.addEncoder("Intake Rear Absolute", RobotContainer.afiSubsystem.rearEncoder);
@@ -51,7 +57,7 @@ public class HealthSubsystem extends SubsystemBase {
 
     if (RobotContainer.swerveSubsystem != null) {
       swerveMotorWatcher = new MotorWatcher("SmartDashboard/frc3620/health/swerve");
-      swerveMotorWatcher.setTracer(tracer);
+
       for (var mapEntry : RobotContainer.swerveSubsystem.getSwerveDrive().getModuleMap().entrySet()) {
         var name = mapEntry.getKey();
 
@@ -73,20 +79,73 @@ public class HealthSubsystem extends SubsystemBase {
       pdWatcher = new PDWatcher(RobotContainer.powerDistribution);
     }
 
-    timer_2s.reset();
-    timer_2s.start();
+    // do the collect in it's own thread, so we don't overrun the main WPI loop
+    scheduler.scheduleAtFixedRate(() -> collect(), 0, 10, TimeUnit.MILLISECONDS);
   }
 
   @Override
   public void periodic() {
-    long t0 = RobotController.getFPGATime();
-    tracer.clearEpochs();
+  }
 
+  void collect() {
+    checkSwerveMotors();
+    checkAbsoluteEncoders();
+    checkPowerDistribution();
+
+    if (RobotContainer.powerDistribution != null) {
+      SmartDashboard.putNumber("frc3620/power/energy", RobotContainer.powerDistribution.getTotalEnergy());
+    }
+
+    for (var healthMapEntry : healthMap.entrySet()) {
+      SmartDashboard.putString("frc3620/health/status/" + healthMapEntry.getKey(),
+          healthMapEntry.getValue().toString());
+    }
+    HealthStatus healthStatus = Collections.max(healthMap.values());
+    RobotContainer.blinkySubsystem.setHealthStatus(healthStatus);
+
+    Color indicator = Color.kGreen;
+    if (healthStatus.compareTo(HealthStatus.ERROR) >= 0) {
+      indicator = Color.kRed;
+    } else if (healthStatus.equals(HealthStatus.WARNING)) {
+      indicator = Color.kYellow;
+    }
+    SmartDashboard.putString("frc3620/health/indicator/colored", indicator.toHexString());
+  }
+
+  /*
+   * DutyCycleEncoderSim sim = new
+   * DutyCycleEncoderSim(RobotContainer.climberSubsystem.absEncoder);
+   * 
+   * @Override
+   * public void simulationPeriodic() {
+   * sim.setConnected(false);
+   * }
+   */
+
+  void checkSwerveMotors() {
     if (swerveMotorWatcher != null) {
       swerveMotorWatcher.collect(true);
-    }
-    tracer.addEpoch("checking swerve motors");
 
+      Set<HealthStatus> healthStati = new HashSet<>();
+      healthStati.add(HealthStatus.OKAY);
+      for (var mwi : swerveMotorWatcher.getCollectedInformation()) {
+        MotorWatcherFetcher f = mwi.getFetcher();
+        for (var datum : mwi.getMetrics()) {
+          if (datum == MotorWatcherMetric.TEMPERATURE) {
+            double temperature = datum.getValue(f);
+            if (temperature > 100) {
+              healthStati.add(HealthStatus.ERROR);
+            } else if (temperature > 70) {
+              healthStati.add(HealthStatus.WARNING);
+            }
+          }
+        }
+      }
+      healthMap.put("motorTemperature", Collections.max(healthStati));
+    }
+  }
+
+  void checkAbsoluteEncoders() {
     if (encoderWatcher != null) {
       boolean changed = processWatcher(encoderWatcher,
           disconnectedEncodersAlert,
@@ -94,27 +153,18 @@ public class HealthSubsystem extends SubsystemBase {
           "Absolute encoder(s) reconnected: {}",
           "Absolute encoder(s) broken: ");
       if (changed) {
-        SmartDashboard.putStringArray("frc3620/health/disconnectedEncoders", pdWatcher.broken.toArray(String[]::new));
+        updateNTForDisconnectEncoders(encoderWatcher.broken.toArray(String[]::new));
       }
-    }
-    tracer.addEpoch("checking encoders");
-
-    if (timer_2s.advanceIfElapsed(2.0)) {
-      periodic_2s();
-    }
-
-    if (RobotContainer.powerDistribution != null) {
-      SmartDashboard.putNumber("frc3620/power/energy", RobotContainer.powerDistribution.getTotalEnergy());
-    }
-    tracer.addEpoch("gather energy data");
-
-    long t = RobotController.getFPGATime() - t0; // microseconds
-    if (t > 10000) { // 10ms
-      tracer.printEpochs(out -> logger.info("HealthSubsystem.periodic ran long: {}us, {}", t, out));
+      healthMap.put("encoders", encoderWatcher.broken.size() > 0 ? BlinkySubsystem.HealthStatus.HAIRONFIRE
+          : BlinkySubsystem.HealthStatus.OKAY);
     }
   }
 
-  void periodic_2s() {
+  void updateNTForDisconnectEncoders(String[] disconnectedEncoders) {
+    SmartDashboard.putStringArray("frc3620/health/disconnectedEncoders", disconnectedEncoders);
+  }
+
+  void checkPowerDistribution() {
     if (pdWatcher != null) {
       boolean changed = processWatcher(pdWatcher,
           pdStickyFaultAlert,
@@ -125,7 +175,6 @@ public class HealthSubsystem extends SubsystemBase {
         SmartDashboard.putStringArray("frc3620/power/stickyFaults", pdWatcher.broken.toArray(String[]::new));
       }
     }
-    tracer.addEpoch("check sticky faults");
   }
 
   boolean processWatcher(Watcher w, Alert alert, String justBrokenLogMessage, String justFixedLogMessage,

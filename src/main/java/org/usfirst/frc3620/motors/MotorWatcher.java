@@ -13,10 +13,22 @@ import java.util.*;
 public class MotorWatcher {
   Tracer tracer;
 
-  static class MotorWatcherInfo {
+  static public class MotorWatcherInfo {
     MotorWatcherFetcher fetcher;
     EnumSet<MotorWatcherMetric> metrics;
     String name;
+
+    public EnumSet<MotorWatcherMetric> getMetrics() {
+      return metrics;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public MotorWatcherFetcher getFetcher() {
+      return fetcher;
+    }
   }
 
   public void setTracer(Tracer t) {

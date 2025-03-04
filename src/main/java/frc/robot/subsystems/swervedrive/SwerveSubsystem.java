@@ -30,6 +30,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Unit;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -146,6 +147,8 @@ public class SwerveSubsystem extends SubsystemBase {
     setupPathPlanner();
 
     setUpTagMaps();
+
+    SmartDashboard.putData("navX", (Sendable) swerveDrive.getGyro().getIMU());
   }
 
   void setUpTagMaps() {
