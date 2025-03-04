@@ -14,7 +14,7 @@ import org.usfirst.frc3620.motors.MotorWatcherMetric;
 import edu.wpi.first.hal.PowerDistributionStickyFaults;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
@@ -80,11 +80,18 @@ public class HealthSubsystem extends SubsystemBase {
     }
 
     // do the collect in it's own thread, so we don't overrun the main WPI loop
-    scheduler.scheduleAtFixedRate(() -> collect(), 0, 10, TimeUnit.MILLISECONDS);
+    //scheduler.scheduleAtFixedRate(() -> collect(), 0, 10, TimeUnit.MILLISECONDS);
+    timer.reset();
+    timer.start();
   }
+
+  Timer timer = new Timer();
 
   @Override
   public void periodic() {
+    if (timer.advanceIfElapsed(0.2)) {
+      collect();
+    }
   }
 
   void collect() {
