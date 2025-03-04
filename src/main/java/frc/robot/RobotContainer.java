@@ -278,7 +278,7 @@ public class RobotContainer {
     buttonBoxLeftTrigger = new ButtonBox(buttonboxHID);
 
     // gets called once, command doesnt end.
-    //CommandScheduler.getInstance().schedule(new ContinuousSetIMUFromMegaTag1Command());
+    CommandScheduler.getInstance().schedule(new ContinuousSetIMUFromMegaTag1Command());
 
     climberSubsystem.setDefaultCommand(climberCommandFactory.makeSetClimberPowerCommand(
         () -> -MathUtil.applyDeadband(operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y), 0.1))

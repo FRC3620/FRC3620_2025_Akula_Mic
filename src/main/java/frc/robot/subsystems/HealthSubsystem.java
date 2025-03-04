@@ -80,7 +80,7 @@ public class HealthSubsystem extends SubsystemBase {
     }
 
     // do the collect in it's own thread, so we don't overrun the main WPI loop
-    scheduler.scheduleAtFixedRate(() -> collect(), 0, 10, TimeUnit.MILLISECONDS);
+    //scheduler.scheduleAtFixedRate(() -> collect(), 0, 10, TimeUnit.MILLISECONDS);
   }
 
   @Override

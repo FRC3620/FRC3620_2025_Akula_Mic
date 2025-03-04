@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.349671052631578,
-        "y": 4.958305921052631
+        "x": 5.282319078947368,
+        "y": 5.016036184210526
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.270777610008627,
-        "y": 6.061174773511646
+        "x": 4.68577302631579,
+        "y": 6.391940789473685
       },
       "isLocked": false,
       "linkedName": "STICK C"
     },
     {
       "anchor": {
-        "x": 3.501189036885246,
-        "y": 6.2517761270491805
+        "x": 3.146299342105263,
+        "y": 6.237993421052631
       },
       "prevControl": {
-        "x": 3.7501828982952734,
-        "y": 6.274182755089209
+        "x": 3.3952932035152905,
+        "y": 6.2604000490926595
       },
       "nextControl": {
-        "x": 2.6013319672131145,
-        "y": 6.17079918032787
+        "x": 2.2464422724331317,
+        "y": 6.1570164743313205
       },
       "isLocked": false,
       "linkedName": null
@@ -80,8 +80,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 2.5,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -89,13 +89,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -49.573921259900956
+    "rotation": -55.74055216677249
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -119.42745640318965
+    "rotation": -122.73522627210762
   },
   "useDefaultConstraints": false
 }

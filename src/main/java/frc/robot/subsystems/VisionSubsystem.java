@@ -146,7 +146,7 @@ public class VisionSubsystem extends SubsystemBase {
         return limelightName;
       }
 
-      public double getDistanceTOClosestSeenTarget() {
+      public double getDistanceToClosestSeenTarget() {
         return distanceToClosestSeenTarget;
       }
     }
@@ -261,6 +261,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     for (var cameraData : allCameraData.values()) {
+      
       boolean doRejectUpdate = false;
       LimelightHelpers.SetRobotOrientation(cameraData.limelightName, yaw, yawRate, pitch, 0, 0, 0);
       processMegaTag(cameraData.megaTag1, () -> LimelightHelpers.getBotPoseEstimate_wpiBlue(cameraData.limelightName), currentSwervePose);
@@ -288,7 +289,7 @@ public class VisionSubsystem extends SubsystemBase {
           // Logger.info("Vision Reject : No Visible Tags", "");
           lastLoggedError = "No Visible Tags";
         }
-      } else if (cameraData.megaTag2.getDistanceTOClosestSeenTarget() > 7) {
+      } else if (cameraData.megaTag2.getDistanceToClosestSeenTarget() > 4.75) {
         doRejectUpdate = true;
         if (lastLoggedError != "Closest Tag Too Far") {
           // Logger.info("Vision Reject : No Swerve Drive", "");

@@ -5,12 +5,6 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Reset IMU"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Wall to STICK C"
