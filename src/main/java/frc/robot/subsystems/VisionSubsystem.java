@@ -265,6 +265,18 @@ public class VisionSubsystem extends SubsystemBase {
           lastLoggedError = "No Swerve Drive";
         }
       }
+      else if (cameraData.megaTag2.poseEstimate.pose.getX() >= 17){
+        doRejectUpdate = true;
+      }
+      else if (cameraData.megaTag2.poseEstimate.pose.getX() <= 0){
+        doRejectUpdate = true;
+      }
+      else if (cameraData.megaTag2.poseEstimate.pose.getY() >= 8.5){
+        doRejectUpdate = true;
+      }
+      else if (cameraData.megaTag2.poseEstimate.pose.getY() <= 0){
+        doRejectUpdate = true;
+      }
       if (!doRejectUpdate) {
         if (lastLoggedError != "No Error") {
           // Logger.info("Vision Reject: No Error", "");
