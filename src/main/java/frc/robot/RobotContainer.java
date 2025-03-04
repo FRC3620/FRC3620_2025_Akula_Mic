@@ -442,7 +442,7 @@ public class RobotContainer {
         new SetPivotPositionCommand(Degrees.of(15), afiSubsystem)
             .andThen(new AFIRollerSetSpeedUntilInCommand(0.5, afiSubsystem)),
         new SetPivotPositionCommand(Degrees.of(80), afiSubsystem)
-            .andThen(new AFIRollerSetSpeedCommand(0, afiSubsystem)));
+            .andThen(new AFIRollerSetSpeedCommand(0.02, afiSubsystem)));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.B1, new AFIRollerSetSpeedCommand(-0.5, afiSubsystem),
         new AFIRollerSetSpeedCommand(0, afiSubsystem));
 
