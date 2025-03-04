@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.936595394736842,
-        "y": 1.8793585526315792
+        "x": 5.898108552631578,
+        "y": 2.1583881578947364
       },
       "isLocked": false,
       "linkedName": "STICK L"
@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 5.378536184210526,
-        "y": 3.0147203947368424
+        "y": 3.1301809210526312
       },
       "prevControl": {
         "x": 5.924536184210526,
-        "y": 2.1079703947368427
+        "y": 2.2234309210526315
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,12 +48,23 @@
   "eventMarkers": [
     {
       "name": "L4",
-      "waypointRelativePos": 0.393177737881509,
+      "waypointRelativePos": 0.28186714542190383,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
           "name": "L4"
+        }
+      }
+    },
+    {
+      "name": "Reset IMU",
+      "waypointRelativePos": 0.5439856373429077,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Reset IMU"
         }
       }
     }

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.29425,
-        "y": 5.06825
+        "x": 5.349671052631578,
+        "y": 4.958305921052631
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.215356557377049,
-        "y": 6.171118852459015
+        "x": 4.270777610008627,
+        "y": 6.061174773511646
       },
       "isLocked": false,
       "linkedName": "STICK C"
@@ -80,8 +80,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.5,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

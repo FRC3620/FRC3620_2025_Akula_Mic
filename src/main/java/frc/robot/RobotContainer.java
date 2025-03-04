@@ -274,8 +274,8 @@ public class RobotContainer {
     buttonBoxRightTrigger = new ButtonBox(buttonboxHID);
     buttonBoxLeftTrigger = new ButtonBox(buttonboxHID);
 
-    // make sure this command gets run when we start up
-    CommandScheduler.getInstance().schedule(new ContinuousSetIMUFromMegaTag1Command());
+    // gets called once, command doesnt end.
+    //CommandScheduler.getInstance().schedule(new ContinuousSetIMUFromMegaTag1Command());
 
     climberSubsystem.setDefaultCommand(climberCommandFactory.makeSetClimberPowerCommand(
         () -> -MathUtil.applyDeadband(operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y), 0.1))
@@ -405,7 +405,7 @@ public class RobotContainer {
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.C4,
-        new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem),
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.C4, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
