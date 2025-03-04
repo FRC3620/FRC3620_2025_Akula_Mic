@@ -21,6 +21,8 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.networktables.DoubleArrayEntry;
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
@@ -33,7 +35,8 @@ import swervelib.SwerveDrive;
 public class VisionSubsystem extends SubsystemBase {
   NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
-  public static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
+  public static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout
+      .loadField(AprilTagFields.k2025ReefscapeWelded);
 
   private Map<Translation2d, Integer> translationToTagMap = new HashMap<>();
 
@@ -46,6 +49,8 @@ public class VisionSubsystem extends SubsystemBase {
   private Translation2d centerBlueReef;
 
   private List<Translation2d> tagTranslations = new ArrayList<>();
+
+  static Optional<Alliance> color;
 
   double maxDistanceFromCenterToBeClose = 3;// Distance in meters
 
@@ -123,6 +128,8 @@ public class VisionSubsystem extends SubsystemBase {
 
       PoseEstimate poseEstimate;
 
+      double distanceToClosestSeenTarget;
+
       MegaTagData(String megaTagName) {
         this.megaTagName = megaTagName;
       }
@@ -137,6 +144,10 @@ public class VisionSubsystem extends SubsystemBase {
 
       public String getLimelightName() {
         return limelightName;
+      }
+
+      public double getDistanceTOClosestSeenTarget() {
+        return distanceToClosestSeenTarget;
       }
     }
   }
@@ -170,10 +181,20 @@ public class VisionSubsystem extends SubsystemBase {
 
         if (aprilTagFieldLayout != null) {
           List<Pose3d> targetPoses = new ArrayList<>();
+
+          double distanceToClosestSeenTarget = 100000;
+
           for (var fiducial : m.rawFiducials) {
             Optional<Pose3d> aprilTagPose = aprilTagFieldLayout.getTagPose(fiducial.id);
             if (aprilTagPose.isPresent()) {
               targetPoses.add(aprilTagPose.get());
+              double distanceToThisTag = m.pose.getTranslation()
+                  .getDistance(aprilTagPose.get().getTranslation().toTranslation2d());
+              if (distanceToThisTag < distanceToClosestSeenTarget) {
+                distanceToClosestSeenTarget = distanceToThisTag;
+              }
+              megaTagData.distanceToClosestSeenTarget = distanceToClosestSeenTarget;
+              NTPublisher.putNumber(prefix + "distance to closest seen tag", distanceToClosestSeenTarget);
             }
           }
           NTStructs.publish(prefix + "targets", targetPoses.toArray(new Pose3d[0]));
@@ -184,7 +205,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   void setUpTagMaps() {
 
-    for (int tagID = 17; tagID <= 22; tagID++) {
+    for (int tagID = 1; tagID <= 22; tagID++) {
 
       Translation2d translation = RobotContainer.aprilTagFieldLayout.getTagPose(tagID).get().getTranslation()
           .toTranslation2d();
@@ -216,6 +237,15 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    // gets alliance color
+    color = DriverStation.getAlliance();
+
+    // added this to handle case where color is not yet set, otherwise we blow up in
+    // the simulator
+    if (color.isEmpty())
+      return;
+
     double yaw = 0;
     double yawRate = 0;
     double pitch = 0;
@@ -258,7 +288,14 @@ public class VisionSubsystem extends SubsystemBase {
           // Logger.info("Vision Reject : No Visible Tags", "");
           lastLoggedError = "No Visible Tags";
         }
-      } else if (sd == null) {
+      } else if (cameraData.megaTag2.getDistanceTOClosestSeenTarget() > 7) {
+        doRejectUpdate = true;
+        if (lastLoggedError != "Closest Tag Too Far") {
+          // Logger.info("Vision Reject : No Swerve Drive", "");
+          lastLoggedError = "Closet Tag Too Far";
+      } 
+    }
+       else if (sd == null) {
         doRejectUpdate = true;
         if (lastLoggedError != "No Swerve Drive") {
           // Logger.info("Vision Reject : No Swerve Drive", "");
@@ -282,7 +319,17 @@ public class VisionSubsystem extends SubsystemBase {
           // Logger.info("Vision Reject: No Error", "");
           lastLoggedError = "No Error";
         }
-        sd.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
+
+        double distanceError = sd.getPose().getTranslation()
+            .getDistance(cameraData.megaTag2.poseEstimate.pose.getTranslation());
+
+        double translationStdDev = Math.min(50.0, Math.max(0.4, distanceError * 2.0));
+        // double rotationStdDev = Math.min(50.0, Math.max(0.3, distanceError * 0.3));
+
+        // sd.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));//originally
+        // .7, .7, 9999999
+        sd.setVisionMeasurementStdDevs(VecBuilder.fill(translationStdDev, translationStdDev, 9999999));
+
         sd.addVisionMeasurement(cameraData.megaTag2.poseEstimate.pose,
             cameraData.megaTag2.poseEstimate.timestampSeconds);
       }
@@ -292,7 +339,6 @@ public class VisionSubsystem extends SubsystemBase {
       SmartDashboard.putNumber("frc3620/vision/nearestTagID",
           getNearestTagID(RobotContainer.swerveSubsystem.getPose()));
     }
-
   }
 
   public CameraData getCameraData(Camera camera) {

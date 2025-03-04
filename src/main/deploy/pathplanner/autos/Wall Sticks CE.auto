@@ -5,63 +5,57 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Reset IMU"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Left Start To C"
+            "pathName": "Wall to STICK C"
           }
         },
         {
           "type": "wait",
           "data": {
             "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "C to top source"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Top source to F"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "F to top source"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Top source to E"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": null
+            "name": "Deposit and Home"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "STICK C to Wall Source"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wall Source to STICK E"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Deposit and Home"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "XMode"
           }
         }
       ]

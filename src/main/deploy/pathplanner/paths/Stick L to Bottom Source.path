@@ -1,0 +1,98 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.378536184210526,
+        "y": 3.1301809210526312
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.695394736842105,
+        "y": 1.7735197368421052
+      },
+      "isLocked": false,
+      "linkedName": "K"
+    },
+    {
+      "anchor": {
+        "x": 3.5792763157894734,
+        "y": 2.196875
+      },
+      "prevControl": {
+        "x": 4.238122944078954,
+        "y": 2.1458799342105266
+      },
+      "nextControl": {
+        "x": 3.0370959730149094,
+        "y": 2.238840035658345
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.510608552631579,
+        "y": 0.5419407894736844
+      },
+      "prevControl": {
+        "x": 2.280345394736842,
+        "y": 1.6099506578947365
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "bottomSource"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.45,
+      "rotationDegrees": 54.97314723852012
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Reset IMU",
+      "waypointRelativePos": 1.1490125673249536,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Reset IMU"
+        }
+      }
+    },
+    {
+      "name": "Intake",
+      "waypointRelativePos": 1.7,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 2.0,
+    "maxAcceleration": 1.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 51.45881637871856
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 120.17352002964432
+  },
+  "useDefaultConstraints": false
+}

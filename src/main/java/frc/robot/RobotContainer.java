@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Seconds;
 
 import java.io.File;
 import java.io.IOException;
@@ -78,7 +79,9 @@ import frc.robot.commands.AFI.AFIRollerSetSpeedUntilInCommand;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -94,7 +97,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
 
-  private final SendableChooser<Command> autoChooser;
+  private SendableChooser<Command> autoChooser;
 
   public final static TaggedLogger logger = LoggingMaster.getLogger(RobotContainer.class);
 
@@ -194,22 +197,20 @@ public class RobotContainer {
 
     setupSmartDashboardCommands();
 
-    if (swerveSubsystem != null) {
-      autoChooser = AutoBuilder.buildAutoChooser();
-    } else {
-      autoChooser = null;
-    }
+    // set up named commands
+    setupPathPlannerCommands();
+
+    // need to do this AFTER the PathPlanner named commands are created
     setupAutonomousCommands();
 
     DriverStation.silenceJoystickConnectionWarning(true);
-    NamedCommands.registerCommand("test", Commands.print("I EXIST"));
 
     Utilities.addDataLogForNT("SmartDashboard/swerve");
   }
 
   private void makeSubsystems() {
     if (canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 1, "Swerve Drive 1")
-        || shouldMakeAllCANDevices()) {
+        || shouldMakeAllCANDevices() || Robot.isSimulation()) {
       canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 3, "Swerve Drive 3");
       canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 5, "Swerve Drive 5");
       canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, 7, "Swerve Drive 7");
@@ -276,8 +277,8 @@ public class RobotContainer {
     buttonBoxRightTrigger = new ButtonBox(buttonboxHID);
     buttonBoxLeftTrigger = new ButtonBox(buttonboxHID);
 
-    // make sure this command gets run when we start up
-    CommandScheduler.getInstance().schedule(new ContinuousSetIMUFromMegaTag1Command());
+    // gets called once, command doesnt end.
+    //CommandScheduler.getInstance().schedule(new ContinuousSetIMUFromMegaTag1Command());
 
     climberSubsystem.setDefaultCommand(climberCommandFactory.makeSetClimberPowerCommand(
         () -> -MathUtil.applyDeadband(operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y), 0.1))
@@ -407,7 +408,7 @@ public class RobotContainer {
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.C4,
-        new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem),
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.C4, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
@@ -510,11 +511,18 @@ public class RobotContainer {
   }
 
   public void setupAutonomousCommands() {
+    if (swerveSubsystem != null) {
+      autoChooser = AutoBuilder.buildAutoChooser();
+    } else {
+      autoChooser = null; // should make an empty autoChooser
+    }
+
+    // chooser.addOption("Example Command", new ExampleCommand(exampleSubsystem));
+
     if (autoChooser != null) {
       SmartDashboard.putData("Auto mode", autoChooser);
     }
 
-    // chooser.addOption("Example Command", new ExampleCommand(exampleSubsystem));
   }
 
   /**
@@ -604,6 +612,27 @@ public class RobotContainer {
     }
 
     return false;
+  }
+
+  public static void setupPathPlannerCommands() {
+    NamedCommands.registerCommand("Intake", new RunEndEffectorUntilHasCoral(0.35, esefSubsystem).withTimeout(2.0));
+    NamedCommands.registerCommand("Suck Algae", new RunEndEffectorUntilHasCoral(0.5, esefSubsystem));
+    NamedCommands.registerCommand("Home", new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home .getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("L1", new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("L2", new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("L3", new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("L4", new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("L2 Algae", new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("L3 Algae", new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("Barge", new SetESEFPositionCommand(ESEFPosition.PresetPosition.Barge.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("Deposit and Home", new RunEndEffectorUntilCoralGone(0.9, esefSubsystem)
+                 .andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home .getPosition(), esefSubsystem)));
+    NamedCommands.registerCommand("Spit Balls and Home", new SetEndEffectorSpeedCommand(0.95, esefSubsystem).withTimeout(Seconds.of(0.25)).andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+    NamedCommands.registerCommand("Test1", new LogCommand("test 1"));
+    NamedCommands.registerCommand("Test2", new LogCommand("test 2"));
+    NamedCommands.registerCommand("Test", Commands.print("I EXIST"));
+    NamedCommands.registerCommand("Reset IMU", new SetIMUFromMegaTag1Command());
+    NamedCommands.registerCommand("XMode", new InstantCommand(() -> swerveSubsystem.lock()));
   }
 
   public static double getDriveVerticalJoystick() {
