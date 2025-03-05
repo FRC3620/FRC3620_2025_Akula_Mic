@@ -176,7 +176,8 @@ public class VisionSubsystem extends SubsystemBase {
         NTPublisher.putNumber(prefix + "targetCount", m.tagCount);
         NTStructs.publish(prefix + "poseEstimate", m.pose);
         if (currentPose != null) {
-          NTPublisher.putNumber(prefix + "distanceFromSwervePose", currentPose.getTranslation().getDistance(m.pose.getTranslation()));
+          NTPublisher.putNumber(prefix + "distanceFromSwervePose",
+              currentPose.getTranslation().getDistance(m.pose.getTranslation()));
         }
 
         if (aprilTagFieldLayout != null) {
@@ -261,10 +262,13 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     for (var cameraData : allCameraData.values()) {
-      
+
+      var prefix = "SmartDashboard/frc3620/vision/" + cameraData.getLimelightName() + "/";
+
       boolean doRejectUpdate = false;
       LimelightHelpers.SetRobotOrientation(cameraData.limelightName, yaw, yawRate, pitch, 0, 0, 0);
-      processMegaTag(cameraData.megaTag1, () -> LimelightHelpers.getBotPoseEstimate_wpiBlue(cameraData.limelightName), currentSwervePose);
+      processMegaTag(cameraData.megaTag1, () -> LimelightHelpers.getBotPoseEstimate_wpiBlue(cameraData.limelightName),
+          currentSwervePose);
       processMegaTag(cameraData.megaTag2,
           () -> LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(cameraData.limelightName), currentSwervePose);
 
@@ -293,26 +297,21 @@ public class VisionSubsystem extends SubsystemBase {
         doRejectUpdate = true;
         if (lastLoggedError != "Closest Tag Too Far") {
           // Logger.info("Vision Reject : No Swerve Drive", "");
-          lastLoggedError = "Closet Tag Too Far";
-      } 
-    }
-       else if (sd == null) {
+          lastLoggedError = "Closest Tag Too Far";
+        }
+      } else if (sd == null) {
         doRejectUpdate = true;
         if (lastLoggedError != "No Swerve Drive") {
           // Logger.info("Vision Reject : No Swerve Drive", "");
           lastLoggedError = "No Swerve Drive";
         }
-      }
-      else if (cameraData.megaTag2.poseEstimate.pose.getX() >= 17){
+      } else if (cameraData.megaTag2.poseEstimate.pose.getX() >= 17) {
         doRejectUpdate = true;
-      }
-      else if (cameraData.megaTag2.poseEstimate.pose.getX() <= 0){
+      } else if (cameraData.megaTag2.poseEstimate.pose.getX() <= 0) {
         doRejectUpdate = true;
-      }
-      else if (cameraData.megaTag2.poseEstimate.pose.getY() >= 8.5){
+      } else if (cameraData.megaTag2.poseEstimate.pose.getY() >= 8.5) {
         doRejectUpdate = true;
-      }
-      else if (cameraData.megaTag2.poseEstimate.pose.getY() <= 0){
+      } else if (cameraData.megaTag2.poseEstimate.pose.getY() <= 0) {
         doRejectUpdate = true;
       }
       if (!doRejectUpdate) {
@@ -333,13 +332,16 @@ public class VisionSubsystem extends SubsystemBase {
 
         sd.addVisionMeasurement(cameraData.megaTag2.poseEstimate.pose,
             cameraData.megaTag2.poseEstimate.timestampSeconds);
+
       }
+      SmartDashboard.putString(prefix + "rejectionMessage", lastLoggedError);
     }
 
     if (RobotContainer.swerveSubsystem != null) {
       SmartDashboard.putNumber("frc3620/vision/nearestTagID",
           getNearestTagID(RobotContainer.swerveSubsystem.getPose()));
     }
+
   }
 
   public CameraData getCameraData(Camera camera) {

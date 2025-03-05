@@ -72,7 +72,6 @@ import swervelib.SwerveInputStream;
 import frc.robot.commands.ChecklistCommand;
 import frc.robot.commands.ContinuousSetIMUFromMegaTag1Command;
 import frc.robot.commands.HankPullTheTriggerCommand;
-import frc.robot.commands.SetIMUFromMegaTag1Command;
 import frc.robot.commands.SetPivotPositionCommand;
 import frc.robot.commands.AFI.AFIRollerSetSpeedCommand;
 import frc.robot.commands.AFI.AFIRollerSetSpeedUntilInCommand;
@@ -496,7 +495,7 @@ public class RobotContainer {
 
     // Swerve commands
     if (swerveSubsystem != null) {
-      SmartDashboard.putData("Reset IMU from Limelight data", new SetIMUFromMegaTag1Command());
+      SmartDashboard.putData("Reset IMU from Limelight data", new ContinuousSetIMUFromMegaTag1Command());
       swerveCommandFactory.setupSmartDashboardCommands();
     }
 
@@ -631,7 +630,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Test1", new LogCommand("test 1"));
     NamedCommands.registerCommand("Test2", new LogCommand("test 2"));
     NamedCommands.registerCommand("Test", Commands.print("I EXIST"));
-    NamedCommands.registerCommand("Reset IMU", new SetIMUFromMegaTag1Command());
+    NamedCommands.registerCommand("Reset IMU", new ContinuousSetIMUFromMegaTag1Command());
     NamedCommands.registerCommand("XMode", new InstantCommand(() -> swerveSubsystem.lock()));
   }
 
