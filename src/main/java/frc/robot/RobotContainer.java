@@ -345,10 +345,10 @@ public class RobotContainer {
           .whileTrue(driveRobotOrientedSlowCommand);
 
       driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH)
-          .whileTrue(new HankPullTheTriggerCommand(buttonBoxRightTrigger));
+          .whileTrue(new HankPullTheTriggerCommand(buttonBoxRightTrigger).withName("RightTrigger"));
 
       driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE)
-          .whileTrue(new HankPullTheTriggerCommand(buttonBoxLeftTrigger));
+          .whileTrue(new HankPullTheTriggerCommand(buttonBoxLeftTrigger).withName("LeftTrigger"));
 
     }
 
