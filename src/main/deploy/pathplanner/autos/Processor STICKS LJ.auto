@@ -5,63 +5,63 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "RightStartToK"
+            "name": "Reset IMU"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 0.1
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "KToRightSource"
+            "pathName": "Source STICK L"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RightSourceToI"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
+            "name": "Deposit and Home"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "IToRightSource"
+            "pathName": "Stick L to Bottom Source"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.5
+            "name": "Intake"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RightSourceToJ"
+            "pathName": "Bottom Source to STICK J"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Deposit and Home"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "XMode"
           }
         }
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }

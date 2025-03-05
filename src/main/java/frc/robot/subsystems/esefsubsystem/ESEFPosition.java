@@ -15,15 +15,15 @@ public class ESEFPosition {
    */
   public enum PresetPosition {
     Home(0, 90),        // Fully retracted, shoulder at 90°
-    Barge(56.5, 70),        // Fully retracted, shoulder at 90°
+    Barge(57, 70),        // Fully retracted, shoulder at 90°
     StationPickup(0, 90),        // Fully retracted, shoulder at 90°
     L1(0, 80),        // Fully retracted, shoulder at 90°
-    L2(12, 63),     // Low scoring position
-    L3(31, 57),     // Mid scoring position
+    L2(11.5, 57),     // Low scoring position
+    L3(29.5, 57),     // Mid scoring position
     // we pulled this down by an inch because the home switch doesn't trip at exactly 0.
-    L4(56.5, 65),    // High scoring position
+    L4(56, 59),    // High scoring position
     CLIMB(25, 142),
-    AlgaeL2(22, 5),
+    AlgaeL2(26, 5),
     AlgaeL3(42, 5);      // Position for climbing
 
     private final ESEFPosition position;

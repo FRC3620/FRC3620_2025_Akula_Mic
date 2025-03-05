@@ -28,7 +28,7 @@
     "swerveDirectoryName": "swerve/Compbot",
     "intakeFrontEncoderOffset": 254.2,
     "intakeRearEncoderOffset": 204,
-    "climberEncoderOffset": 120
+    "climberEncoderOffset": 175
   },
   {
     "name": "Muleboard",
