@@ -276,7 +276,7 @@ public class RobotContainer {
     buttonBoxRightTrigger = new ButtonBox(buttonboxHID);
     buttonBoxLeftTrigger = new ButtonBox(buttonboxHID);
 
-    // gets called once, command doesnt end.
+    // gets called once, command ends once IMU is reset
     CommandScheduler.getInstance().schedule(new ContinuousSetIMUFromMegaTag1Command());
 
     climberSubsystem.setDefaultCommand(climberCommandFactory.makeSetClimberPowerCommand(
@@ -288,7 +288,7 @@ public class RobotContainer {
        * Converts driver input into a field-relative ChassisSpeeds that is controlled
        * by angular velocity.
        */
-      SwerveInputStream driveAngularVelocity = SwerveInputStream.of(swerveSubsystem.getSwerveDrive(),
+      SwerveInputStream driveAngularVelocityStream = SwerveInputStream.of(swerveSubsystem.getSwerveDrive(),
           () -> getDriveVerticalJoystick() * -1,
           () -> getDriveHorizontalJoystick() * -1)
           .withControllerRotationAxis(() -> getDriveSpinJoystick() * -1)
@@ -300,22 +300,25 @@ public class RobotContainer {
        * Clone's the angular velocity input stream and converts it to a fieldRelative
        * input stream.()
        */
-      SwerveInputStream driveDirectAngle = driveAngularVelocity.copy()
+      /*
+      SwerveInputStream driveDirectAngleStream = driveAngularVelocity.copy()
           .withControllerHeadingAxis(() -> getDriveHorizontalJoystick(),
               () -> getDriveVerticalJoystick())
           .headingWhile(true);
+      */
 
       /*
        * Clone's the angular velocity input stream and converts it to a robotRelative
        * input stream.
        */
-      SwerveInputStream driveRobotOriented = driveAngularVelocity.copy()
+      SwerveInputStream driveRobotOrientedStream = driveAngularVelocityStream.copy()
           .robotRelative(true)
           .allianceRelativeControl(false);
 
-      SwerveInputStream driveRobotOrientedSlow = driveRobotOriented.copy()
+      SwerveInputStream driveRobotOrientedSlowStream = driveRobotOrientedStream.copy()
           .scaleTranslation(0.3);
 
+      /*
       SwerveInputStream driveAngularVelocityKeyboard = SwerveInputStream.of(swerveSubsystem.getSwerveDrive(),
           () -> -getDriveVerticalJoystick(),
           () -> -getDriveHorizontalJoystick())
@@ -323,18 +326,19 @@ public class RobotContainer {
           .deadband(OperatorConstants.DEADBAND)
           .scaleTranslation(0.8)
           .allianceRelativeControl(true);
+      */
 
-      Command driveFieldOrientedDirectAngle = swerveSubsystem.driveFieldOriented(driveDirectAngle);
-      Command driveFieldOrientedAnglularVelocity = swerveSubsystem.driveFieldOriented(driveAngularVelocity);
-      Command driveRobotOrientedAngularVelocity = swerveSubsystem.driveFieldOriented(driveRobotOriented);
-      Command driveSetpointGen = swerveSubsystem.driveWithSetpointGeneratorFieldRelative(
-          driveDirectAngle);
-      Command driveRobotOrientedSlowCommand = swerveSubsystem.driveFieldOriented(driveRobotOrientedSlow);
+      // Command driveFieldOrientedDirectAngle = swerveSubsystem.driveFieldOriented(driveDirectAngle);
+      Command driveFieldOrientedAngularVelocityCommand = swerveSubsystem.driveFieldOriented(driveAngularVelocityStream).withName("DriveFromJoystick");
+      //Command driveRobotOrientedAngularVelocityCommand = swerveSubsystem.driveFieldOriented(driveRobotOriented);
+      //Command driveSetpointGenCommand = swerveSubsystem.driveWithSetpointGeneratorFieldRelative(driveDirectAngle);
+      Command driveRobotOrientedSlowCommand = swerveSubsystem.driveFieldOriented(driveRobotOrientedSlowStream).withName("DriveFromJoystickSlow");
 
       if (RobotBase.isSimulation()) {
         // swerveSubsystem.setDefaultCommand(driveFieldOrientedDirectAngleKeyboard);
+        swerveSubsystem.setDefaultCommand(driveFieldOrientedAngularVelocityCommand);
       } else {
-        swerveSubsystem.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+        swerveSubsystem.setDefaultCommand(driveFieldOrientedAngularVelocityCommand);
       }
 
       // driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER,
@@ -497,6 +501,15 @@ public class RobotContainer {
     if (swerveSubsystem != null) {
       SmartDashboard.putData("Reset IMU from Limelight data", new ContinuousSetIMUFromMegaTag1Command());
       swerveCommandFactory.setupSmartDashboardCommands();
+
+      SmartDashboard.putData("Kill running swerve command", 
+        Commands.runOnce( () -> {
+          Command c = swerveSubsystem.getCurrentCommand();
+          if (c != null) {
+            logger.info("Killing {}", c.getName());
+            c.cancel();
+          }
+        }).withName("Kill running swerve command"));
     }
 
     // ESEF commands
