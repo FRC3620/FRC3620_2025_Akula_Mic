@@ -55,6 +55,16 @@ public class Robot extends TimedRobot {
     Utilities.addDataLogForNT("frc3620");
     Utilities.addDataLogForNT("SmartDashboard/frc3620");
 
+    StringBuilder sb = new StringBuilder();
+    sb.append(GitNess.getCommitId());
+    Boolean dirty = GitNess.getDirty();
+    if (dirty == null) {
+        sb.append("-unknownDirtyness");
+    } else {
+        sb.append (dirty ? "-dirty" : "");
+    }
+    SmartDashboard.putString("frc3620/git.commit.id", sb.toString());
+
     PortForwarder.add (10080, "wpilibpi.local", 80);
     PortForwarder.add (10022, "wpilibpi.local", 22);
     
