@@ -3,38 +3,57 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.003947368421052,
+        "x": 5.888486842105262,
         "y": 4.025
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.706332236842105,
-        "y": 4.082730263157895
+        "x": 7.743895322638788,
+        "y": 3.899917763157895
       },
       "isLocked": false,
       "linkedName": "Suck Algae"
     },
     {
       "anchor": {
-        "x": 7.697368421052631,
-        "y": 4.737006578947368
+        "x": 7.92828947368421,
+        "y": 4.871710526315789
       },
       "prevControl": {
-        "x": 7.1489309210526315,
-        "y": 4.717763157894736
+        "x": 7.379851973684211,
+        "y": 4.852467105263157
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "Barge Score"
     }
   ],
-  "rotationTargets": [],
-  "constraintZones": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.19518716577540057,
+      "rotationDegrees": 180.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.20338983050847448,
+      "constraints": {
+        "maxVelocity": 1.5,
+        "maxAcceleration": 1.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
       "name": "Barge",
-      "waypointRelativePos": 0.3931777378815086,
+      "waypointRelativePos": 0.18305084745762706,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
