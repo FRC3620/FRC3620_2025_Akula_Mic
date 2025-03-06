@@ -1,6 +1,7 @@
 package frc.robot;
 
 import java.io.IOException;
+import java.util.Random;
 
 import org.json.simple.parser.ParseException;
 import org.tinylog.TaggedLogger;
@@ -12,6 +13,8 @@ import com.pathplanner.lib.util.FileVersionException;
 
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -153,7 +156,6 @@ public class Robot extends TimedRobot {
     logMatchInfo();
 
     setupDriverController();
-
   }
 
   /** This function is called periodically during operator control. */
@@ -168,10 +170,6 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().cancelAll();
 
     processRobotModeChange(RobotMode.TEST);
-
-    
-
-
   }
 
   /** This function is called periodically during test mode. */
@@ -190,12 +188,8 @@ public class Robot extends TimedRobot {
     SmartDashboard.putString("frc3620/mode", newMode.toString());
     SmartDashboard.putNumber("frc3620/modeInt", newMode.ordinal());
 
-    // if any subsystems need to know about mode changes, let
-    // them know here.
-    // exampleSubsystem.processRobotModeChange(newMode);
-
+    // if any subsystems need to know about mode changes, let them know here.
     RobotContainer.blinkySubsystem.setRobotMode(newMode);
-    
   }
 
   public static RobotMode getCurrentRobotMode(){
