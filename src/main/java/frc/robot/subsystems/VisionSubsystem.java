@@ -4,7 +4,6 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
-import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -12,8 +11,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
-import org.dyn4j.geometry.Rotatable;
-import org.tinylog.Logger;
 import org.usfirst.frc3620.NTPublisher;
 import org.usfirst.frc3620.NTStructs;
 
@@ -29,7 +26,6 @@ import frc.robot.LimelightHelpers;
 import frc.robot.RobotContainer;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.VisionSubsystem.CameraData.MegaTagData;
-import frc.robot.subsystems.swervedrive.Vision;
 import swervelib.SwerveDrive;
 
 public class VisionSubsystem extends SubsystemBase {
@@ -91,6 +87,8 @@ public class VisionSubsystem extends SubsystemBase {
     final String limelightName;
     public final MegaTagData megaTag1 = new MegaTagData("megaTag1");
     public final MegaTagData megaTag2 = new MegaTagData("megaTag2");
+    boolean useThisCamera = true;
+    int countOfSwerveUpdatesFromThisCamera = 0;
 
     CameraData(Camera c) {
       limelightName = c.limelightName;
@@ -120,6 +118,19 @@ public class VisionSubsystem extends SubsystemBase {
       return limelightName;
     }
 
+    public CameraData withUseThisCamera(boolean b) {
+      useThisCamera = b;
+      return this;
+    }
+
+    public boolean shouldUseThisCamera() {
+      return useThisCamera;
+    }
+
+    public int bumpCountOfSwerveUpdatesFromThisCamera() {
+      return ++countOfSwerveUpdatesFromThisCamera;
+    }
+
     public class MegaTagData {
       // gets set whenever we have new data
       AtomicBoolean haveNewPose = new AtomicBoolean(false);
@@ -146,7 +157,7 @@ public class VisionSubsystem extends SubsystemBase {
         return limelightName;
       }
 
-      public double getDistanceTOClosestSeenTarget() {
+      public double getDistanceToClosestSeenTarget() {
         return distanceToClosestSeenTarget;
       }
     }
@@ -157,7 +168,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   public VisionSubsystem() {
     allCameraData.put(Camera.FRONT, new CameraData(Camera.FRONT));
-    allCameraData.put(Camera.BACK, new CameraData(Camera.BACK));
+    allCameraData.put(Camera.BACK, new CameraData(Camera.BACK).withUseThisCamera(false));
     allCameraData = Map.copyOf(allCameraData); // make immutable
     allCameraDataAsSet = Set.copyOf(allCameraData.values());
 
@@ -176,7 +187,8 @@ public class VisionSubsystem extends SubsystemBase {
         NTPublisher.putNumber(prefix + "targetCount", m.tagCount);
         NTStructs.publish(prefix + "poseEstimate", m.pose);
         if (currentPose != null) {
-          NTPublisher.putNumber(prefix + "distanceFromSwervePose", currentPose.getTranslation().getDistance(m.pose.getTranslation()));
+          NTPublisher.putNumber(prefix + "distanceFromSwervePose",
+              currentPose.getTranslation().getDistance(m.pose.getTranslation()));
         }
 
         if (aprilTagFieldLayout != null) {
@@ -261,65 +273,40 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     for (var cameraData : allCameraData.values()) {
-      boolean doRejectUpdate = false;
+      var sdPrefix = "frc3620/vision/" + cameraData.getLimelightName() + "/";
+
       LimelightHelpers.SetRobotOrientation(cameraData.limelightName, yaw, yawRate, pitch, 0, 0, 0);
-      processMegaTag(cameraData.megaTag1, () -> LimelightHelpers.getBotPoseEstimate_wpiBlue(cameraData.limelightName), currentSwervePose);
+      processMegaTag(cameraData.megaTag1, () -> LimelightHelpers.getBotPoseEstimate_wpiBlue(cameraData.limelightName),
+          currentSwervePose);
       processMegaTag(cameraData.megaTag2,
           () -> LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(cameraData.limelightName), currentSwervePose);
 
       // update robot odometry from vision
-      if (Math.abs(yawRate) > 720) // if our angular velocity is greater than 720 degrees per second, ignore
-                                   // vision updates
-      {
-        doRejectUpdate = true;
-        if (lastLoggedError != "Angular Velocity") {
-          // Logger.info("Vision Reject : Angular Velocity", "");
-          lastLoggedError = "Angular Velocity";
-        }
-      } else if (cameraData.megaTag2.poseEstimate == null) {
-        doRejectUpdate = true;
-        if (lastLoggedError != "megaTag2Pose = null") {
-          // Logger.info("Vision Reject : megaTag2 Pose = null", "");
-          lastLoggedError = "megaTag2Pose = null";
-        }
-      } else if (cameraData.megaTag2.poseEstimate.tagCount == 0) {
-        doRejectUpdate = true;
-        if (lastLoggedError != "No Visible Tags") {
-          // Logger.info("Vision Reject : No Visible Tags", "");
-          lastLoggedError = "No Visible Tags";
-        }
-      } else if (cameraData.megaTag2.getDistanceTOClosestSeenTarget() > 7) {
-        doRejectUpdate = true;
-        if (lastLoggedError != "Closest Tag Too Far") {
-          // Logger.info("Vision Reject : No Swerve Drive", "");
-          lastLoggedError = "Closet Tag Too Far";
-      } 
-    }
-       else if (sd == null) {
-        doRejectUpdate = true;
-        if (lastLoggedError != "No Swerve Drive") {
-          // Logger.info("Vision Reject : No Swerve Drive", "");
-          lastLoggedError = "No Swerve Drive";
-        }
-      }
-      else if (cameraData.megaTag2.poseEstimate.pose.getX() >= 17){
-        doRejectUpdate = true;
-      }
-      else if (cameraData.megaTag2.poseEstimate.pose.getX() <= 0){
-        doRejectUpdate = true;
-      }
-      else if (cameraData.megaTag2.poseEstimate.pose.getY() >= 8.5){
-        doRejectUpdate = true;
-      }
-      else if (cameraData.megaTag2.poseEstimate.pose.getY() <= 0){
-        doRejectUpdate = true;
-      }
-      if (!doRejectUpdate) {
-        if (lastLoggedError != "No Error") {
-          // Logger.info("Vision Reject: No Error", "");
-          lastLoggedError = "No Error";
-        }
 
+      String error = "";
+      if (! cameraData.shouldUseThisCamera()) {
+        error = "Ignoring this camera";
+      } if (Math.abs(yawRate) > 720) {
+        // if our angular velocity is greater than 720 degrees per second, ignore vision updates
+        error = "Angular Velocity";
+      } else if (cameraData.megaTag2.poseEstimate == null) {
+        error = "megaTag2Pose = null";
+      } else if (cameraData.megaTag2.poseEstimate.tagCount == 0) {
+        error = "No Visible Tags";
+      } else if (cameraData.megaTag2.getDistanceToClosestSeenTarget() > 4.75) {
+        error = "Closest Tag Too Far";
+      } else if (sd == null) {
+        error = "No Swerve Drive";
+      } else if (cameraData.megaTag2.poseEstimate.pose.getX() >= 17) {
+        error = "Pose has too much X";
+      } else if (cameraData.megaTag2.poseEstimate.pose.getX() <= 0) {
+        error = "Pose has too little X";
+      } else if (cameraData.megaTag2.poseEstimate.pose.getY() >= 8.5) {
+        error = "Pose has too much Y";
+      } else if (cameraData.megaTag2.poseEstimate.pose.getY() <= 0) {
+        error = "Pose has too little Y";
+      }
+      if (error.length() == 0) {
         double distanceError = sd.getPose().getTranslation()
             .getDistance(cameraData.megaTag2.poseEstimate.pose.getTranslation());
 
@@ -332,13 +319,27 @@ public class VisionSubsystem extends SubsystemBase {
 
         sd.addVisionMeasurement(cameraData.megaTag2.poseEstimate.pose,
             cameraData.megaTag2.poseEstimate.timestampSeconds);
+
+        int updateCount = cameraData.bumpCountOfSwerveUpdatesFromThisCamera();
+        SmartDashboard.putNumber(sdPrefix + "swervePoseUpdates", updateCount);
       }
+      if (error != lastLoggedError) {
+        // log if it changed
+
+        // and remember!
+        lastLoggedError = error;
+      }
+      SmartDashboard.putString(sdPrefix + "rejectionMessage", error);
     }
 
+    // we are not using this, so commented out to try to speed up code a little
+    /*
     if (RobotContainer.swerveSubsystem != null) {
       SmartDashboard.putNumber("frc3620/vision/nearestTagID",
           getNearestTagID(RobotContainer.swerveSubsystem.getPose()));
     }
+    */
+
   }
 
   public CameraData getCameraData(Camera camera) {
@@ -364,9 +365,7 @@ public class VisionSubsystem extends SubsystemBase {
     if (tagID == -1) {
       return RobotContainer.swerveSubsystem.getPose();
     } else {
-
       return tagToStickPose2dLeft.get(tagID);
-
     }
   }
 
@@ -374,9 +373,7 @@ public class VisionSubsystem extends SubsystemBase {
     if (tagID == -1) {
       return RobotContainer.swerveSubsystem.getPose();
     } else {
-
       return tagToStickPose2dRight.get(tagID);
-
     }
   }
 

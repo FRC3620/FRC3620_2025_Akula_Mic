@@ -42,7 +42,7 @@ public class AFIRollerSetSpeedUntilInCommand extends Command {
     System.out.println(t);
     SmartDashboard.putNumber("frc3620/AFI/algaeTimer", timer.get());
     if (timer.hasElapsed(0.5)) {
-      if (afiSubsystem.measuredRollerSpeed < 20) {
+      if (afiSubsystem.measuredRollerSpeed < 1500) {
         hasAlgae = true;
       }
     }

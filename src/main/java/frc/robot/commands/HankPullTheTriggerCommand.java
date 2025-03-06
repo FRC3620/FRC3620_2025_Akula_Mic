@@ -4,12 +4,16 @@
 
 package frc.robot.commands;
 
+import org.tinylog.TaggedLogger;
+import org.usfirst.frc3620.logger.LoggingMaster;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.ButtonBox;
 import frc.robot.ButtonBox.CommandPair;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class HankPullTheTriggerCommand extends Command {
+  TaggedLogger logger = LoggingMaster.getLogger(getClass());
 
   CommandPair commandPair;
   ButtonBox buttonBox;
@@ -31,8 +35,8 @@ public class HankPullTheTriggerCommand extends Command {
     if (firstCommand == null)
       return;
     //CommandScheduler.getInstance().schedule(firstCommand);
+    logger.info("Trigger {} pulled, scheduling {}", getName(), firstCommand.getName());
     firstCommand.schedule();
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -49,7 +53,7 @@ public class HankPullTheTriggerCommand extends Command {
     Command secondCommand = commandPair.getSecondCommand();
     if (secondCommand == null)
       return;
-    //CommandScheduler.getInstance().schedule(secondCommand);
+    logger.info("Trigger {} released, scheduling {}", getName(), secondCommand.getName());
     secondCommand.schedule();
   }
 

@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.247407128183648,
-        "y": 6.739115325607549
+        "x": 2.799917763157895,
+        "y": 6.411184210526316
       },
       "isLocked": false,
       "linkedName": "Wall Source"
     },
     {
       "anchor": {
-        "x": 3.964144736842105,
-        "y": 5.160361842105263
+        "x": 3.973766447368421,
+        "y": 5.18922697368421
       },
       "prevControl": {
-        "x": 3.3511900300581146,
-        "y": 5.680467205701368
+        "x": 3.54078947368421,
+        "y": 5.881990131578948
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,11 +32,11 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.7271095152603232,
+      "minWaypointRelativePos": 0.6535008976660687,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 1.5,
-        "maxAcceleration": 2.0,
+        "maxVelocity": 1.25,
+        "maxAcceleration": 1.25,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -59,8 +59,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.5,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -74,7 +74,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -49.573921259900956
+    "rotation": -55.74055216677249
   },
   "useDefaultConstraints": false
 }

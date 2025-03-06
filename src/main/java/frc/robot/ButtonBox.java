@@ -53,7 +53,7 @@ public class ButtonBox {
     int maxButtonCount = Math.min(hid.getButtonCount(), ButtonId.values().length);
     for (int buttonIndex = 1; buttonIndex <= maxButtonCount; buttonIndex++) {
       boolean hit = hid.getRawButton(buttonIndex);
-      logger.info("button {} = {}", buttonIndex, hit);
+      // logger.info("button {} = {}", buttonIndex, hit);
       if (hid.getRawButton(buttonIndex)) {
         return ButtonId.values()[buttonIndex-1];
       }
@@ -63,15 +63,16 @@ public class ButtonBox {
 
   public CommandPair getSelectedCommandPair() {
     String name = hid.getName();
-    logger.info ("name of HID is {}", name);
+    // logger.info ("name of HID is {}", name);
     ButtonId buttonId = getSelectedButton();
-    logger.info ("No button depressed button is {}", buttonId);
     if (buttonId == null) {
+      logger.info ("No button depressed");
       return null;
     }
+    logger.info ("Button {} depressed", buttonId);
     CommandPair commandPair = commandMap.get(buttonId);
     if (commandPair == null) {
-      logger.info ("No command for button {}", buttonId);
+      logger.info ("No commands for button {}", buttonId);
     }
     return commandPair;
   }

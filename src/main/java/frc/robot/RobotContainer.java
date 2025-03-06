@@ -72,7 +72,6 @@ import swervelib.SwerveInputStream;
 import frc.robot.commands.ChecklistCommand;
 import frc.robot.commands.ContinuousSetIMUFromMegaTag1Command;
 import frc.robot.commands.HankPullTheTriggerCommand;
-import frc.robot.commands.SetIMUFromMegaTag1Command;
 import frc.robot.commands.SetPivotPositionCommand;
 import frc.robot.commands.AFI.AFIRollerSetSpeedCommand;
 import frc.robot.commands.AFI.AFIRollerSetSpeedUntilInCommand;
@@ -277,8 +276,8 @@ public class RobotContainer {
     buttonBoxRightTrigger = new ButtonBox(buttonboxHID);
     buttonBoxLeftTrigger = new ButtonBox(buttonboxHID);
 
-    // gets called once, command doesnt end.
-    //CommandScheduler.getInstance().schedule(new ContinuousSetIMUFromMegaTag1Command());
+    // gets called once, command ends once IMU is reset
+    CommandScheduler.getInstance().schedule(new ContinuousSetIMUFromMegaTag1Command());
 
     climberSubsystem.setDefaultCommand(climberCommandFactory.makeSetClimberPowerCommand(
         () -> -MathUtil.applyDeadband(operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y), 0.1))
@@ -289,7 +288,7 @@ public class RobotContainer {
        * Converts driver input into a field-relative ChassisSpeeds that is controlled
        * by angular velocity.
        */
-      SwerveInputStream driveAngularVelocity = SwerveInputStream.of(swerveSubsystem.getSwerveDrive(),
+      SwerveInputStream driveAngularVelocityStream = SwerveInputStream.of(swerveSubsystem.getSwerveDrive(),
           () -> getDriveVerticalJoystick() * -1,
           () -> getDriveHorizontalJoystick() * -1)
           .withControllerRotationAxis(() -> getDriveSpinJoystick() * -1)
@@ -301,22 +300,25 @@ public class RobotContainer {
        * Clone's the angular velocity input stream and converts it to a fieldRelative
        * input stream.()
        */
-      SwerveInputStream driveDirectAngle = driveAngularVelocity.copy()
+      /*
+      SwerveInputStream driveDirectAngleStream = driveAngularVelocity.copy()
           .withControllerHeadingAxis(() -> getDriveHorizontalJoystick(),
               () -> getDriveVerticalJoystick())
           .headingWhile(true);
+      */
 
       /*
        * Clone's the angular velocity input stream and converts it to a robotRelative
        * input stream.
        */
-      SwerveInputStream driveRobotOriented = driveAngularVelocity.copy()
+      SwerveInputStream driveRobotOrientedStream = driveAngularVelocityStream.copy()
           .robotRelative(true)
           .allianceRelativeControl(false);
 
-      SwerveInputStream driveRobotOrientedSlow = driveRobotOriented.copy()
+      SwerveInputStream driveRobotOrientedSlowStream = driveRobotOrientedStream.copy()
           .scaleTranslation(0.3);
 
+      /*
       SwerveInputStream driveAngularVelocityKeyboard = SwerveInputStream.of(swerveSubsystem.getSwerveDrive(),
           () -> -getDriveVerticalJoystick(),
           () -> -getDriveHorizontalJoystick())
@@ -324,18 +326,19 @@ public class RobotContainer {
           .deadband(OperatorConstants.DEADBAND)
           .scaleTranslation(0.8)
           .allianceRelativeControl(true);
+      */
 
-      Command driveFieldOrientedDirectAngle = swerveSubsystem.driveFieldOriented(driveDirectAngle);
-      Command driveFieldOrientedAnglularVelocity = swerveSubsystem.driveFieldOriented(driveAngularVelocity);
-      Command driveRobotOrientedAngularVelocity = swerveSubsystem.driveFieldOriented(driveRobotOriented);
-      Command driveSetpointGen = swerveSubsystem.driveWithSetpointGeneratorFieldRelative(
-          driveDirectAngle);
-      Command driveRobotOrientedSlowCommand = swerveSubsystem.driveFieldOriented(driveRobotOrientedSlow);
+      // Command driveFieldOrientedDirectAngle = swerveSubsystem.driveFieldOriented(driveDirectAngle);
+      Command driveFieldOrientedAngularVelocityCommand = swerveSubsystem.driveFieldOriented(driveAngularVelocityStream).withName("DriveFromJoystick");
+      //Command driveRobotOrientedAngularVelocityCommand = swerveSubsystem.driveFieldOriented(driveRobotOriented);
+      //Command driveSetpointGenCommand = swerveSubsystem.driveWithSetpointGeneratorFieldRelative(driveDirectAngle);
+      Command driveRobotOrientedSlowCommand = swerveSubsystem.driveFieldOriented(driveRobotOrientedSlowStream).withName("DriveFromJoystickSlow");
 
       if (RobotBase.isSimulation()) {
         // swerveSubsystem.setDefaultCommand(driveFieldOrientedDirectAngleKeyboard);
+        swerveSubsystem.setDefaultCommand(driveFieldOrientedAngularVelocityCommand);
       } else {
-        swerveSubsystem.setDefaultCommand(driveFieldOrientedAnglularVelocity);
+        swerveSubsystem.setDefaultCommand(driveFieldOrientedAngularVelocityCommand);
       }
 
       // driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER,
@@ -346,10 +349,10 @@ public class RobotContainer {
           .whileTrue(driveRobotOrientedSlowCommand);
 
       driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH)
-          .whileTrue(new HankPullTheTriggerCommand(buttonBoxRightTrigger));
+          .whileTrue(new HankPullTheTriggerCommand(buttonBoxRightTrigger).withName("RightTrigger"));
 
       driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE)
-          .whileTrue(new HankPullTheTriggerCommand(buttonBoxLeftTrigger));
+          .whileTrue(new HankPullTheTriggerCommand(buttonBoxLeftTrigger).withName("LeftTrigger"));
 
     }
 
@@ -430,29 +433,29 @@ public class RobotContainer {
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2.getPosition(), esefSubsystem),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.B2, new RunEndEffectorUntilHasAlgae(0.45, esefSubsystem),
-        new SetEndEffectorSpeedCommand(0.025, esefSubsystem));
+        new SetEndEffectorSpeedCommand(0.03, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.B3,
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3.getPosition(), esefSubsystem),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.B3, new RunEndEffectorUntilHasAlgae(0.45, esefSubsystem),
-        new SetEndEffectorSpeedCommand(0.025, esefSubsystem));
+        new SetEndEffectorSpeedCommand(0.03, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.B1,
         new SetPivotPositionCommand(Degrees.of(15), afiSubsystem)
             .andThen(new AFIRollerSetSpeedUntilInCommand(0.5, afiSubsystem)),
         new SetPivotPositionCommand(Degrees.of(80), afiSubsystem)
-            .andThen(new AFIRollerSetSpeedCommand(0, afiSubsystem)));
+            .andThen(new AFIRollerSetSpeedCommand(0.02, afiSubsystem)));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.B1, new AFIRollerSetSpeedCommand(-0.5, afiSubsystem),
         new AFIRollerSetSpeedCommand(0, afiSubsystem));
 
     buttonBoxRightTrigger.addButtonMapping(ButtonId.D1,
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.CLIMB.getPosition(), esefSubsystem)
-            .andThen(climberCommandFactory.makeSetClimberPowerCommand(() -> 0.6)),
+            .andThen(climberCommandFactory.makeSetClimberPowerCommand(() -> 0.7)),
         climberCommandFactory.makeSetClimberPowerCommand(() -> 0.0));
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.D1,
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.CLIMB.getPosition(), esefSubsystem)
-            .andThen(climberCommandFactory.makeSetClimberPowerCommand(() -> -0.6)),
+            .andThen(climberCommandFactory.makeSetClimberPowerCommand(() -> -1)),
         climberCommandFactory.makeSetClimberPowerCommand(() -> 0.0));
 
     // light color based on button pressed.
@@ -496,8 +499,17 @@ public class RobotContainer {
 
     // Swerve commands
     if (swerveSubsystem != null) {
-      SmartDashboard.putData("Reset IMU from Limelight data", new SetIMUFromMegaTag1Command());
+      SmartDashboard.putData("Reset IMU from Limelight data", new ContinuousSetIMUFromMegaTag1Command());
       swerveCommandFactory.setupSmartDashboardCommands();
+
+      SmartDashboard.putData("Kill running swerve command", 
+        Commands.runOnce( () -> {
+          Command c = swerveSubsystem.getCurrentCommand();
+          if (c != null) {
+            logger.info("Killing {}", c.getName());
+            c.cancel();
+          }
+        }).withName("Kill running swerve command"));
     }
 
     // ESEF commands
@@ -631,7 +643,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Test1", new LogCommand("test 1"));
     NamedCommands.registerCommand("Test2", new LogCommand("test 2"));
     NamedCommands.registerCommand("Test", Commands.print("I EXIST"));
-    NamedCommands.registerCommand("Reset IMU", new SetIMUFromMegaTag1Command());
+    NamedCommands.registerCommand("Reset IMU", new ContinuousSetIMUFromMegaTag1Command());
     NamedCommands.registerCommand("XMode", new InstantCommand(() -> swerveSubsystem.lock()));
   }
 
