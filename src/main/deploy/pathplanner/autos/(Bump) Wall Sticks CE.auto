@@ -7,6 +7,12 @@
         {
           "type": "path",
           "data": {
+            "pathName": "Wall Bump"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
             "pathName": "Wall to STICK C"
           }
         },

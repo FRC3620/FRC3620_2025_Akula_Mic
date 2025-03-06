@@ -13,7 +13,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Deposit and Home"
+            "name": "Deposit"
           }
         },
         {
@@ -43,7 +43,7 @@
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }
