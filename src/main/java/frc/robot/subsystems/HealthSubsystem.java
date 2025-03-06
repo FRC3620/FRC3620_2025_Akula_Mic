@@ -36,7 +36,7 @@ public class HealthSubsystem extends SubsystemBase {
 
   // record swerve motor data
   MotorWatcher swerveMotorWatcher;
-  EnumSet<MotorWatcherMetric> whatSwerveMetricsToWatch = EnumSet.allOf(MotorWatcherMetric.class);
+  EnumSet<MotorWatcherMetric> whatSwerveMetricsToWatch = EnumSet.of(MotorWatcherMetric.TEMPERATURE);
 
   // watch the power distribution system
   PDWatcher pdWatcher;
@@ -97,11 +97,7 @@ public class HealthSubsystem extends SubsystemBase {
   void collect() {
     checkSwerveMotors();
     checkAbsoluteEncoders();
-    checkPowerDistribution();
-
-    if (RobotContainer.powerDistribution != null) {
-      SmartDashboard.putNumber("frc3620/power/energy", RobotContainer.powerDistribution.getTotalEnergy());
-    }
+    // checkPowerDistribution();
 
     for (var healthMapEntry : healthMap.entrySet()) {
       SmartDashboard.putString("frc3620/health/status/" + healthMapEntry.getKey(),
@@ -181,6 +177,9 @@ public class HealthSubsystem extends SubsystemBase {
       if (changed) {
         SmartDashboard.putStringArray("frc3620/power/stickyFaults", pdWatcher.broken.toArray(String[]::new));
       }
+    }
+    if (RobotContainer.powerDistribution != null) {
+      SmartDashboard.putNumber("frc3620/power/energy", RobotContainer.powerDistribution.getTotalEnergy());
     }
   }
 
