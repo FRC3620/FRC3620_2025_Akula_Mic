@@ -47,7 +47,7 @@ public class RunEndEffectorUntilHasAlgae extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    esefSubsystem.setEndEffSpeed(0.025);
+    esefSubsystem.setEndEffSpeed(0.03);
   }
 
   // Returns true when the command should end.

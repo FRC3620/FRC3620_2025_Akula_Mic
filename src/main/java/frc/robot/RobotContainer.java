@@ -433,13 +433,13 @@ public class RobotContainer {
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2.getPosition(), esefSubsystem),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.B2, new RunEndEffectorUntilHasAlgae(0.45, esefSubsystem),
-        new SetEndEffectorSpeedCommand(0.025, esefSubsystem));
+        new SetEndEffectorSpeedCommand(0.03, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.B3,
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3.getPosition(), esefSubsystem),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.B3, new RunEndEffectorUntilHasAlgae(0.45, esefSubsystem),
-        new SetEndEffectorSpeedCommand(0.025, esefSubsystem));
+        new SetEndEffectorSpeedCommand(0.03, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.B1,
         new SetPivotPositionCommand(Degrees.of(15), afiSubsystem)
@@ -451,11 +451,11 @@ public class RobotContainer {
 
     buttonBoxRightTrigger.addButtonMapping(ButtonId.D1,
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.CLIMB.getPosition(), esefSubsystem)
-            .andThen(climberCommandFactory.makeSetClimberPowerCommand(() -> 0.6)),
+            .andThen(climberCommandFactory.makeSetClimberPowerCommand(() -> 0.7)),
         climberCommandFactory.makeSetClimberPowerCommand(() -> 0.0));
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.D1,
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.CLIMB.getPosition(), esefSubsystem)
-            .andThen(climberCommandFactory.makeSetClimberPowerCommand(() -> -0.6)),
+            .andThen(climberCommandFactory.makeSetClimberPowerCommand(() -> -1)),
         climberCommandFactory.makeSetClimberPowerCommand(() -> 0.0));
 
     // light color based on button pressed.
