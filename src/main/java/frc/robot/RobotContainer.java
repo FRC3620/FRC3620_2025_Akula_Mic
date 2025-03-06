@@ -448,11 +448,11 @@ public class RobotContainer {
 
     buttonBoxRightTrigger.addButtonMapping(ButtonId.D1,
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.CLIMB.getPosition(), esefSubsystem)
-            .andThen(climberCommandFactory.makeSetClimberPowerCommand(() -> 0.8)),
+            .andThen(climberCommandFactory.makeSetClimberPowerCommand(() -> 0.7)),
         climberCommandFactory.makeSetClimberPowerCommand(() -> 0.0));
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.D1,
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.CLIMB.getPosition(), esefSubsystem)
-            .andThen(climberCommandFactory.makeSetClimberPowerCommand(() -> -0.8)),
+            .andThen(climberCommandFactory.makeSetClimberPowerCommand(() -> -1)),
         climberCommandFactory.makeSetClimberPowerCommand(() -> 0.0));
 
     // light color based on button pressed.
