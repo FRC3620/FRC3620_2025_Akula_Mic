@@ -88,6 +88,7 @@ public class VisionSubsystem extends SubsystemBase {
     public final MegaTagData megaTag1 = new MegaTagData("megaTag1");
     public final MegaTagData megaTag2 = new MegaTagData("megaTag2");
     boolean useThisCamera = true;
+    int countOfSwerveUpdatesFromThisCamera = 0;
 
     CameraData(Camera c) {
       limelightName = c.limelightName;
@@ -124,6 +125,10 @@ public class VisionSubsystem extends SubsystemBase {
 
     public boolean shouldUseThisCamera() {
       return useThisCamera;
+    }
+
+    public int bumpCountOfSwerveUpdatesFromThisCamera() {
+      return ++countOfSwerveUpdatesFromThisCamera;
     }
 
     public class MegaTagData {
@@ -268,7 +273,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     for (var cameraData : allCameraData.values()) {
-      var prefix = "SmartDashboard/frc3620/vision/" + cameraData.getLimelightName() + "/";
+      var sdPrefix = "frc3620/vision/" + cameraData.getLimelightName() + "/";
 
       LimelightHelpers.SetRobotOrientation(cameraData.limelightName, yaw, yawRate, pitch, 0, 0, 0);
       processMegaTag(cameraData.megaTag1, () -> LimelightHelpers.getBotPoseEstimate_wpiBlue(cameraData.limelightName),
@@ -314,6 +319,9 @@ public class VisionSubsystem extends SubsystemBase {
 
         sd.addVisionMeasurement(cameraData.megaTag2.poseEstimate.pose,
             cameraData.megaTag2.poseEstimate.timestampSeconds);
+
+        int updateCount = cameraData.bumpCountOfSwerveUpdatesFromThisCamera();
+        SmartDashboard.putNumber(sdPrefix + "swervePoseUpdates", updateCount);
       }
       if (error != lastLoggedError) {
         // log if it changed
@@ -321,7 +329,7 @@ public class VisionSubsystem extends SubsystemBase {
         // and remember!
         lastLoggedError = error;
       }
-      SmartDashboard.putString(prefix + "rejectionMessage", error);
+      SmartDashboard.putString(sdPrefix + "rejectionMessage", error);
     }
 
     // we are not using this, so commented out to try to speed up code a little
