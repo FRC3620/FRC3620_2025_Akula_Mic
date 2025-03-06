@@ -333,6 +333,22 @@ public class SwerveSubsystem extends SubsystemBase {
     PathfindingCommand.warmupCommand().schedule();
   }
 
+public void squareUp(){
+  //NavX reset method
+    var color = DriverStation.getAlliance();
+      if(color.isPresent()){
+        if(color.get()==Alliance.Red){
+          var pose = RobotContainer.swerveSubsystem.getPose();
+          var newPose = new Pose2d(pose.getTranslation(), Rotation2d.fromDegrees(180));
+          RobotContainer.swerveSubsystem.resetOdometry(newPose);
+        }else{
+          var pose = RobotContainer.swerveSubsystem.getPose();
+          var newPose = new Pose2d(pose.getTranslation(), Rotation2d.fromDegrees(0));
+          RobotContainer.swerveSubsystem.resetOdometry(newPose);
+        }
+      }
+}
+
   /**
    * Aim the robot at the target returned by PhotonVision.
    *

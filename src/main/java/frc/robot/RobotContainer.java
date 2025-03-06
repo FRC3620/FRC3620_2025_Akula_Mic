@@ -340,6 +340,10 @@ public class RobotContainer {
       // FlySkyConstants.AXIS_SWH)
       // .onTrue(swerveSubsystem.pathFinderCommand());
 
+      //NavX Reset
+      driverJoystick.button(XBoxConstants.BUTTON_A, FlySkyConstants.BUTTON_SWA).onTrue(new InstantCommand(() -> swerveSubsystem.squareUp()));
+
+
       driverJoystick.button(XBoxConstants.BUTTON_LEFT_BUMPER, FlySkyConstants.BUTTON_SWF)
           .whileTrue(driveRobotOrientedSlowCommand);
 
