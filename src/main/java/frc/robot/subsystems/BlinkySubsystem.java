@@ -99,7 +99,7 @@ public class BlinkySubsystem extends SubsystemBase {
 
     lowerLeftPattern = PATTERN_BREATHE_BLUE;
     lowerRightPattern = PATTERN_BREATHE_MAIZE;
-    topBarPattern = PATTERN_STEP_DEMO;
+    topBarPattern = OFF;
     upperLeftPattern = OFF;
     upperRightPattern = OFF;
 
