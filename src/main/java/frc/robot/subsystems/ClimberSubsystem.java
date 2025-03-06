@@ -41,6 +41,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
         absEncoder = new DutyCycleEncoder(9);
         absEncoderOffset = Degrees.of(RobotContainer.robotParameters.getClimberEncoderOffset());
+        absEncoder.setInverted(true);
     }
 
     @Override
