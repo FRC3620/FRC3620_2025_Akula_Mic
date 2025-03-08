@@ -56,4 +56,12 @@ public class ESEFSubsystem extends SubsystemBase {
   public double getEndEffectorVelocity() {
     return endEffectorMechanism.getEndEffectorVelocity();
   }
+
+  public ESEFPosition getRequestedPosition() {
+    return positionController.ultimateSetpoint;
+  }
+
+  public ESEFPosition getCurrentPosition() {
+    return new ESEFPosition(elevatorMechanism.getCurrentHeight(), shoulderMechanism.getCurrentAngle());
+  }
 }

@@ -55,6 +55,7 @@ import frc.robot.commands.esefcommands.SetManualElevatorCommand;
 import frc.robot.commands.esefcommands.RunEndEffectorUntilHasCoral;
 import frc.robot.commands.esefcommands.SetESEFPositionCommand;
 import frc.robot.commands.esefcommands.SetShoulderPositionCommand;
+import frc.robot.commands.esefcommands.WaitForElevatorCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand.WhichStick;
 import frc.robot.commands.swervedrive.TestDriveToPoseCommand;
@@ -620,15 +621,33 @@ public class RobotContainer {
     NamedCommands.registerCommand("L2 Algae", new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2.getPosition(), esefSubsystem));
     NamedCommands.registerCommand("L3 Algae", new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3.getPosition(), esefSubsystem));
     NamedCommands.registerCommand("Barge", new SetESEFPositionCommand(ESEFPosition.PresetPosition.Barge.getPosition(), esefSubsystem));
-    NamedCommands.registerCommand("Deposit", new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
-    NamedCommands.registerCommand("Deposit and Home", new RunEndEffectorUntilCoralGone(0.9, esefSubsystem)
+
+    // see below to set this!
+    if (configureTheRobotToWaitForElevator) {
+      NamedCommands.registerCommand("Deposit", waitThenDeposit());
+      NamedCommands.registerCommand("Deposit and Home", waitThenDeposit()
                  .andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home .getPosition(), esefSubsystem)));
+    } else {
+      NamedCommands.registerCommand("Deposit", new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
+      NamedCommands.registerCommand("Deposit and Home", new RunEndEffectorUntilCoralGone(0.9, esefSubsystem)
+                 .andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home .getPosition(), esefSubsystem)));
+    }
     NamedCommands.registerCommand("Spit Balls and Home", new SetEndEffectorSpeedCommand(0.95, esefSubsystem).withTimeout(Seconds.of(0.25)).andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
     NamedCommands.registerCommand("Test1", new LogCommand("test 1"));
     NamedCommands.registerCommand("Test2", new LogCommand("test 2"));
     NamedCommands.registerCommand("Test", Commands.print("I EXIST"));
     NamedCommands.registerCommand("Reset IMU", new ContinuousSetIMUFromMegaTag1Command());
     NamedCommands.registerCommand("XMode", new InstantCommand(() -> swerveSubsystem.lock()));
+  }
+
+  // change this to change whether pathplanner waits for the elevator gets close becore going on
+  static boolean configureTheRobotToWaitForElevator = true;
+  static Command waitThenDeposit() {
+    return new WaitForElevatorCommand(esefSubsystem).withTimeout(2.0).andThen(deposit()).withName("waitThenDeposit");
+  }
+
+  static Command deposit() {
+    return new RunEndEffectorUntilCoralGone(0.9, esefSubsystem);
   }
 
   public static double getDriveVerticalJoystick() {
