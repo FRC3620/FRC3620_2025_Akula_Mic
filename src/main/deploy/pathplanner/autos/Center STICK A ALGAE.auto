@@ -5,6 +5,18 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Reset IMU"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.1
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Center to STICK A"
@@ -38,6 +50,12 @@
           "type": "named",
           "data": {
             "name": "Spit Balls and Home"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "XMode"
           }
         }
       ]
