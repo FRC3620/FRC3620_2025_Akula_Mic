@@ -5,6 +5,18 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Reset IMU"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.1
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Wall to STICK C"
@@ -19,13 +31,26 @@
         {
           "type": "named",
           "data": {
-            "name": "Deposit and Home"
+            "name": "Deposit"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "STICK C to Wall Source"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "STICK C to Wall Source"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Home"
+                }
+              }
+            ]
           }
         },
         {
@@ -43,7 +68,32 @@
         {
           "type": "named",
           "data": {
-            "name": "Deposit and Home"
+            "name": "Deposit"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "STICK E to Wall Source"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Home"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
           }
         },
         {
