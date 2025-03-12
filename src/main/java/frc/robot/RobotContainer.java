@@ -288,7 +288,7 @@ public class RobotContainer {
           () -> getDriveHorizontalJoystick() * -1)
           .withControllerRotationAxis(() -> getDriveSpinJoystick() * -1)
           .deadband(OperatorConstants.DEADBAND)
-          .scaleTranslation(0.8)
+          .scaleTranslation(1.0)
           .allianceRelativeControl(true);
 
       /*
