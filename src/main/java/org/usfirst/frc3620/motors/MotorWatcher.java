@@ -4,8 +4,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.wpilibj.Tracer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import org.usfirst.frc3620.NTPublisher;
 import org.usfirst.frc3620.Utilities;
 
 import java.util.*;
@@ -75,7 +75,7 @@ public class MotorWatcher {
           Double value = null;
           value = metric.getValue(mwi.fetcher);
           if (value != null) {
-            NTPublisher.putNumber(mwi.name + "/" + metric.getName(), value);
+            SmartDashboard.putNumber(mwi.name + "/" + metric.getName(), value);
           }
         }
       }

@@ -19,6 +19,12 @@
         {
           "type": "path",
           "data": {
+            "pathName": "Wall Bump"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
             "pathName": "Wall to STICK C"
           }
         },
@@ -31,26 +37,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Deposit"
+            "name": "Deposit and Home"
           }
         },
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "STICK C to Wall Source"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Home"
-                }
-              }
-            ]
+            "pathName": "STICK C to Wall Source"
           }
         },
         {
@@ -68,38 +61,19 @@
         {
           "type": "named",
           "data": {
-            "name": "Deposit"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "STICK E to Wall Source"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Home"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Intake"
+            "name": "Deposit and Home"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "XMode"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
           }
         }
       ]

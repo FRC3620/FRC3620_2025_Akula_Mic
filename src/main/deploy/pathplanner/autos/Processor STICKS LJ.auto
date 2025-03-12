@@ -25,13 +25,26 @@
         {
           "type": "named",
           "data": {
-            "name": "Deposit and Home"
+            "name": "Deposit"
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Stick L to Bottom Source"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Stick L to Bottom Source"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Home"
+                }
+              }
+            ]
           }
         },
         {
@@ -49,7 +62,32 @@
         {
           "type": "named",
           "data": {
-            "name": "Deposit and Home"
+            "name": "Deposit"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "STICK J to Bottom Source"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Home"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
           }
         },
         {

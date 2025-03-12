@@ -130,7 +130,6 @@ public class RobotContainer {
 
   // joysticks here....
   public static ChameleonController driverJoystick;
-  public static Joystick operatorJoystick;
   public static GenericHID buttonboxHID;
 
   public static ButtonBox buttonBoxRightTrigger;
@@ -270,7 +269,6 @@ public class RobotContainer {
    */
   private void configureButtonBindingsAndDefaultCommands() {
     driverJoystick = new ChameleonController(new Joystick(0));
-    operatorJoystick = new Joystick(1);
     buttonboxHID = new GenericHID(2);
 
     buttonBoxRightTrigger = new ButtonBox(buttonboxHID);
@@ -279,10 +277,7 @@ public class RobotContainer {
     // gets called once, command ends once IMU is reset
     CommandScheduler.getInstance().schedule(new ContinuousSetIMUFromMegaTag1Command());
 
-    climberSubsystem.setDefaultCommand(climberCommandFactory.makeSetClimberPowerCommand(
-        () -> -MathUtil.applyDeadband(operatorJoystick.getRawAxis(XBoxConstants.AXIS_RIGHT_Y), 0.1))
-        .withName("ControlClimberFromJoystick"));
-
+    
     if (swerveSubsystem != null) {
       /*
        * Converts driver input into a field-relative ChassisSpeeds that is controlled
@@ -355,18 +350,6 @@ public class RobotContainer {
           .whileTrue(new HankPullTheTriggerCommand(buttonBoxLeftTrigger).withName("LeftTrigger"));
 
     }
-
-    new JoystickAnalogButton(operatorJoystick, XBoxConstants.BUTTON_A)
-        .onTrue(new AFIRollerSetSpeedUntilInCommand(0.5, afiSubsystem));
-
-    new JoystickAnalogButton(operatorJoystick, XBoxConstants.BUTTON_B)
-        .onTrue(new AFIRollerSetSpeedCommand(-0.05, afiSubsystem));
-
-    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_Y)
-        .onTrue(new SetPivotPositionCommand(Degrees.of(70), afiSubsystem));
-
-    new JoystickAnalogButton(operatorJoystick, XBoxConstants.AXIS_LEFT_X)
-        .onTrue(new SetPivotPositionCommand(Degrees.of(20), afiSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.A1,
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem),
@@ -628,7 +611,7 @@ public class RobotContainer {
 
   public static void setupPathPlannerCommands() {
     NamedCommands.registerCommand("Intake", new RunEndEffectorUntilHasCoral(0.35, esefSubsystem).withTimeout(2.0));
-    NamedCommands.registerCommand("Suck Algae", new RunEndEffectorUntilHasCoral(0.5, esefSubsystem));
+    NamedCommands.registerCommand("Suck Algae", new RunEndEffectorUntilHasCoral(0.4, esefSubsystem).andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2.getPosition(), esefSubsystem)));
     NamedCommands.registerCommand("Home", new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home .getPosition(), esefSubsystem));
     NamedCommands.registerCommand("L1", new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem));
     NamedCommands.registerCommand("L2", new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem));
@@ -637,8 +620,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("L2 Algae", new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2.getPosition(), esefSubsystem));
     NamedCommands.registerCommand("L3 Algae", new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3.getPosition(), esefSubsystem));
     NamedCommands.registerCommand("Barge", new SetESEFPositionCommand(ESEFPosition.PresetPosition.Barge.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("Deposit", new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
     NamedCommands.registerCommand("Deposit and Home", new RunEndEffectorUntilCoralGone(0.9, esefSubsystem)
-                 .andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home .getPosition(), esefSubsystem)));
+                                                  .andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home .getPosition(), esefSubsystem)));
+    NamedCommands.registerCommand("Home", new SetESEFPositionCommand(ESEFPosition.PresetPosition.StationPickup.getPosition(), esefSubsystem));
     NamedCommands.registerCommand("Spit Balls and Home", new SetEndEffectorSpeedCommand(0.95, esefSubsystem).withTimeout(Seconds.of(0.25)).andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
     NamedCommands.registerCommand("Test1", new LogCommand("test 1"));
     NamedCommands.registerCommand("Test2", new LogCommand("test 2"));

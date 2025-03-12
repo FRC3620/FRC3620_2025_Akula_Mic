@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Meters;
 
 import org.usfirst.frc3620.NTStructs;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -48,8 +49,8 @@ public class TurnToAngleCommand extends Command {
     Pose2d startPose = swerveSubsystem.getPose();
 
     startTranslation = startPose.getTranslation();
-    NTStructs.publish("SmartDashboard/TurnToAngleCommand/Start Position",
-        startPose);
+    NTStructs.publishToSmartDashboard("TurnToAngleCommand/Start Position", startPose);
+    DogLog.log("TurnToAngleCommand/Start Position", startPose);
 
     for (SwerveModule swerveModule : swerveSubsystem.getSwerveDrive().getModules()) {
       SwerveModuleState desiredState = new SwerveModuleState(0, new Rotation2d(angle));
@@ -102,8 +103,8 @@ public class TurnToAngleCommand extends Command {
     double distance = currentTranslation.getDistance(startTranslation);
     SmartDashboard.putNumber("TurnToAngleCommand/Distance Traveled", distance);
 
-    NTStructs.publish("SmartDashboard/TurnToAngleCommand/Current Position",
-        currentPose);
+    NTStructs.publishToSmartDashboard("TurnToAngleCommand/Current Position", currentPose);
+    DogLog.log("TurnToAngleCommand/Current Position", currentPose);
 
     if (distance >= distanceToTravel.in(Meters)) {
       return true;
