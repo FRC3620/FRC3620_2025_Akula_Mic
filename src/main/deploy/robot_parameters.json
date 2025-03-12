@@ -6,13 +6,15 @@
     "swerveDirectoryName": "swerve/simulation",
     "competitionRobot": true,
     "intakeFrontEncoderOffset": -1,
-    "intakeRearEncoderOffset": -1
+    "intakeRearEncoderOffset": -1,
+    "shortLEDStrip": true
   },
   {
     "name": "Joehann",
     "serialNumber": "03063d7e",
     "makeAllCANDevices": false,
-    "swerveDirectoryName": "swerve/Joehann"
+    "swerveDirectoryName": "swerve/Joehann",
+    "shortLEDStrip": true
   },
   {
     "name": "CheepCheep",

@@ -2,12 +2,15 @@ package frc.robot;
 
 import org.usfirst.frc3620.RobotParametersBase;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class RobotParameters extends RobotParametersBase {
     String swerveDirectoryName;
 
     double intakeFrontEncoderOffset = 0;
     double intakeRearEncoderOffset = 0;
     double climberEncoderOffset = 0;
+    @JsonProperty("shortLEDStrip") boolean shortLEDStrip = false;
 
     public String getSwerveDirectoryName() {
         return swerveDirectoryName;
@@ -23,6 +26,10 @@ public class RobotParameters extends RobotParametersBase {
 
     public double getClimberEncoderOffset() {
         return climberEncoderOffset; 
+    }
+
+    public boolean isShortLEDStrip() {
+        return shortLEDStrip;
     }
 
     @Override
