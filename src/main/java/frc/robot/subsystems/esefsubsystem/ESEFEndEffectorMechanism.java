@@ -11,6 +11,7 @@ import org.usfirst.frc3620.CANDeviceType;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -43,6 +44,7 @@ public class ESEFEndEffectorMechanism {
             endEffConfigs.Voltage.withPeakReverseVoltage(-12 * 0.8);
 
             endEff.getConfigurator().apply(endEffConfigs);
+            endEff.setNeutralMode(NeutralModeValue.Brake);
         }
 
     }
