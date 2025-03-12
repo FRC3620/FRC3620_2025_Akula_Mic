@@ -18,6 +18,8 @@ import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.FileVersionException;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
+
+import dev.doglog.DogLog;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -216,12 +218,16 @@ public class SwerveSubsystem extends SubsystemBase {
      * }
      */
 
-    NTStructs.publish("SmartDashboard/frc3620/swerve/pose", swerveDrive.getPose());
+    // it doesn't seem that poses published to NT make it into the
+    // wpilog file via NetworkTableInstance.startEntryDataLog, so let's be
+    // explicit
+    NTStructs.publishToSmartDashboard("frc3620/swerve/pose", swerveDrive.getPose());
+    DogLog.log("frc3620/swerve/pose", swerveDrive.getPose());
 
     SmartDashboard.putNumber("frc3620/swerve/yaw", swerveDrive.getYaw().getDegrees());
     SmartDashboard.putNumber("frc3620/swerve/nearestTagID", getNearestTag(swerveDrive.getPose()));
     if (targetPose != null) {
-      SmartDashboard.putNumber("frc3620/swerve/targetPose",
+      SmartDashboard.putNumber("frc3620/swerve/distanceToTargetPose",
           swerveDrive.getPose().getTranslation().getDistance(targetPose.getTranslation()));
 
       if (swerveDrive.getPose().getTranslation().getDistance(targetPose.getTranslation()) < .06) {// if pose is less
