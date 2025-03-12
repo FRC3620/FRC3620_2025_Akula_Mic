@@ -27,6 +27,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.esefcommands.SetElevatorPositionCommand;
 import frc.robot.commands.esefcommands.SetEndEffectorSpeedCommand;
 import frc.robot.commands.esefcommands.SetShoulderPositionCommand;
+import frc.robot.commands.swervedrive.DriveToPoseCommand;
 import frc.robot.subsystems.AFISubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.HealthSubsystem;
@@ -316,6 +317,8 @@ public class RobotContainer {
 
     SmartDashboard.putData("Drive 10 feet", swerveSubsystem.driveToDistanceCommand(Units.feetToMeters(10), 0.5));
     
+    SmartDashboard.putData("Drive to Pose", new DriveToPoseCommand(swerveSubsystem, () -> new Pose2d(3.5, 3.0, new Rotation2d(Units.degreesToRadians(46.5)))));
+
   }
 
   SendableChooser<Command> chooser = new SendableChooser<>();
