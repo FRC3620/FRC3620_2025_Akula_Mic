@@ -11,9 +11,9 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
-import org.usfirst.frc3620.NTPublisher;
 import org.usfirst.frc3620.NTStructs;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.networktables.DoubleArrayEntry;
 import edu.wpi.first.networktables.NetworkTableEvent;
@@ -182,12 +182,18 @@ public class VisionSubsystem extends SubsystemBase {
       if (m != null) {
         megaTagData.poseEstimate = m;
 
-        var prefix = "SmartDashboard/frc3620/vision/" + megaTagData.getLimelightName() + "/" + megaTagData.megaTagName
+        var prefix = "frc3620/vision/" + megaTagData.getLimelightName() + "/" + megaTagData.megaTagName
             + "/";
-        NTPublisher.putNumber(prefix + "targetCount", m.tagCount);
-        NTStructs.publish(prefix + "poseEstimate", m.pose);
+
+        SmartDashboard.putNumber(prefix + "targetCount", m.tagCount);
+        NTStructs.publishToSmartDashboard(prefix + "poseEstimate", m.pose);
+        // it doesn't seem that poses published to NT make it into the
+        // wpilog file via NetworkTableInstance.startEntryDataLog, so let's be
+        // explicit
+        DogLog.log(prefix + "poseEstimate", m.pose);
+        
         if (currentPose != null) {
-          NTPublisher.putNumber(prefix + "distanceFromSwervePose",
+          SmartDashboard.putNumber(prefix + "distanceFromSwervePose",
               currentPose.getTranslation().getDistance(m.pose.getTranslation()));
         }
 
@@ -206,7 +212,7 @@ public class VisionSubsystem extends SubsystemBase {
                 distanceToClosestSeenTarget = distanceToThisTag;
               }
               megaTagData.distanceToClosestSeenTarget = distanceToClosestSeenTarget;
-              NTPublisher.putNumber(prefix + "distance to closest seen tag", distanceToClosestSeenTarget);
+              SmartDashboard.putNumber(prefix + "distance to closest seen tag", distanceToClosestSeenTarget);
             }
           }
           NTStructs.publish(prefix + "targets", targetPoses.toArray(new Pose3d[0]));
