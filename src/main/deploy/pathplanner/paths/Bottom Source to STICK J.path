@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.510608552631579,
-        "y": 0.5419407894736844
+        "x": 1.5943647540983608,
+        "y": 0.6085040983606563
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.805122950819672,
-        "y": 1.2078893442622962
+        "x": 2.6611127588438315,
+        "y": 1.4782436367558238
       },
       "isLocked": false,
       "linkedName": "bottomSource"
     },
     {
       "anchor": {
-        "x": 4.108470394736842,
-        "y": 2.8607730263157896
+        "x": 4.075819672131147,
+        "y": 2.7902663934426233
       },
       "prevControl": {
-        "x": 3.8720286885245896,
-        "y": 2.466598360655738
+        "x": 3.839377965918895,
+        "y": 2.3960917277825717
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,11 +32,11 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.7589466576637405,
+      "minWaypointRelativePos": 0.7670492910195839,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 1.5,
-        "maxAcceleration": 1.5,
+        "maxAcceleration": 2.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -48,7 +48,7 @@
   "eventMarkers": [
     {
       "name": "L4",
-      "waypointRelativePos": 0.12694125590816951,
+      "waypointRelativePos": 0.07562457798784782,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -56,18 +56,29 @@
           "name": "L4"
         }
       }
+    },
+    {
+      "name": "Deposit",
+      "waypointRelativePos": 0.9372045914922272,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Deposit"
+        }
+      }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 1.5,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 3.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.75,
     "rotation": 63.434948822922095
   },
   "reversed": false,
@@ -76,5 +87,5 @@
     "velocity": 0,
     "rotation": 51.45881637871856
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.108470394736842,
-        "y": 2.8607730263157896
+        "x": 4.075819672131147,
+        "y": 2.7902663934426233
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6253073770491806,
-        "y": 2.382684426229509
+        "x": 2.781147540983606,
+        "y": 2.011065573770492
       },
       "isLocked": false,
       "linkedName": "STICK J"
     },
     {
       "anchor": {
-        "x": 1.510608552631579,
-        "y": 0.5419407894736844
+        "x": 1.5943647540983608,
+        "y": 0.6085040983606563
       },
       "prevControl": {
-        "x": 2.1098360655737705,
-        "y": 1.4476434426229514
+        "x": 2.193592267040552,
+        "y": 1.5142067515099233
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,11 +32,11 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.6247755834829454,
+      "minWaypointRelativePos": 0.8642808912896642,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 1.5,
-        "maxAcceleration": 1.5,
+        "maxVelocity": 2.5,
+        "maxAcceleration": 2.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -47,8 +47,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 3.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

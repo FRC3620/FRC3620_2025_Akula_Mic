@@ -74,15 +74,16 @@ public class ESEFElevatorMechanism {
       elevatorAConfigs.Slot0.kD = 0;
       elevatorAConfigs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
 
-      elevatorAConfigs.MotionMagic.MotionMagicCruiseVelocity = 125; // Max speed in Rotations per second
-      elevatorAConfigs.MotionMagic.MotionMagicAcceleration = 100; // Max acceleration in Rotations per second^2
-      elevatorAConfigs.MotionMagic.MotionMagicJerk = 200; // Smooth out acceleration (optional)
+      double coolSpeedConstant = 100;
+      elevatorAConfigs.MotionMagic.MotionMagicCruiseVelocity = 200; // 200 - Max speed in Rotations per second
+      elevatorAConfigs.MotionMagic.MotionMagicAcceleration = 150; // 150 - Max acceleration in Rotations per second^2
+      elevatorAConfigs.MotionMagic.MotionMagicJerk = 600; // 600 - Smooth out acceleration (optional)
 
       elevatorAConfigs.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);
-      elevatorAConfigs.MotorOutput.withPeakForwardDutyCycle(0.6);
-      elevatorAConfigs.MotorOutput.withPeakReverseDutyCycle(-0.35);
-      elevatorAConfigs.Voltage.withPeakForwardVoltage(12 * 0.6);
-      elevatorAConfigs.Voltage.withPeakReverseVoltage(-12 * 0.35);
+      elevatorAConfigs.MotorOutput.withPeakForwardDutyCycle(1.0);
+      elevatorAConfigs.MotorOutput.withPeakReverseDutyCycle(-0.375);
+      elevatorAConfigs.Voltage.withPeakForwardVoltage(12 * 1.0);
+      elevatorAConfigs.Voltage.withPeakReverseVoltage(-12 * 0.375);
 
       elevatorAConfigs.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
 

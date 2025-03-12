@@ -23,12 +23,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Deposit"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -94,6 +88,18 @@
           "type": "named",
           "data": {
             "name": "XMode"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bottom Source to STICK I"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Deposit"
           }
         }
       ]
