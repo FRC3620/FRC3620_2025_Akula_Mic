@@ -13,6 +13,7 @@ import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand;
 import frc.robot.commands.swervedrive.SwerveDriveDiagnosticCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand.WhichStick;
+import frc.robot.commands.swervedrive.DriveToPoseCommand;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 
@@ -37,6 +38,8 @@ public class SwerveSubsystemCommandFactory {
 
     Pose2d testPose = new Pose2d(5.1,3.09, Rotation2d.fromDegrees(120));
     SmartDashboard.putData("Drive To TEST", swerveSubsystem.driveToPoseSlow(testPose));
+  
+    SmartDashboard.putData("Drive to Pose", new DriveToPoseCommand(swerveSubsystem, new Pose2d(5.19, 3.04, Rotation2d.fromDegrees(120))));
 
     SmartDashboard.putData(new SwerveDriveDiagnosticCommand(swerveSubsystem));
 
