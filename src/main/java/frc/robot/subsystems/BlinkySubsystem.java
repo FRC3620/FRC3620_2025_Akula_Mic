@@ -21,7 +21,9 @@ import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.AddressableLEDBufferView;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -55,6 +57,7 @@ public class BlinkySubsystem extends SubsystemBase {
   private static final LEDPattern PATTERN_SCROLLING_RAINBOW = LEDPattern.rainbow(255, 32)
       .scrollAtRelativeSpeed(Hertz.of(2)).atBrightness(BRIGHTNESS);
 
+  private static final LEDPattern PATTERN_RED_BLINK = LEDPattern.solid(Color.kRed).atBrightness(BRIGHTNESS).blink(Seconds.of(0.1));
   private static final LEDPattern PATTERN_RED = LEDPattern.solid(Color.kRed).atBrightness(BRIGHTNESS);
   private static final LEDPattern PATTERN_BLUE = LEDPattern.solid(Color.kBlue).atBrightness(BRIGHTNESS);
   private static final LEDPattern PATTERN_MAIZE = LEDPattern.solid(Color.kYellow).atBrightness(BRIGHTNESS);
@@ -107,6 +110,13 @@ public class BlinkySubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    double matchTime = Timer.getMatchTime();
+
+    if (matchTime <= 30 && matchTime > 0 && DriverStation.isTeleop()) {
+      upperLeftPattern = upperRightPattern = PATTERN_RED_BLINK;
+    }
+
+
     lowerLeftPattern.applyTo(lowerLeft);
     lowerRightPattern.applyTo(lowerRight);
     topBarPattern.applyTo(topBar);
