@@ -405,6 +405,12 @@ public class RobotContainer {
             new RunEndEffectorUntilHasCoral(0.4, esefSubsystem)),
         new SetEndEffectorSpeedCommand(0.0, esefSubsystem));
 
+    buttonBoxRightTrigger.addButtonMapping(ButtonId.D3,
+        new SequentialCommandGroup(
+            new SetESEFPositionCommand(ESEFPosition.PresetPosition.StationPickup.getPosition(), esefSubsystem),
+            new SetEndEffectorSpeedCommand(0.2, esefSubsystem)),
+        new SetEndEffectorSpeedCommand(0.0, esefSubsystem));
+
     // this is for the algae claw.
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.B4,
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Barge.getPosition(), esefSubsystem),
