@@ -7,6 +7,8 @@ import org.usfirst.frc3620.logger.LoggingMaster;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.esefcommands.SetESEFPositionCommand;
+import frc.robot.commands.swervedrive.DriveToClosestStickCommand;
 
 public class ButtonBox {
   public enum ButtonId {
@@ -76,5 +78,11 @@ public class ButtonBox {
     }
     return commandPair;
   }
+
+public void addButtonMapping(ButtonId a1, DriveToClosestStickCommand driveToClosestStickCommand,
+        SetESEFPositionCommand setESEFPositionCommand, SetESEFPositionCommand setESEFPositionCommand2) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'addButtonMapping'");
+}
 
 }
