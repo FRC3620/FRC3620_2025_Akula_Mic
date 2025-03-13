@@ -37,11 +37,13 @@ public class ContinuousSetIMUFromMegaTag1Command extends Command {
     Pose2d pose = null;
     String used = null;
     for (var cameraData : RobotContainer.visionSubsystem.getAllCameraData()) {
-      PoseEstimate pe = cameraData.megaTag1.getPoseEstimate();
-      if (pe != null && pe.tagCount > mostTargets) {
-        mostTargets = pe.tagCount;
-        pose = pe.pose;
-        used = cameraData.getLimelightName();
+      if (cameraData.shouldUseThisCamera()) {
+        PoseEstimate pe = cameraData.megaTag1.getPoseEstimate();
+        if (pe != null && pe.tagCount > mostTargets) {
+          mostTargets = pe.tagCount;
+          pose = pe.pose;
+          used = cameraData.getLimelightName();
+        }
       }
     }
     if (pose != null) {
