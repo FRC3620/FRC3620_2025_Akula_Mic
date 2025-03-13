@@ -56,6 +56,7 @@ import frc.robot.commands.esefcommands.RunEndEffectorUntilHasCoral;
 import frc.robot.commands.esefcommands.SetESEFPositionCommand;
 import frc.robot.commands.esefcommands.SetShoulderPositionCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand;
+import frc.robot.commands.swervedrive.DriveToPoseCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand.WhichStick;
 import frc.robot.commands.swervedrive.TestDriveToPoseCommand;
 import frc.robot.subsystems.AFISubsystem;
@@ -497,7 +498,8 @@ public class RobotContainer {
     // Swerve commands
     if (swerveSubsystem != null) {
       SmartDashboard.putData("Reset IMU from Limelight data", new ContinuousSetIMUFromMegaTag1Command());
-      swerveCommandFactory.setupSmartDashboardCommands();
+      swerveCommandFactory.setupSmartDashboardCommands(
+      );
 
       SmartDashboard.putData("Kill running swerve command", 
         Commands.runOnce( () -> {
@@ -507,6 +509,9 @@ public class RobotContainer {
             c.cancel();
           }
         }).withName("Kill running swerve command"));
+
+
+
     }
 
     // ESEF commands
@@ -517,6 +522,7 @@ public class RobotContainer {
 
     // checklists
     healthCommandFactory.setupSmartDashboardCommands();
+
   }
 
   public void setupAutonomousCommands() {
