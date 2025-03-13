@@ -314,7 +314,7 @@ public class VisionSubsystem extends SubsystemBase {
       } else if (cameraData.megaTag2.poseEstimate.pose.getY() <= 0) {
         error = "Pose has too little Y";
       }
-      if (error.length() == 0) {
+      if (sd != null && error.length() == 0) {
         double distanceError = sd.getPose().getTranslation()
             .getDistance(cameraData.megaTag2.poseEstimate.pose.getTranslation());
 
