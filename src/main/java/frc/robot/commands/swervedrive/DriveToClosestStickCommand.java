@@ -54,7 +54,7 @@ public class DriveToClosestStickCommand extends InstantCommand {
         RobotContainer.swerveSubsystem.setTargetPose(pose);
         logger.info("Target Pose = {}", pose);
 
-        CommandScheduler.getInstance().schedule(RobotContainer.swerveSubsystem.driveToPoseSlow(pose));
+        CommandScheduler.getInstance().schedule(new DriveToPoseCommand(RobotContainer.swerveSubsystem, pose));
 
 
       }
