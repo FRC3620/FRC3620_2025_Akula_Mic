@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.5943647540983608,
-        "y": 0.6085040983606563
+        "x": 1.4984631147540983,
+        "y": 0.5006147540983602
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.265518496548749,
-        "y": 1.2864403580673
+        "x": 2.301639344262295,
+        "y": 1.843237704918033
       },
       "isLocked": false,
       "linkedName": "bottomSource"
     },
     {
       "anchor": {
-        "x": 3.728176229508197,
-        "y": 2.99405737704918
+        "x": 3.7042008196721308,
+        "y": 2.9580942622950825
       },
       "prevControl": {
-        "x": 3.1407786885245907,
-        "y": 2.322745901639344
+        "x": 3.104815573770492,
+        "y": 2.466598360655738
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,11 +32,11 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0,
+      "minWaypointRelativePos": 0.8669817690749395,
+      "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 2.0,
-        "maxAcceleration": 2.0,
+        "maxVelocity": 1.5,
+        "maxAcceleration": 1.5,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -56,10 +56,21 @@
           "name": "L4"
         }
       }
+    },
+    {
+      "name": "Reset IMU",
+      "waypointRelativePos": 0.221471978392971,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Reset IMU"
+        }
+      }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.5,
+    "maxVelocity": 3.0,
     "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
