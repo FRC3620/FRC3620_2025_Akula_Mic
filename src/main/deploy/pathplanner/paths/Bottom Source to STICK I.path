@@ -3,40 +3,40 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.1489309210526315,
-        "y": 3.8518092105263158
+        "x": 1.4984631147540983,
+        "y": 0.5006147540983602
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.1097861842105265,
-        "y": 3.8421875
+        "x": 2.301639344262295,
+        "y": 1.843237704918033
       },
       "isLocked": false,
-      "linkedName": "Center Start"
+      "linkedName": "bottomSource"
     },
     {
       "anchor": {
-        "x": 5.676809210526316,
-        "y": 3.8518092105263158
+        "x": 3.7042008196721308,
+        "y": 2.9580942622950825
       },
       "prevControl": {
-        "x": 5.926255499990468,
-        "y": 3.8351794578953724
+        "x": 3.104815573770492,
+        "y": 2.466598360655738
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "STICK A"
+      "linkedName": "STICK I"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.36949152542372926,
+      "minWaypointRelativePos": 0.8669817690749395,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 1.5,
-        "maxAcceleration": 1.0,
+        "maxAcceleration": 1.5,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -48,7 +48,7 @@
   "eventMarkers": [
     {
       "name": "L4",
-      "waypointRelativePos": 0.07796610169491523,
+      "waypointRelativePos": 0.09453072248480934,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -56,11 +56,22 @@
           "name": "L4"
         }
       }
+    },
+    {
+      "name": "Reset IMU",
+      "waypointRelativePos": 0.221471978392971,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Reset IMU"
+        }
+      }
     }
   ],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -68,13 +79,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 59.03624346792642
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 51.45881637871856
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
