@@ -24,7 +24,7 @@
   },
   {
     "name": "Compbot",
-    "serialNumber": "0326F30D",
+    "serialNumber": ["0326F30D",  "0327BA54"],
     "makeAllCANDevices": true,
     "competitionRobot": true,
     "swerveDirectoryName": "swerve/Compbot",
