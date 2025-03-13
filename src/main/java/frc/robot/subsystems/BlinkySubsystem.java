@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 
 /**/
 public class BlinkySubsystem extends SubsystemBase {
@@ -94,11 +95,19 @@ public class BlinkySubsystem extends SubsystemBase {
     addressableLED.setData(addressableLEDBuffer);
     addressableLED.start();
 
-    lowerLeft = addressableLEDBuffer.createView(1, 15);
-    upperLeft = addressableLEDBuffer.createView(16, 34);
-    topBar = addressableLEDBuffer.createView(35, 37);
-    lowerRight = addressableLEDBuffer.createView(39, 53);
-    upperRight = addressableLEDBuffer.createView(54, 72);
+    if (RobotContainer.robotParameters.isShortLEDStrip()) {
+      lowerLeft = addressableLEDBuffer.createView(0, 3);
+      upperLeft = addressableLEDBuffer.createView(4, 7);
+      topBar = addressableLEDBuffer.createView(8, 11);
+      lowerRight = addressableLEDBuffer.createView(12, 15);
+      upperRight = addressableLEDBuffer.createView(16, 19);
+    } else {
+      lowerLeft = addressableLEDBuffer.createView(1, 15);
+      upperLeft = addressableLEDBuffer.createView(16, 34);
+      topBar = addressableLEDBuffer.createView(35, 37);
+      lowerRight = addressableLEDBuffer.createView(39, 53);
+      upperRight = addressableLEDBuffer.createView(54, 72);
+    }
 
     lowerLeftPattern = PATTERN_BREATHE_BLUE;
     lowerRightPattern = PATTERN_BREATHE_MAIZE;
