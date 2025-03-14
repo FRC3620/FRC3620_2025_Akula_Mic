@@ -64,18 +64,18 @@ public class VisionSubsystem extends SubsystemBase {
 
   public enum WhichBlueStick {
     //as of 3/12/25 using pathplanner
-    BSTICKA(5.814, 3.845, Rotation2d.fromDegrees(-180)),
-    BSTICKB(5.802, 4.169, Rotation2d.fromDegrees(-180)),
-    BSTICKC(5.323, 5.08, Rotation2d.fromDegrees(-120)),
-    BSTICKD(5.011, 5.248, Rotation2d.fromDegrees(-120)),
-    BSTICKE(3.968, 5.248, Rotation2d.fromDegrees(-60)),
-    BSTICKF(3.68, 5.092, Rotation2d.fromDegrees(-60)),
-    BSTICKG(3.177, 4.205, Rotation2d.fromDegrees(0)),
-    BSTICKH(3.105, 3.857, Rotation2d.fromDegrees(0)),
-    BSTICKI(3.728, 2.994, Rotation2d.fromDegrees(60)),
-    BSTICKJ(3.968, 2.874, Rotation2d.fromDegrees(60)),
-    BSTICKK(5, 2.814, Rotation2d.fromDegrees(120)),
-    BSTICKL(5.299, 2.97, Rotation2d.fromDegrees(120));
+    BSTICKA(5.64, 3.88, Rotation2d.fromDegrees(-180)),
+    BSTICKB(5.69, 4.26, Rotation2d.fromDegrees(-180)),
+    BSTICKC(5.18, 4.14, Rotation2d.fromDegrees(-120)),
+    BSTICKD(4.88, 4.98, Rotation2d.fromDegrees(-120)),
+    BSTICKE(4.32, 5.03, Rotation2d.fromDegrees(-60)),
+    BSTICKF(3.73, 4.87, Rotation2d.fromDegrees(-60)),
+    BSTICKG(3.31, 4.18, Rotation2d.fromDegrees(0)),
+    BSTICKH(3.28, 3.79, Rotation2d.fromDegrees(0)),
+    BSTICKI(3.71, 3.41, Rotation2d.fromDegrees(60)),
+    BSTICKJ(4.11, 2.85, Rotation2d.fromDegrees(60)),
+    BSTICKK(4.98, 2.90, Rotation2d.fromDegrees(120)),
+    BSTICKL(5.19, 3.15, Rotation2d.fromDegrees(120));;
 
 
     public final Pose2d pose;

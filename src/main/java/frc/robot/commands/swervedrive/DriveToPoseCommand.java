@@ -47,8 +47,8 @@ public class DriveToPoseCommand extends Command {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        xController.setTolerance(0.1, 2.0); // 2 inches
-        yController.setTolerance(0.1, 2.0); // 2 inches
+        xController.setTolerance(0.05, 1.0); // 2 inches
+        yController.setTolerance(0.05, 1.0); // 2 inches
         counter = 0;
         targetIsSet = false;
         xController.setSetpoint(targetPose.getX());
