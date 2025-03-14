@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -28,6 +29,8 @@ public class DriveToPoseCommand extends Command {
     private double angVelocity;
     private boolean targetIsSet = false;
     private int counter = 0;
+    private Timer commandTimer = new Timer();
+    private double COMMAND_TIMEOUT = 2;
 
     public DriveToPoseCommand(
             SwerveSubsystem swerve,
@@ -53,6 +56,9 @@ public class DriveToPoseCommand extends Command {
         targetIsSet = false;
         xController.setSetpoint(targetPose.getX());
         yController.setSetpoint(targetPose.getY());
+
+        commandTimer.reset();
+        commandTimer.start();
 
     }
 
@@ -82,6 +88,11 @@ public class DriveToPoseCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return xController.atSetpoint() && yController.atSetpoint() && Math.abs(angVelocity) < 0.05;
+
+        if (commandTimer.hasElapsed(COMMAND_TIMEOUT)) {
+            return true;
+        } else {
+            return (xController.atSetpoint() && yController.atSetpoint() && Math.abs(angVelocity) < 0.05);
+        }
     }
 }
