@@ -33,7 +33,6 @@ public class TalonFetcher extends MotorWatcherFetcher {
   @Override
   Double measureOutputCurrent() {
     return outputCurrent = talonFX.getStatorCurrent().getValue().in(Amps);
-    talonFX.get
   }
 
   @Override
