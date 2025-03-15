@@ -7,8 +7,10 @@ package frc.robot.commands.swervedrive;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,8 +24,15 @@ public class DriveToPoseCommand extends Command {
     private final double maxSwerveAngularVelocity;
     private double driveKp = 5.5;
     private double turnKp = 0.12;
-    private PIDController xController;
-    private PIDController yController;
+    //private PIDController xController;
+    //private PIDController yController;
+    private final ProfiledPIDController xController;
+    private final ProfiledPIDController yController;
+    // Motion constraints
+    private static final double MAX_VELOCITY = 2.0; // Max linear velocity (m/s)
+    private static final double MAX_ACCELERATION = 1.5; // Max linear acceleration (m/s^2)
+    private static final double MAX_ANGULAR_VELOCITY = Math.PI; // Max angular velocity (rad/s)
+    private static final double MAX_ANGULAR_ACCELERATION = Math.PI / 2; // Max angular acceleration (rad/s^2)
     private double xVelocity;
     private double yVelocity;
     private double angVelocity;
@@ -41,8 +50,13 @@ public class DriveToPoseCommand extends Command {
         this.maxSwerveVelocity = swerve.getSwerveDrive().getMaximumChassisVelocity();
         this.maxSwerveAngularVelocity = swerve.getSwerveDrive().getMaximumChassisAngularVelocity();
 
-        xController = new PIDController(driveKp, 0.0, 0.0);
-        yController = new PIDController(driveKp, 0.0, 0.0);
+        //xController = new PIDController(driveKp, 0.0, 0.0);
+        //yController = new PIDController(driveKp, 0.0, 0.0);
+
+        // Initialize controllers with motion constraints
+        xController = new ProfiledPIDController(driveKp, 0.0, 0.0, new TrapezoidProfile.Constraints(MAX_VELOCITY, MAX_ACCELERATION));
+        yController = new ProfiledPIDController(driveKp, 0.0, 0.0, new TrapezoidProfile.Constraints(MAX_VELOCITY, MAX_ACCELERATION));
+
 
         addRequirements(swerve);
     }
@@ -50,12 +64,15 @@ public class DriveToPoseCommand extends Command {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        xController.reset(swerve.getPose().getX());
+        yController.reset(swerve.getPose().getY());
+
         xController.setTolerance(0.05, 1.0); // 2 inches
         yController.setTolerance(0.05, 1.0); // 2 inches
         counter = 0;
         targetIsSet = false;
-        xController.setSetpoint(targetPose.getX());
-        yController.setSetpoint(targetPose.getY());
+        xController.setGoal(targetPose.getX());
+        yController.setGoal(targetPose.getY());
 
         commandTimer.reset();
         commandTimer.start();
@@ -66,7 +83,7 @@ public class DriveToPoseCommand extends Command {
     @Override
     public void execute() {
         SmartDashboard.putBoolean("target is set", targetIsSet);
-        SmartDashboard.putNumber("driveToPose counter", counter);
+        //SmartDashboard.putNumber("driveToPose counter", counter);
         SmartDashboard.putBoolean("driveToPose at setpoint", xController.atSetpoint());
 
         targetRotation = targetPose.getRotation().getDegrees();
