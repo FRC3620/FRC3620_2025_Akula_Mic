@@ -22,16 +22,14 @@ public class DriveToPoseCommand extends Command {
     double targetRotation;
     private final double maxSwerveVelocity;
     private final double maxSwerveAngularVelocity;
-    private double driveKp = 5.5;
+    private double driveKp = 5.7; //5.5
     private double turnKp = 0.12;
     //private PIDController xController;
     //private PIDController yController;
     private final ProfiledPIDController xController;
     private final ProfiledPIDController yController;
     // Motion constraints
-    private static final double MAX_VELOCITY = 2.0; // Max linear velocity (m/s)
-    private static final double MAX_ACCELERATION = 1.5; // Max linear acceleration (m/s^2)
-    private static final double MAX_ANGULAR_VELOCITY = Math.PI; // Max angular velocity (rad/s)
+    private static final double MAX_ACCELERATION = 1.75; // Max linear acceleration (m/s^2)
     private static final double MAX_ANGULAR_ACCELERATION = Math.PI / 2; // Max angular acceleration (rad/s^2)
     private double xVelocity;
     private double yVelocity;
@@ -39,13 +37,13 @@ public class DriveToPoseCommand extends Command {
     private boolean targetIsSet = false;
     private int counter = 0;
     private Timer commandTimer = new Timer();
-    private double COMMAND_TIMEOUT = 2;
+    private double COMMAND_TIMEOUT = 2.1;
 
     public DriveToPoseCommand(
             SwerveSubsystem swerve,
-            Pose2d targetPose) {
+            Pose2d _targetPose) {
         this.swerve = swerve;
-        this.targetPose = targetPose;
+        this.targetPose = _targetPose;
 
         this.maxSwerveVelocity = swerve.getSwerveDrive().getMaximumChassisVelocity();
         this.maxSwerveAngularVelocity = swerve.getSwerveDrive().getMaximumChassisAngularVelocity();
@@ -54,8 +52,8 @@ public class DriveToPoseCommand extends Command {
         //yController = new PIDController(driveKp, 0.0, 0.0);
 
         // Initialize controllers with motion constraints
-        xController = new ProfiledPIDController(driveKp, 0.0, 0.0, new TrapezoidProfile.Constraints(MAX_VELOCITY, MAX_ACCELERATION));
-        yController = new ProfiledPIDController(driveKp, 0.0, 0.0, new TrapezoidProfile.Constraints(MAX_VELOCITY, MAX_ACCELERATION));
+        xController = new ProfiledPIDController(driveKp, 0.0, 0.0, new TrapezoidProfile.Constraints(maxSwerveVelocity, MAX_ACCELERATION));
+        yController = new ProfiledPIDController(driveKp, 0.0, 0.0, new TrapezoidProfile.Constraints(maxSwerveVelocity, MAX_ACCELERATION));
 
 
         addRequirements(swerve);
@@ -64,18 +62,20 @@ public class DriveToPoseCommand extends Command {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        xController.reset(swerve.getPose().getX());
-        yController.reset(swerve.getPose().getY());
-
-        xController.setTolerance(0.05, 1.0); // 2 inches
-        yController.setTolerance(0.05, 1.0); // 2 inches
-        counter = 0;
-        targetIsSet = false;
-        xController.setGoal(targetPose.getX());
-        yController.setGoal(targetPose.getY());
-
-        commandTimer.reset();
-        commandTimer.start();
+        if(targetPose != null) {
+            xController.reset(swerve.getPose().getX());
+            yController.reset(swerve.getPose().getY());
+    
+            xController.setTolerance(0.02, 0.5);
+            yController.setTolerance(0.02, 0.5); 
+            counter = 0;
+            targetIsSet = false;
+            xController.setGoal(targetPose.getX());
+            yController.setGoal(targetPose.getY());
+    
+            commandTimer.reset();
+            commandTimer.start();  
+        }
 
     }
 
@@ -86,16 +86,20 @@ public class DriveToPoseCommand extends Command {
         //SmartDashboard.putNumber("driveToPose counter", counter);
         SmartDashboard.putBoolean("driveToPose at setpoint", xController.atSetpoint());
 
-        targetRotation = targetPose.getRotation().getDegrees();
-
+        if(targetPose != null) {
+            targetRotation = targetPose.getRotation().getDegrees();
+        } else {
+            targetRotation = swerve.getHeading().getDegrees();
+        }
+        
         xVelocity = xController.calculate(swerve.getPose().getX());
         yVelocity = yController.calculate(swerve.getPose().getY());
         angVelocity = turnKp * Math.IEEEremainder(targetRotation - swerve.getHeading().getDegrees(), 360);
 
         swerve.driveFieldOriented(
                 new ChassisSpeeds(
-                        xVelocity * maxSwerveVelocity * 0.1,
-                        yVelocity * maxSwerveVelocity * 0.1,
+                        xVelocity * maxSwerveVelocity * 0.2,
+                        yVelocity * maxSwerveVelocity * 0.2,
                         angVelocity));
     }
 

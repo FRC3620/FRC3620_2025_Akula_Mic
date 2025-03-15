@@ -72,8 +72,8 @@ public class VisionSubsystem extends SubsystemBase {
     BSTICKF(3.73, 4.87, Rotation2d.fromDegrees(-60)),
     BSTICKG(3.31, 4.18, Rotation2d.fromDegrees(0)),
     BSTICKH(3.28, 3.79, Rotation2d.fromDegrees(0)),
-    BSTICKI(3.71, 3.41, Rotation2d.fromDegrees(60)),
-    BSTICKJ(4.11, 2.85, Rotation2d.fromDegrees(60)),
+    BSTICKI(3.76, 3.04, Rotation2d.fromDegrees(60)), // tuned
+    BSTICKJ(4.11, 2.85, Rotation2d.fromDegrees(60)), // ""
     BSTICKK(4.98, 2.90, Rotation2d.fromDegrees(120)),
     BSTICKL(5.19, 3.15, Rotation2d.fromDegrees(120));;
 
