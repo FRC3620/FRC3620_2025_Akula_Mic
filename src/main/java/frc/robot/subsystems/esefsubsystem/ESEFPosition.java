@@ -14,7 +14,7 @@ public class ESEFPosition {
    * Enum for predefined arm positions
    */
   public enum PresetPosition {
-    Home(0, 90),        // Fully retracted, shoulder at 90°
+    Home(0, 88),        // Fully retracted, shoulder at 90°
     Barge(56.5, 70),        // Fully retracted, shoulder at 90°
     StationPickup(0, 90),        // Fully retracted, shoulder at 90°
     L1(0, 80),        // Fully retracted, shoulder at 90°
