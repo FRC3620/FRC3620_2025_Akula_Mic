@@ -36,7 +36,7 @@ public class HealthSubsystem extends SubsystemBase {
 
   // record swerve motor data
   MotorWatcher swerveMotorWatcher;
-  EnumSet<MotorWatcherMetric> whatSwerveMetricsToWatch = EnumSet.of(MotorWatcherMetric.TEMPERATURE);
+  EnumSet<MotorWatcherMetric> whatSwerveMetricsToWatch = EnumSet.of(MotorWatcherMetric.TEMPERATURE, MotorWatcherMetric.OUTPUT_CURRENT);
 
   // watch the power distribution system
   PDWatcher pdWatcher;
