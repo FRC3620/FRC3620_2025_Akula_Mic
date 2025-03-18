@@ -21,9 +21,12 @@ import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.AddressableLEDBufferView;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 
 /**/
 public class BlinkySubsystem extends SubsystemBase {
@@ -55,6 +58,7 @@ public class BlinkySubsystem extends SubsystemBase {
   private static final LEDPattern PATTERN_SCROLLING_RAINBOW = LEDPattern.rainbow(255, 32)
       .scrollAtRelativeSpeed(Hertz.of(2)).atBrightness(BRIGHTNESS);
 
+  private static final LEDPattern PATTERN_RED_BLINK = LEDPattern.solid(Color.kRed).atBrightness(BRIGHTNESS).blink(Seconds.of(0.1));
   private static final LEDPattern PATTERN_RED = LEDPattern.solid(Color.kRed).atBrightness(BRIGHTNESS);
   private static final LEDPattern PATTERN_BLUE = LEDPattern.solid(Color.kBlue).atBrightness(BRIGHTNESS);
   private static final LEDPattern PATTERN_MAIZE = LEDPattern.solid(Color.kYellow).atBrightness(BRIGHTNESS);
@@ -91,11 +95,19 @@ public class BlinkySubsystem extends SubsystemBase {
     addressableLED.setData(addressableLEDBuffer);
     addressableLED.start();
 
-    lowerLeft = addressableLEDBuffer.createView(1, 15);
-    upperLeft = addressableLEDBuffer.createView(16, 34);
-    topBar = addressableLEDBuffer.createView(35, 37);
-    lowerRight = addressableLEDBuffer.createView(39, 53);
-    upperRight = addressableLEDBuffer.createView(54, 72);
+    if (RobotContainer.robotParameters.isShortLEDStrip()) {
+      lowerLeft = addressableLEDBuffer.createView(0, 3);
+      upperLeft = addressableLEDBuffer.createView(4, 7);
+      topBar = addressableLEDBuffer.createView(8, 11);
+      lowerRight = addressableLEDBuffer.createView(12, 15);
+      upperRight = addressableLEDBuffer.createView(16, 19);
+    } else {
+      lowerLeft = addressableLEDBuffer.createView(1, 15);
+      upperLeft = addressableLEDBuffer.createView(16, 34);
+      topBar = addressableLEDBuffer.createView(35, 37);
+      lowerRight = addressableLEDBuffer.createView(39, 53);
+      upperRight = addressableLEDBuffer.createView(54, 72);
+    }
 
     lowerLeftPattern = PATTERN_BREATHE_BLUE;
     lowerRightPattern = PATTERN_BREATHE_MAIZE;
@@ -107,6 +119,13 @@ public class BlinkySubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    double matchTime = Timer.getMatchTime();
+
+    if (matchTime <= 30 && matchTime > 0 && DriverStation.isTeleop()) {
+      upperLeftPattern = upperRightPattern = PATTERN_RED_BLINK;
+    }
+
+
     lowerLeftPattern.applyTo(lowerLeft);
     lowerRightPattern.applyTo(lowerRight);
     topBarPattern.applyTo(topBar);

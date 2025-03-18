@@ -47,4 +47,20 @@ public class NTStructs {
     publish(topic, o, Pose3d.struct);
   }
 
+  public static void publishToSmartDashboard(String topic, Pose2d o) {
+    publish(fixupTopicForSmartDashboard(topic), o, Pose2d.struct);
+  }
+
+  public static void publishToSmartDashboard(String topic, Pose3d o) {
+    publish(fixupTopicForSmartDashboard(topic), o, Pose3d.struct);
+  }
+
+  public static void publishToSmartDashboard(String topic, Pose3d[] o) {
+    publish(fixupTopicForSmartDashboard(topic), o, Pose3d.struct);
+  }
+
+  static String fixupTopicForSmartDashboard (String topic) {
+    return "SmartDashboard/" + topic;
+  }
+
 }

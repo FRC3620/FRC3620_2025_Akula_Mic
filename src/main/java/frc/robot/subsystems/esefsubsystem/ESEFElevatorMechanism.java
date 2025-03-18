@@ -74,15 +74,15 @@ public class ESEFElevatorMechanism {
       elevatorAConfigs.Slot0.kD = 0;
       elevatorAConfigs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
 
-      elevatorAConfigs.MotionMagic.MotionMagicCruiseVelocity = 125; // Max speed in Rotations per second
-      elevatorAConfigs.MotionMagic.MotionMagicAcceleration = 100; // Max acceleration in Rotations per second^2
-      elevatorAConfigs.MotionMagic.MotionMagicJerk = 200; // Smooth out acceleration (optional)
+      elevatorAConfigs.MotionMagic.MotionMagicCruiseVelocity = 200;  // Increased from 125
+      elevatorAConfigs.MotionMagic.MotionMagicAcceleration = 250;    // Increased from 100
+      elevatorAConfigs.MotionMagic.MotionMagicJerk = 300;           // Increased from 200
 
       elevatorAConfigs.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);
-      elevatorAConfigs.MotorOutput.withPeakForwardDutyCycle(0.5);
-      elevatorAConfigs.MotorOutput.withPeakReverseDutyCycle(-0.35);
-      elevatorAConfigs.Voltage.withPeakForwardVoltage(12 * 0.5);
-      elevatorAConfigs.Voltage.withPeakReverseVoltage(-12 * 0.35);
+      elevatorAConfigs.MotorOutput.withPeakForwardDutyCycle(0.95);
+      elevatorAConfigs.MotorOutput.withPeakReverseDutyCycle(-0.6);
+      elevatorAConfigs.Voltage.withPeakForwardVoltage(12 * 0.95);
+      elevatorAConfigs.Voltage.withPeakReverseVoltage(-12 * 0.6);
 
       elevatorAConfigs.MotorOutput.withNeutralMode(NeutralModeValue.Brake);
 
@@ -102,6 +102,9 @@ public class ESEFElevatorMechanism {
         "Elevator Motor B")
         || RobotContainer.shouldMakeAllCANDevices()) {
       this.elevatorB = new TalonFX(ELEVATORB_MOTORID);
+      //TalonFXConfiguration elevatorBConfigs = new TalonFXConfiguration();
+      //elevatorBConfigs.MotorOutput.withNeutralMode(NeutralModeValue.Coast);
+      //elevatorB.getConfigurator().apply(elevatorBConfigs);
       elevatorB.setPosition(0);
 
       elevatorB.setControl(new Follower(ELEVATORA_MOTORID, false));
@@ -145,13 +148,16 @@ public class ESEFElevatorMechanism {
 
     if (elevatorA != null) {
       SmartDashboard.putNumber("frc3620/Elevator/AMotorAppliedPower", elevatorA.get());
+      SmartDashboard.putNumber("frc3620/Elevator/AMotorAppliedCurrent", elevatorA.getStatorCurrent().getValueAsDouble());
     }
     if (elevatorB != null) {
       SmartDashboard.putNumber("frc3620/Elevator/BMotorAppliedPower", elevatorB.get());
+      SmartDashboard.putNumber("frc3620/Elevator/BMotorAppliedCurrent", elevatorB.getStatorCurrent().getValueAsDouble());
     }
     SmartDashboard.putBoolean("frc3620/Elevator/HomeLimitSwitchPressed", homeSwitchHit());
     SmartDashboard.putBoolean("frc3620/Elevator/Calibrated", encoderCalibrated);
     SmartDashboard.putNumber("frc3620/Elevator/ActualPosition", getCurrentHeight().in(Inches));
+    SmartDashboard.putNumber("frc3620/Elevator/ActualBPosition", getCurrentHeightB().in(Inches));
 
   }
 
@@ -172,6 +178,14 @@ public class ESEFElevatorMechanism {
   public Distance getCurrentHeight() {
     if (elevatorA != null) {
       return Inches.of(elevatorA.getPosition().getValueAsDouble() * positionConversion.in(Inches));
+    } else {
+      return Inches.of(0);
+    }
+  }
+
+  public Distance getCurrentHeightB() {
+    if (elevatorB != null) {
+      return Inches.of(elevatorB.getPosition().getValueAsDouble() * positionConversion.in(Inches));
     } else {
       return Inches.of(0);
     }
