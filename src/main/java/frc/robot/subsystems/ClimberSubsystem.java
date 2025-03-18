@@ -24,8 +24,8 @@ public class ClimberSubsystem extends SubsystemBase {
     public DutyCycleEncoder absEncoder;
     Angle absEncoderOffset;
 
-    final Angle MINPOSITION = Degrees.of(50);
-    final Angle MAXPOSITION = Degrees.of(195);
+    final Angle MINPOSITION = Degrees.of(57.8);
+    final Angle MAXPOSITION = Degrees.of(180);
 
     public ClimberSubsystem() {
         if (RobotContainer.canDeviceFinder.isDevicePresent(CANDeviceType.TALON_PHOENIX6, CLIMBER_MOTORID, "Climber")

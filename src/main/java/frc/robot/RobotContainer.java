@@ -438,7 +438,7 @@ public class RobotContainer {
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.B2,
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2.getPosition(), esefSubsystem)
-        .alongWith(new RunEndEffectorUntilHasAlgae(0.45, esefSubsystem)).withTimeout(2),
+        .alongWith(new RunEndEffectorUntilHasAlgae(0.45, esefSubsystem)),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2Remove.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.B2, 
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem),
