@@ -91,7 +91,7 @@ public class ESEFShoulderMechanism {
             shoulderEncoder.getConfigurator().apply(canCoderConfigs);
             shoulder.getConfigurator().apply(shoulderConfigs); // Applies the Config to the shoulder motor
 
-            shoulder.setPosition(Degrees.of(90));
+            shoulder.setPosition(Degrees.of(88));
         }
 
     }
