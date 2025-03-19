@@ -73,9 +73,9 @@ public class VisionSubsystem extends SubsystemBase {
     BSTICKG(3.31, 4.18, Rotation2d.fromDegrees(0)),
     BSTICKH(3.28, 3.79, Rotation2d.fromDegrees(0)),
     BSTICKI(3.76, 3.04, Rotation2d.fromDegrees(60)), // tuned
-    BSTICKJ(4.11, 2.85, Rotation2d.fromDegrees(60)), // ""
-    BSTICKK(4.98, 2.90, Rotation2d.fromDegrees(120)),
-    BSTICKL(5.19, 3.15, Rotation2d.fromDegrees(120));;
+    BSTICKJ(4.05, 2.87, Rotation2d.fromDegrees(60)), // tuned origianl: 4.09, 2.86
+    BSTICKK(4.98, 2.90, Rotation2d.fromDegrees(120)), 
+    BSTICKL(5.2629308, 3.01453804, Rotation2d.fromDegrees(120));;
 
 
     public final Pose2d pose;
