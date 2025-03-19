@@ -48,7 +48,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   static Optional<Alliance> color;
 
-  double maxDistanceFromCenterToBeClose = 3;// Distance in meters
+  double maxDistanceFromCenterToBeClose = 5;// Distance in meters
 
   String lastLoggedError;
 
@@ -63,19 +63,19 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public enum WhichBlueStick {
-    //as of 3/12/25 using pathplanner
-    BSTICKA(5.64, 3.88, Rotation2d.fromDegrees(-180)),
-    BSTICKB(5.69, 4.26, Rotation2d.fromDegrees(-180)),
-    BSTICKC(5.18, 4.14, Rotation2d.fromDegrees(-120)),
-    BSTICKD(4.88, 4.98, Rotation2d.fromDegrees(-120)),
-    BSTICKE(4.32, 5.03, Rotation2d.fromDegrees(-60)),
-    BSTICKF(3.73, 4.87, Rotation2d.fromDegrees(-60)),
-    BSTICKG(3.31, 4.18, Rotation2d.fromDegrees(0)),
-    BSTICKH(3.28, 3.79, Rotation2d.fromDegrees(0)),
+    //as of 3/19/25 using math (geometry, apriltag coordinates and did fine-tuning for all the poses)
+    BSTICKA(5.71, 3.86, Rotation2d.fromDegrees(-180)), //dn
+    BSTICKB(5.71, 4.25, Rotation2d.fromDegrees(-180)), //dn
+    BSTICKC(5.22, 5.01, Rotation2d.fromDegrees(-120)), //dn
+    BSTICKD(4.93, 5.18, Rotation2d.fromDegrees(-120)), //dn
+    BSTICKE(3.98, 5.16, Rotation2d.fromDegrees(-60)), //dn
+    BSTICKF(3.66, 4.96, Rotation2d.fromDegrees(-60)), //dn
+    BSTICKG(3.26, 4.17, Rotation2d.fromDegrees(0)), //dn
+    BSTICKH(3.26, 3.78, Rotation2d.fromDegrees(0)), //
     BSTICKI(3.76, 3.04, Rotation2d.fromDegrees(60)), // tuned
     BSTICKJ(4.05, 2.87, Rotation2d.fromDegrees(60)), // tuned origianl: 4.09, 2.86
-    BSTICKK(4.98, 2.90, Rotation2d.fromDegrees(120)), 
-    BSTICKL(5.2629308, 3.01453804, Rotation2d.fromDegrees(120));;
+    BSTICKK(5.03, 2.92, Rotation2d.fromDegrees(120)), //dn
+    BSTICKL(5.34, 3.07, Rotation2d.fromDegrees(120));; //dn
 
 
     public final Pose2d pose;
