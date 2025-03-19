@@ -342,7 +342,7 @@ public class RobotContainer {
       // .onTrue(swerveSubsystem.pathFinderCommand());
 
       //NavX Reset
-      driverJoystick.button(XBoxConstants.BUTTON_A, FlySkyConstants.BUTTON_SWA).onTrue(new InstantCommand(() -> swerveSubsystem.squareUp()));
+      driverJoystick.button(XBoxConstants.BUTTON_A, FlySkyConstants.BUTTON_SWA).onTrue(new ContinuousSetIMUFromMegaTag1Command());
 
 
       driverJoystick.button(XBoxConstants.BUTTON_LEFT_BUMPER, FlySkyConstants.BUTTON_SWF)
