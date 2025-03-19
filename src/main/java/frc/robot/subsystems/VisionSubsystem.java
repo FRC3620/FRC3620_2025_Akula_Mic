@@ -48,7 +48,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   static Optional<Alliance> color;
 
-  double maxDistanceFromCenterToBeClose = 5;// Distance in meters
+  double maxDistanceFromCenterToBeClose = 7;// Distance in meters
 
   String lastLoggedError;
 
