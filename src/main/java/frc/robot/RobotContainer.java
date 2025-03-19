@@ -97,6 +97,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
 
+  
+
   private SendableChooser<Command> autoChooser;
 
   public final static TaggedLogger logger = LoggingMaster.getLogger(RobotContainer.class);
@@ -359,6 +361,11 @@ public class RobotContainer {
       driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE)
           .whileTrue(new HankPullTheTriggerCommand(buttonBoxLeftTrigger).withName("LeftTrigger"));
 
+      driverJoystick.button(XBoxConstants.BUTTON_B, FlySkyConstants.BUTTON_SWD)
+          .onTrue(new InstantCommand(()->visionSubsystem.setDoWeAlign(!visionSubsystem.getDoWeAlign())));
+          //.toggleOnFalse(new InstantCommand(()->visionSubsystem.setDoWeAlign(false)));
+          
+
     }
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.A1,
@@ -589,6 +596,8 @@ public class RobotContainer {
       return true;
     }
 
+
+
     /*
      * if (practiceBotJumper.get() == true) {
      * return true;
@@ -709,5 +718,7 @@ public class RobotContainer {
     return axisValue * axisValue * Math.signum(axisValue);
 
   }
+
+  
 
 }
