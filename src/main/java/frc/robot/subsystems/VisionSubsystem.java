@@ -48,6 +48,9 @@ public class VisionSubsystem extends SubsystemBase {
 
   static Optional<Alliance> color;
 
+  public boolean doWeAutoAlign = false;
+
+  //double maxDistanceFromCenterToBeClose = 3;// Distance in meters
   double maxDistanceFromCenterToBeClose = 7;// Distance in meters
 
   String lastLoggedError;
@@ -255,8 +258,13 @@ public class VisionSubsystem extends SubsystemBase {
 
   }
 
+
   @Override
   public void periodic() {
+
+    
+
+    SmartDashboard.putBoolean("doWeAutoAlign", doWeAutoAlign);
 
     // gets alliance color
     color = DriverStation.getAlliance();
@@ -383,6 +391,14 @@ public class VisionSubsystem extends SubsystemBase {
     } else {
       return tagToStickPose2dRight.get(tagID);
     }
+  }
+
+  public boolean getDoWeAlign(){
+    return doWeAutoAlign;
+  }
+
+  public void setDoWeAlign(boolean _doWeAutoAlign){
+    doWeAutoAlign = _doWeAutoAlign;
   }
 
 }

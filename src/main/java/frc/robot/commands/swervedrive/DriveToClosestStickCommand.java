@@ -18,7 +18,6 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.util.Optional;
 
-
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class DriveToClosestStickCommand extends InstantCommand {
 
@@ -40,44 +39,45 @@ public class DriveToClosestStickCommand extends InstantCommand {
   // Called when the command is initially scheduled.
   // Initialize with a default value
   public void initialize() {
+    if (RobotContainer.visionSubsystem.getDoWeAlign()) {
+      Pose2d pose;
+      int tagID = RobotContainer.visionSubsystem.getNearestTagID(RobotContainer.swerveSubsystem.getPose());
+      logger.info("Saw ID = {}", tagID);
 
-    Pose2d pose;
-    int tagID = RobotContainer.visionSubsystem.getNearestTagID(RobotContainer.swerveSubsystem.getPose());
-    logger.info("Saw ID = {}", tagID);
+      // Check if tagID is within the allowed range
+      Optional<Alliance> ally = DriverStation.getAlliance();
+      if (ally.isPresent()) {
 
-    // Check if tagID is within the allowed range
-    Optional<Alliance> ally = DriverStation.getAlliance();
-    if (ally.isPresent()) {
+        if (ally.get() == Alliance.Red && tagID >= 6 && tagID <= 11) {
 
-      if (ally.get() == Alliance.Red && tagID >= 6 && tagID <= 11) {
+          if (whichStick == WhichStick.LEFT) {
+            pose = RobotContainer.visionSubsystem.getNearestLeftStickPose(tagID);
+          } else {
+            pose = RobotContainer.visionSubsystem.getNearestRightStickPose(tagID);
+          }
+          RobotContainer.swerveSubsystem.setTargetPose(pose);
+          logger.info("Target Pose = {}", pose);
 
-        if (whichStick == WhichStick.LEFT) {
-          pose = RobotContainer.visionSubsystem.getNearestLeftStickPose(tagID);
+          CommandScheduler.getInstance().schedule(new DriveToPoseCommand(RobotContainer.swerveSubsystem, pose));
+
+        } else if (ally.get() == Alliance.Blue && tagID >= 17 && tagID <= 22) {
+
+          if (whichStick == WhichStick.LEFT) {
+            pose = RobotContainer.visionSubsystem.getNearestLeftStickPose(tagID);
+          } else {
+            pose = RobotContainer.visionSubsystem.getNearestRightStickPose(tagID);
+          }
+          RobotContainer.swerveSubsystem.setTargetPose(pose);
+          logger.info("Target Pose = {}", pose);
+
+          CommandScheduler.getInstance().schedule(new DriveToPoseCommand(RobotContainer.swerveSubsystem, pose));
+
         } else {
-          pose = RobotContainer.visionSubsystem.getNearestRightStickPose(tagID);
+
+          logger.info("No reef ID seen. DriveToClosestStick Stopped.");
         }
-        RobotContainer.swerveSubsystem.setTargetPose(pose);
-        logger.info("Target Pose = {}", pose);
 
-        CommandScheduler.getInstance().schedule(new DriveToPoseCommand(RobotContainer.swerveSubsystem, pose));
-
-      } else if (ally.get() == Alliance.Blue && tagID >= 17 && tagID <= 22) {
-
-        if (whichStick == WhichStick.LEFT) {
-          pose = RobotContainer.visionSubsystem.getNearestLeftStickPose(tagID);
-        } else {
-          pose = RobotContainer.visionSubsystem.getNearestRightStickPose(tagID);
-        }
-        RobotContainer.swerveSubsystem.setTargetPose(pose);
-        logger.info("Target Pose = {}", pose);
-
-        CommandScheduler.getInstance().schedule(new DriveToPoseCommand(RobotContainer.swerveSubsystem, pose));
-
-      } else {
-
-        logger.info("No reef ID seen. DriveToClosestStick Stopped.");
       }
-
     }
 
   }
