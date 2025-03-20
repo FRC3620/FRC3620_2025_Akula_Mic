@@ -49,7 +49,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   static Optional<Alliance> color;
 
-  public boolean doWeAutoAlign = false;
+  public boolean doWeAutoAlign = true;
 
   //double maxDistanceFromCenterToBeClose = 3;// Distance in meters
   double maxDistanceFromCenterToBeClose = 7;// Distance in meters
@@ -73,7 +73,7 @@ public class VisionSubsystem extends SubsystemBase {
     RSTICKE(12.57, 5.19, Rotation2d.fromDegrees(-60)), 
     RSTICKF(12.24, 4.96, Rotation2d.fromDegrees(-60)),
     RSTICKG(11.83, 4.13, Rotation2d.fromDegrees(0)),
-    RSTICKH(11.83, 3.79, Rotation2d.fromDegrees(0)),
+    RSTICKH(11.83, 3.82, Rotation2d.fromDegrees(0)),
     RSTICKI(12.331, 3.04, Rotation2d.fromDegrees(60)),
     RSTICKJ(12.6156, 2.87, Rotation2d.fromDegrees(60)),
     RSTICKK(13.59, 2.9, Rotation2d.fromDegrees(120)), //dn
