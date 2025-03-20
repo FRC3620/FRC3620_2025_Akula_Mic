@@ -410,8 +410,10 @@ public class VisionSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Distance to blue reef", translation.getDistance(centerBlueReef));
 
     if (translation.getDistance(centerBlueReef) < maxDistanceFromCenterToBeClose) {
+      SmartDashboard.putBoolean("Inside Blue Boundary", true);
       return translationToTagMap.get(nearestTagTranslation);
     } else {
+      SmartDashboard.putBoolean("Inside Blue Boundary", false);
       return -1;
     }
   }
@@ -421,10 +423,10 @@ public class VisionSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Distance to red reef", translation.getDistance(centerRedReef));
 
     if (translation.getDistance(centerRedReef) < maxDistanceFromCenterToBeClose) {
-      SmartDashboard.putBoolean("Inside Boundary", true);
+      SmartDashboard.putBoolean("Inside Red Boundary", true);
       return translationToTagMap.get(nearestTagTranslation);
     } else {
-      SmartDashboard.putBoolean("Inside Boundary", false);
+      SmartDashboard.putBoolean("Inside Red Boundary", false);
       return -1;
     }
   }
