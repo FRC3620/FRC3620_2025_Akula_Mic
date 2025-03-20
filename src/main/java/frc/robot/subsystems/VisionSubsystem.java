@@ -407,6 +407,7 @@ public class VisionSubsystem extends SubsystemBase {
   public int getNearestTagID(Pose2d pose) {
     Translation2d translation = pose.getTranslation();
     Translation2d nearestTagTranslation = translation.nearest(tagTranslations);
+    SmartDashboard.putNumber("Distance to blue reef", translation.getDistance(centerBlueReef));
 
     if (translation.getDistance(centerBlueReef) < maxDistanceFromCenterToBeClose) {
       return translationToTagMap.get(nearestTagTranslation);
@@ -417,10 +418,13 @@ public class VisionSubsystem extends SubsystemBase {
   public int getNearestTagIDRed(Pose2d pose) {
     Translation2d translation = pose.getTranslation();
     Translation2d nearestTagTranslation = translation.nearest(tagTranslations);
+    SmartDashboard.putNumber("Distance to red reef", translation.getDistance(centerRedReef));
 
     if (translation.getDistance(centerRedReef) < maxDistanceFromCenterToBeClose) {
+      SmartDashboard.putBoolean("Inside Boundary", true);
       return translationToTagMap.get(nearestTagTranslation);
     } else {
+      SmartDashboard.putBoolean("Inside Boundary", false);
       return -1;
     }
   }
