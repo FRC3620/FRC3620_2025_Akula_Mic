@@ -361,7 +361,7 @@ public class RobotContainer {
       driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE)
           .whileTrue(new HankPullTheTriggerCommand(buttonBoxLeftTrigger).withName("LeftTrigger"));
 
-      driverJoystick.button(XBoxConstants.BUTTON_B, FlySkyConstants.BUTTON_SWD)
+      driverJoystick.button(XBoxConstants.BUTTON_X, FlySkyConstants.BUTTON_SWD)
           .onTrue(new InstantCommand(()->visionSubsystem.setDoWeAlign(!visionSubsystem.getDoWeAlign())));
           //.toggleOnFalse(new InstantCommand(()->visionSubsystem.setDoWeAlign(false)));
           

@@ -68,7 +68,7 @@ public class VisionSubsystem extends SubsystemBase {
   public enum WhichRedStick {
     RSTICKA(14.28, 3.92, Rotation2d.fromDegrees(-180)), //dn
     RSTICKB(14.28, 4.25, Rotation2d.fromDegrees(-180)), //dn
-    RSTICKC(13.77, 5.06, Rotation2d.fromDegrees(-120)),
+    RSTICKC(13.79, 5.05, Rotation2d.fromDegrees(-120)),
     RSTICKD(13.48, 5.21, Rotation2d.fromDegrees(-120)), 
     RSTICKE(12.57, 5.19, Rotation2d.fromDegrees(-60)), 
     RSTICKF(12.24, 4.96, Rotation2d.fromDegrees(-60)),
