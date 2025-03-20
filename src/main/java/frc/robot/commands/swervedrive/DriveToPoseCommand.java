@@ -38,6 +38,7 @@ public class DriveToPoseCommand extends Command {
     private int counter = 0;
     private Timer commandTimer = new Timer();
     private double COMMAND_TIMEOUT = 2.1;
+    private boolean driveToPoseRunning = false;
 
     public DriveToPoseCommand(
             SwerveSubsystem swerve,
@@ -62,6 +63,9 @@ public class DriveToPoseCommand extends Command {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+
+        driveToPoseRunning = true;
+        SmartDashboard.putBoolean("frc3620/driveToPose/running", driveToPoseRunning);
         if(targetPose != null) {
             xController.reset(swerve.getPose().getX());
             yController.reset(swerve.getPose().getY());
@@ -85,6 +89,7 @@ public class DriveToPoseCommand extends Command {
         SmartDashboard.putBoolean("target is set", targetIsSet);
         //SmartDashboard.putNumber("driveToPose counter", counter);
         SmartDashboard.putBoolean("driveToPose at setpoint", xController.atSetpoint());
+        
 
         if(targetPose != null) {
             targetRotation = targetPose.getRotation().getDegrees();
@@ -101,10 +106,17 @@ public class DriveToPoseCommand extends Command {
                         xVelocity * maxSwerveVelocity * 0.2,
                         yVelocity * maxSwerveVelocity * 0.2,
                         angVelocity));
+        SmartDashboard.putNumber("frc3620/driveToPose/xVelocity", xVelocity * maxSwerveVelocity * 0.2);
+        SmartDashboard.putNumber("frc3620/driveToPose/yVelocity", yVelocity * maxSwerveVelocity * 0.2);
+        SmartDashboard.putNumber("frc3620/driveToPose/angVelocity", angVelocity);
+        SmartDashboard.putNumber("frc3620/driveToPose/xError", xController.getPositionError());
+        SmartDashboard.putNumber("frc3620/driveToPose/yError", yController.getPositionError());
     }
 
     @Override
     public void end(boolean interrupted) {
+        driveToPoseRunning = false;
+        SmartDashboard.putBoolean("frc3620/driveToPose/running", driveToPoseRunning);
     }
 
     @Override

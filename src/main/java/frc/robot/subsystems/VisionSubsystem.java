@@ -18,6 +18,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.networktables.DoubleArrayEntry;
 import edu.wpi.first.networktables.NetworkTableEvent;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -46,18 +47,20 @@ public class VisionSubsystem extends SubsystemBase {
   private Translation2d centerRedReef;
 
   private List<Translation2d> tagTranslations = new ArrayList<>();
+  private List<Translation2d> redReefTagTranslations = new ArrayList<>();
+  private List<Translation2d> blueReefTagTranslations = new ArrayList<>();
 
   static Optional<Alliance> color;
 
   public boolean doWeAutoAlign = true;
 
   // double maxDistanceFromCenterToBeClose = 3;// Distance in meters
-  double maxDistanceFromCenterToBeClose = 7;// Distance in meters
+  double maxDistanceFromCenterToBeClose = 5;// Distance in meters
 
   String lastLoggedError;
 
   public enum Camera {
-    FRONT("limelight-front"), BACK("limelight-back");
+    FRONT("limelight-front"); //, BACK("limelight-back");
 
     public final String limelightName;
 
@@ -197,7 +200,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   public VisionSubsystem() {
     allCameraData.put(Camera.FRONT, new CameraData(Camera.FRONT));
-    allCameraData.put(Camera.BACK, new CameraData(Camera.BACK).withUseThisCamera(false));
+    //allCameraData.put(Camera.BACK, new CameraData(Camera.BACK).withUseThisCamera(false));
     allCameraData = Map.copyOf(allCameraData); // make immutable
     allCameraDataAsSet = Set.copyOf(allCameraData.values());
 
@@ -262,7 +265,15 @@ public class VisionSubsystem extends SubsystemBase {
 
       tagTranslations.add(translation);
 
+      if (tagID >= 17 && tagID <= 22) {
+        blueReefTagTranslations.add(translation);
+      }
+      if (tagID >= 6 && tagID <= 11) {
+        redReefTagTranslations.add(translation);
+      }
+
     }
+
     // for blue sticks
     tagToStickPose2dLeft.put(17, WhichBlueStick.BSTICKI.pose);
     tagToStickPose2dLeft.put(18, WhichBlueStick.BSTICKG.pose);
@@ -405,9 +416,9 @@ public class VisionSubsystem extends SubsystemBase {
     return allCameraDataAsSet;
   }
 
-  public int getNearestTagID(Pose2d pose) {
+  public int getNearestTagIDBlue(Pose2d pose) {
     Translation2d translation = pose.getTranslation();
-    Translation2d nearestTagTranslation = translation.nearest(tagTranslations);
+    Translation2d nearestTagTranslation = translation.nearest(blueReefTagTranslations);
     SmartDashboard.putNumber("Distance to blue reef", translation.getDistance(centerBlueReef));
 
     if (translation.getDistance(centerBlueReef) < maxDistanceFromCenterToBeClose) {
@@ -421,7 +432,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   public int getNearestTagIDRed(Pose2d pose) {
     Translation2d translation = pose.getTranslation();
-    Translation2d nearestTagTranslation = translation.nearest(tagTranslations);
+    Translation2d nearestTagTranslation = translation.nearest(redReefTagTranslations);
     SmartDashboard.putNumber("Distance to red reef", translation.getDistance(centerRedReef));
 
     if (translation.getDistance(centerRedReef) < maxDistanceFromCenterToBeClose) {
