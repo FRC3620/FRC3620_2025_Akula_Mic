@@ -18,7 +18,6 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import java.util.Optional;
 
-
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class DriveToClosestStickCommand extends InstantCommand {
 
@@ -40,6 +39,8 @@ public class DriveToClosestStickCommand extends InstantCommand {
   // Called when the command is initially scheduled.
   // Initialize with a default value
   public void initialize() {
+    if (RobotContainer.visionSubsystem.getDoWeAlign()) {
+
 
     Pose2d pose;
 
@@ -54,15 +55,15 @@ public class DriveToClosestStickCommand extends InstantCommand {
 
         
 
-        if (whichStick == WhichStick.LEFT) {
-          pose = RobotContainer.visionSubsystem.getNearestLeftStickPose(tagID);
-        } else {
-          pose = RobotContainer.visionSubsystem.getNearestRightStickPose(tagID);
-        }
-        RobotContainer.swerveSubsystem.setTargetPose(pose);
-        logger.info("Target Pose = {}", pose);
+          if (whichStick == WhichStick.LEFT) {
+            pose = RobotContainer.visionSubsystem.getNearestLeftStickPose(tagID);
+          } else {
+            pose = RobotContainer.visionSubsystem.getNearestRightStickPose(tagID);
+          }
+          RobotContainer.swerveSubsystem.setTargetPose(pose);
+          logger.info("Target Pose = {}", pose);
 
-        CommandScheduler.getInstance().schedule(new DriveToPoseCommand(RobotContainer.swerveSubsystem, pose));
+          CommandScheduler.getInstance().schedule(new DriveToPoseCommand(RobotContainer.swerveSubsystem, pose));
 
       } else if (ally.get() == Alliance.Blue && tagID >= 17 && tagID <= 22) {
         int tagIDBlue = RobotContainer.visionSubsystem.getNearestTagID(RobotContainer.swerveSubsystem.getPose());
@@ -76,15 +77,16 @@ public class DriveToClosestStickCommand extends InstantCommand {
         RobotContainer.swerveSubsystem.setTargetPose(pose);
         logger.info("Target Pose = {}", pose);
 
-        CommandScheduler.getInstance().schedule(new DriveToPoseCommand(RobotContainer.swerveSubsystem, pose));
+          CommandScheduler.getInstance().schedule(new DriveToPoseCommand(RobotContainer.swerveSubsystem, pose));
 
-      } else {
+        } else {
 
-        logger.info("No reef ID seen. DriveToClosestStick Stopped.");
+          logger.info("No reef ID seen. DriveToClosestStick Stopped.");
+        }
+
       }
-
     }
 
   }
-
 }
+
