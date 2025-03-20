@@ -51,7 +51,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   public boolean doWeAutoAlign = true;
 
-  //double maxDistanceFromCenterToBeClose = 3;// Distance in meters
+  // double maxDistanceFromCenterToBeClose = 3;// Distance in meters
   double maxDistanceFromCenterToBeClose = 7;// Distance in meters
 
   String lastLoggedError;
@@ -65,20 +65,21 @@ public class VisionSubsystem extends SubsystemBase {
       this.limelightName = limelightName;
     }
   }
+
   public enum WhichRedStick {
-    RSTICKA(14.28, 3.92, Rotation2d.fromDegrees(-180)), //dn
-    RSTICKB(14.28, 4.25, Rotation2d.fromDegrees(-180)), //dn
+    RSTICKA(14.28, 3.92, Rotation2d.fromDegrees(-180)), // dn
+    RSTICKB(14.28, 4.25, Rotation2d.fromDegrees(-180)), // dn
     RSTICKC(13.79, 5.05, Rotation2d.fromDegrees(-120)),
-    RSTICKD(13.48, 5.21, Rotation2d.fromDegrees(-120)), 
-    RSTICKE(12.57, 5.19, Rotation2d.fromDegrees(-60)), 
+    RSTICKD(13.48, 5.21, Rotation2d.fromDegrees(-120)),
+    RSTICKE(12.57, 5.19, Rotation2d.fromDegrees(-60)),
     RSTICKF(12.24, 4.96, Rotation2d.fromDegrees(-60)),
     RSTICKG(11.83, 4.13, Rotation2d.fromDegrees(0)),
     RSTICKH(11.83, 3.82, Rotation2d.fromDegrees(0)),
     RSTICKI(12.331, 3.04, Rotation2d.fromDegrees(60)),
     RSTICKJ(12.6156, 2.87, Rotation2d.fromDegrees(60)),
-    RSTICKK(13.59, 2.9, Rotation2d.fromDegrees(120)), //dn
-    RSTICKL(13.89, 3.16, Rotation2d.fromDegrees(120));; //dn
-
+    RSTICKK(13.59, 2.9, Rotation2d.fromDegrees(120)), // dn
+    RSTICKL(13.89, 3.16, Rotation2d.fromDegrees(120));
+    ; // dn
 
     public final Pose2d pose;
 
@@ -88,20 +89,21 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public enum WhichBlueStick {
-    //as of 3/19/25 using math (geometry, apriltag coordinates and did fine-tuning for all the poses)
-    BSTICKA(5.71, 3.86, Rotation2d.fromDegrees(-180)), //dn
-    BSTICKB(5.71, 4.25, Rotation2d.fromDegrees(-180)), //dn
-    BSTICKC(5.22, 5.01, Rotation2d.fromDegrees(-120)), //dn
-    BSTICKD(4.93, 5.18, Rotation2d.fromDegrees(-120)), //dn
-    BSTICKE(3.98, 5.16, Rotation2d.fromDegrees(-60)), //dn
-    BSTICKF(3.66, 4.96, Rotation2d.fromDegrees(-60)), //dn
-    BSTICKG(3.26, 4.17, Rotation2d.fromDegrees(0)), //dn
+    // as of 3/19/25 using math (geometry, apriltag coordinates and did fine-tuning
+    // for all the poses)
+    BSTICKA(5.71, 3.86, Rotation2d.fromDegrees(-180)), // dn
+    BSTICKB(5.71, 4.25, Rotation2d.fromDegrees(-180)), // dn
+    BSTICKC(5.22, 5.01, Rotation2d.fromDegrees(-120)), // dn
+    BSTICKD(4.93, 5.18, Rotation2d.fromDegrees(-120)), // dn
+    BSTICKE(3.98, 5.16, Rotation2d.fromDegrees(-60)), // dn
+    BSTICKF(3.66, 4.96, Rotation2d.fromDegrees(-60)), // dn
+    BSTICKG(3.26, 4.17, Rotation2d.fromDegrees(0)), // dn
     BSTICKH(3.26, 3.78, Rotation2d.fromDegrees(0)), //
     BSTICKI(3.76, 3.04, Rotation2d.fromDegrees(60)), // tuned
     BSTICKJ(4.1, 2.89, Rotation2d.fromDegrees(60)), // tuned origianl: 4.09, 2.86
-    BSTICKK(5.03, 2.92, Rotation2d.fromDegrees(120)), //dn
-    BSTICKL(5.34, 3.07, Rotation2d.fromDegrees(120));; //dn
-
+    BSTICKK(5.03, 2.92, Rotation2d.fromDegrees(120)), // dn
+    BSTICKL(5.34, 3.07, Rotation2d.fromDegrees(120));
+    ; // dn
 
     public final Pose2d pose;
 
@@ -218,7 +220,7 @@ public class VisionSubsystem extends SubsystemBase {
         // wpilog file via NetworkTableInstance.startEntryDataLog, so let's be
         // explicit
         DogLog.log(prefix + "poseEstimate", m.pose);
-        
+
         if (currentPose != null) {
           SmartDashboard.putNumber(prefix + "distanceFromSwervePose",
               currentPose.getTranslation().getDistance(m.pose.getTranslation()));
@@ -261,7 +263,7 @@ public class VisionSubsystem extends SubsystemBase {
       tagTranslations.add(translation);
 
     }
-    //for blue sticks
+    // for blue sticks
     tagToStickPose2dLeft.put(17, WhichBlueStick.BSTICKI.pose);
     tagToStickPose2dLeft.put(18, WhichBlueStick.BSTICKG.pose);
     tagToStickPose2dLeft.put(19, WhichBlueStick.BSTICKE.pose);
@@ -276,7 +278,7 @@ public class VisionSubsystem extends SubsystemBase {
     tagToStickPose2dRight.put(21, WhichBlueStick.BSTICKB.pose);
     tagToStickPose2dRight.put(22, WhichBlueStick.BSTICKL.pose);
 
-    //for red sticks
+    // for red sticks
     tagToStickPose2dLeft.put(6, WhichRedStick.RSTICKK.pose);
     tagToStickPose2dLeft.put(7, WhichRedStick.RSTICKA.pose);
     tagToStickPose2dLeft.put(8, WhichRedStick.RSTICKC.pose);
@@ -296,11 +298,8 @@ public class VisionSubsystem extends SubsystemBase {
 
   }
 
-
   @Override
   public void periodic() {
-
-    
 
     SmartDashboard.putBoolean("doWeAutoAlign", doWeAutoAlign);
 
@@ -338,10 +337,12 @@ public class VisionSubsystem extends SubsystemBase {
       // update robot odometry from vision
 
       String error = "";
-      if (! cameraData.shouldUseThisCamera()) {
+      if (!cameraData.shouldUseThisCamera()) {
         error = "Ignoring this camera";
-      } if (Math.abs(yawRate) > 720) {
-        // if our angular velocity is greater than 720 degrees per second, ignore vision updates
+      }
+      if (Math.abs(yawRate) > 720) {
+        // if our angular velocity is greater than 720 degrees per second, ignore vision
+        // updates
         error = "Angular Velocity";
       } else if (cameraData.megaTag2.poseEstimate == null) {
         error = "megaTag2Pose = null";
@@ -388,11 +389,11 @@ public class VisionSubsystem extends SubsystemBase {
 
     // we are not using this, so commented out to try to speed up code a little
     /*
-    if (RobotContainer.swerveSubsystem != null) {
-      SmartDashboard.putNumber("frc3620/vision/nearestTagID",
-          getNearestTagID(RobotContainer.swerveSubsystem.getPose()));
-    }
-    */
+     * if (RobotContainer.swerveSubsystem != null) {
+     * SmartDashboard.putNumber("frc3620/vision/nearestTagID",
+     * getNearestTagID(RobotContainer.swerveSubsystem.getPose()));
+     * }
+     */
 
   }
 
@@ -417,6 +418,7 @@ public class VisionSubsystem extends SubsystemBase {
       return -1;
     }
   }
+
   public int getNearestTagIDRed(Pose2d pose) {
     Translation2d translation = pose.getTranslation();
     Translation2d nearestTagTranslation = translation.nearest(tagTranslations);
@@ -430,7 +432,6 @@ public class VisionSubsystem extends SubsystemBase {
       return -1;
     }
   }
-  
 
   public Pose2d getNearestLeftStickPose(int tagID) {
     if (tagID == -1) {
@@ -448,11 +449,11 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
 
-  public boolean getDoWeAlign(){
+  public boolean getDoWeAlign() {
     return doWeAutoAlign;
   }
 
-  public void setDoWeAlign(boolean _doWeAutoAlign){
+  public void setDoWeAlign(boolean _doWeAutoAlign) {
     doWeAutoAlign = _doWeAutoAlign;
   }
 
