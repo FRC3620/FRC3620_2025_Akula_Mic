@@ -42,14 +42,17 @@ public class DriveToClosestStickCommand extends InstantCommand {
   public void initialize() {
 
     Pose2d pose;
-    int tagID = RobotContainer.visionSubsystem.getNearestTagID(RobotContainer.swerveSubsystem.getPose());
-    logger.info("Saw ID = {}", tagID);
+
 
     // Check if tagID is within the allowed range
     Optional<Alliance> ally = DriverStation.getAlliance();
     if (ally.isPresent()) {
+      int tagID = RobotContainer.visionSubsystem.getNearestTagIDRed(RobotContainer.swerveSubsystem.getPose());
+        logger.info("Saw ID = {}", tagID);
 
       if (ally.get() == Alliance.Red && tagID >= 6 && tagID <= 11) {
+
+        
 
         if (whichStick == WhichStick.LEFT) {
           pose = RobotContainer.visionSubsystem.getNearestLeftStickPose(tagID);
@@ -62,11 +65,13 @@ public class DriveToClosestStickCommand extends InstantCommand {
         CommandScheduler.getInstance().schedule(new DriveToPoseCommand(RobotContainer.swerveSubsystem, pose));
 
       } else if (ally.get() == Alliance.Blue && tagID >= 17 && tagID <= 22) {
+        int tagIDBlue = RobotContainer.visionSubsystem.getNearestTagID(RobotContainer.swerveSubsystem.getPose());
+        logger.info("Saw ID = {}", tagIDBlue);
 
         if (whichStick == WhichStick.LEFT) {
-          pose = RobotContainer.visionSubsystem.getNearestLeftStickPose(tagID);
+          pose = RobotContainer.visionSubsystem.getNearestLeftStickPose(tagIDBlue);
         } else {
-          pose = RobotContainer.visionSubsystem.getNearestRightStickPose(tagID);
+          pose = RobotContainer.visionSubsystem.getNearestRightStickPose(tagIDBlue);
         }
         RobotContainer.swerveSubsystem.setTargetPose(pose);
         logger.info("Target Pose = {}", pose);

@@ -43,6 +43,7 @@ public class VisionSubsystem extends SubsystemBase {
   private Map<Integer, Pose2d> tagToStickPose2dRight = new HashMap<>();
 
   private Translation2d centerBlueReef;
+  private Translation2d centerRedReef;
 
   private List<Translation2d> tagTranslations = new ArrayList<>();
 
@@ -61,6 +62,27 @@ public class VisionSubsystem extends SubsystemBase {
       this.limelightName = limelightName;
     }
   }
+  public enum WhichRedStick {
+    RSTICKA(14.28, 3.92, Rotation2d.fromDegrees(-180)), //dn
+    RSTICKB(14.28, 4.25, Rotation2d.fromDegrees(-180)), //dn
+    RSTICKC(13.77, 5.06, Rotation2d.fromDegrees(-120)),
+    RSTICKD(13.48, 5.21, Rotation2d.fromDegrees(-120)), 
+    RSTICKE(12.57, 5.19, Rotation2d.fromDegrees(-60)), 
+    RSTICKF(12.24, 4.96, Rotation2d.fromDegrees(-60)),
+    RSTICKG(11.83, 4.13, Rotation2d.fromDegrees(0)),
+    RSTICKH(11.83, 3.79, Rotation2d.fromDegrees(0)),
+    RSTICKI(12.331, 3.04, Rotation2d.fromDegrees(60)),
+    RSTICKJ(12.6156, 2.87, Rotation2d.fromDegrees(60)),
+    RSTICKK(13.59, 2.9, Rotation2d.fromDegrees(120)), //dn
+    RSTICKL(13.89, 3.16, Rotation2d.fromDegrees(120));; //dn
+
+
+    public final Pose2d pose;
+
+    WhichRedStick(double x, double y, Rotation2d rotation) {
+      pose = new Pose2d(x, y, rotation);
+    }
+  }
 
   public enum WhichBlueStick {
     //as of 3/19/25 using math (geometry, apriltag coordinates and did fine-tuning for all the poses)
@@ -73,7 +95,7 @@ public class VisionSubsystem extends SubsystemBase {
     BSTICKG(3.26, 4.17, Rotation2d.fromDegrees(0)), //dn
     BSTICKH(3.26, 3.78, Rotation2d.fromDegrees(0)), //
     BSTICKI(3.76, 3.04, Rotation2d.fromDegrees(60)), // tuned
-    BSTICKJ(4.05, 2.87, Rotation2d.fromDegrees(60)), // tuned origianl: 4.09, 2.86
+    BSTICKJ(4.1, 2.89, Rotation2d.fromDegrees(60)), // tuned origianl: 4.09, 2.86
     BSTICKK(5.03, 2.92, Rotation2d.fromDegrees(120)), //dn
     BSTICKL(5.34, 3.07, Rotation2d.fromDegrees(120));; //dn
 
@@ -236,7 +258,7 @@ public class VisionSubsystem extends SubsystemBase {
       tagTranslations.add(translation);
 
     }
-
+    //for blue sticks
     tagToStickPose2dLeft.put(17, WhichBlueStick.BSTICKI.pose);
     tagToStickPose2dLeft.put(18, WhichBlueStick.BSTICKG.pose);
     tagToStickPose2dLeft.put(19, WhichBlueStick.BSTICKE.pose);
@@ -251,7 +273,23 @@ public class VisionSubsystem extends SubsystemBase {
     tagToStickPose2dRight.put(21, WhichBlueStick.BSTICKB.pose);
     tagToStickPose2dRight.put(22, WhichBlueStick.BSTICKL.pose);
 
+    //for red sticks
+    tagToStickPose2dLeft.put(6, WhichRedStick.RSTICKK.pose);
+    tagToStickPose2dLeft.put(7, WhichRedStick.RSTICKA.pose);
+    tagToStickPose2dLeft.put(8, WhichRedStick.RSTICKC.pose);
+    tagToStickPose2dLeft.put(9, WhichRedStick.RSTICKE.pose);
+    tagToStickPose2dLeft.put(10, WhichRedStick.RSTICKG.pose);
+    tagToStickPose2dLeft.put(11, WhichRedStick.RSTICKI.pose);
+
+    tagToStickPose2dRight.put(6, WhichRedStick.RSTICKL.pose);
+    tagToStickPose2dRight.put(7, WhichRedStick.RSTICKB.pose);
+    tagToStickPose2dRight.put(8, WhichRedStick.RSTICKD.pose);
+    tagToStickPose2dRight.put(9, WhichRedStick.RSTICKF.pose);
+    tagToStickPose2dRight.put(10, WhichRedStick.RSTICKH.pose);
+    tagToStickPose2dRight.put(11, WhichRedStick.RSTICKJ.pose);
+
     centerBlueReef = tagToTranslationMap.get(17).plus(tagToTranslationMap.get(20)).div(2);
+    centerRedReef = tagToTranslationMap.get(6).plus(tagToTranslationMap.get(9)).div(2);
 
   }
 
@@ -368,6 +406,17 @@ public class VisionSubsystem extends SubsystemBase {
       return -1;
     }
   }
+  public int getNearestTagIDRed(Pose2d pose) {
+    Translation2d translation = pose.getTranslation();
+    Translation2d nearestTagTranslation = translation.nearest(tagTranslations);
+
+    if (translation.getDistance(centerRedReef) < maxDistanceFromCenterToBeClose) {
+      return translationToTagMap.get(nearestTagTranslation);
+    } else {
+      return -1;
+    }
+  }
+  
 
   public Pose2d getNearestLeftStickPose(int tagID) {
     if (tagID == -1) {
