@@ -5,6 +5,18 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "Wall Bump Straight"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PostBump to Wall Start"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Reset IMU"
@@ -13,25 +25,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.1
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Wall Bump"
+            "waitTime": 0.2
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "Wall to STICK C"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
           }
         },
         {
@@ -56,6 +56,30 @@
           "type": "path",
           "data": {
             "pathName": "Wall Source to STICK E"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Deposit and Home"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "STICK E to Wall Source"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wall Source to STICK F"
           }
         },
         {
