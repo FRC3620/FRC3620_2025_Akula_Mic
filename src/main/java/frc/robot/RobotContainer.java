@@ -97,6 +97,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
 
+  
+
   private SendableChooser<Command> autoChooser;
 
   public final static TaggedLogger logger = LoggingMaster.getLogger(RobotContainer.class);
@@ -278,7 +280,6 @@ public class RobotContainer {
     // gets called once, command ends once IMU is reset
     CommandScheduler.getInstance().schedule(new ContinuousSetIMUFromMegaTag1Command());
 
-    
     if (swerveSubsystem != null) {
       /*
        * Converts driver input into a field-relative ChassisSpeeds that is controlled
@@ -297,11 +298,11 @@ public class RobotContainer {
        * input stream.()
        */
       /*
-      SwerveInputStream driveDirectAngleStream = driveAngularVelocity.copy()
-          .withControllerHeadingAxis(() -> getDriveHorizontalJoystick(),
-              () -> getDriveVerticalJoystick())
-          .headingWhile(true);
-      */
+       * SwerveInputStream driveDirectAngleStream = driveAngularVelocity.copy()
+       * .withControllerHeadingAxis(() -> getDriveHorizontalJoystick(),
+       * () -> getDriveVerticalJoystick())
+       * .headingWhile(true);
+       */
 
       /*
        * Clone's the angular velocity input stream and converts it to a robotRelative
@@ -315,20 +316,26 @@ public class RobotContainer {
           .scaleTranslation(0.3);
 
       /*
-      SwerveInputStream driveAngularVelocityKeyboard = SwerveInputStream.of(swerveSubsystem.getSwerveDrive(),
-          () -> -getDriveVerticalJoystick(),
-          () -> -getDriveHorizontalJoystick())
-          .withControllerRotationAxis(() -> getDriveSpinJoystick() * -1)
-          .deadband(OperatorConstants.DEADBAND)
-          .scaleTranslation(0.8)
-          .allianceRelativeControl(true);
-      */
+       * SwerveInputStream driveAngularVelocityKeyboard =
+       * SwerveInputStream.of(swerveSubsystem.getSwerveDrive(),
+       * () -> -getDriveVerticalJoystick(),
+       * () -> -getDriveHorizontalJoystick())
+       * .withControllerRotationAxis(() -> getDriveSpinJoystick() * -1)
+       * .deadband(OperatorConstants.DEADBAND)
+       * .scaleTranslation(0.8)
+       * .allianceRelativeControl(true);
+       */
 
-      // Command driveFieldOrientedDirectAngle = swerveSubsystem.driveFieldOriented(driveDirectAngle);
-      Command driveFieldOrientedAngularVelocityCommand = swerveSubsystem.driveFieldOriented(driveAngularVelocityStream).withName("DriveFromJoystick");
-      //Command driveRobotOrientedAngularVelocityCommand = swerveSubsystem.driveFieldOriented(driveRobotOriented);
-      //Command driveSetpointGenCommand = swerveSubsystem.driveWithSetpointGeneratorFieldRelative(driveDirectAngle);
-      Command driveRobotOrientedSlowCommand = swerveSubsystem.driveFieldOriented(driveRobotOrientedSlowStream).withName("DriveFromJoystickSlow");
+      // Command driveFieldOrientedDirectAngle =
+      // swerveSubsystem.driveFieldOriented(driveDirectAngle);
+      Command driveFieldOrientedAngularVelocityCommand = swerveSubsystem.driveFieldOriented(driveAngularVelocityStream)
+          .withName("DriveFromJoystick");
+      // Command driveRobotOrientedAngularVelocityCommand =
+      // swerveSubsystem.driveFieldOriented(driveRobotOriented);
+      // Command driveSetpointGenCommand =
+      // swerveSubsystem.driveWithSetpointGeneratorFieldRelative(driveDirectAngle);
+      Command driveRobotOrientedSlowCommand = swerveSubsystem.driveFieldOriented(driveRobotOrientedSlowStream)
+          .withName("DriveFromJoystickSlow");
 
       if (RobotBase.isSimulation()) {
         // swerveSubsystem.setDefaultCommand(driveFieldOrientedDirectAngleKeyboard);
@@ -342,7 +349,7 @@ public class RobotContainer {
       // .onTrue(swerveSubsystem.pathFinderCommand());
 
       //NavX Reset
-      driverJoystick.button(XBoxConstants.BUTTON_A, FlySkyConstants.BUTTON_SWA).onTrue(new InstantCommand(() -> swerveSubsystem.squareUp()));
+      driverJoystick.button(XBoxConstants.BUTTON_A, FlySkyConstants.BUTTON_SWA).onTrue(new ContinuousSetIMUFromMegaTag1Command());
 
 
       driverJoystick.button(XBoxConstants.BUTTON_LEFT_BUMPER, FlySkyConstants.BUTTON_SWF)
@@ -354,52 +361,65 @@ public class RobotContainer {
       driverJoystick.analogButton(XBoxConstants.AXIS_LEFT_TRIGGER, FlySkyConstants.AXIS_SWE)
           .whileTrue(new HankPullTheTriggerCommand(buttonBoxLeftTrigger).withName("LeftTrigger"));
 
+      driverJoystick.button(XBoxConstants.BUTTON_X, FlySkyConstants.BUTTON_SWD)
+          .onTrue(new InstantCommand(()->visionSubsystem.setDoWeAlign(!visionSubsystem.getDoWeAlign())));
+          //.toggleOnFalse(new InstantCommand(()->visionSubsystem.setDoWeAlign(false)));
+          
+
     }
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.A1,
-        new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem),
+        new DriveToClosestStickCommand(WhichStick.LEFT).alongWith(
+            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem)),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.A1, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.A2,
-        new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem),
+        new DriveToClosestStickCommand(WhichStick.LEFT).alongWith(
+            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem)),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.A2, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.A3,
-        new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem),
+        new DriveToClosestStickCommand(WhichStick.LEFT).alongWith(
+            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem)),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.A3, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.A4,
-        new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem),
+        new DriveToClosestStickCommand(WhichStick.LEFT).alongWith(
+            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem)),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.A4, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.C1,
-        new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem),
+        new DriveToClosestStickCommand(WhichStick.RIGHT).alongWith(
+            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem)),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.C1, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.C2,
-        new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem),
+        new DriveToClosestStickCommand(WhichStick.RIGHT).alongWith(
+            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem)),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.C2, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.C3,
-        new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem),
+        new DriveToClosestStickCommand(WhichStick.RIGHT).alongWith(
+            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem)),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.C3, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.C4,
-        new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem),
+        new DriveToClosestStickCommand(WhichStick.RIGHT).alongWith(
+            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem)),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.C4, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
@@ -498,19 +518,16 @@ public class RobotContainer {
     // Swerve commands
     if (swerveSubsystem != null) {
       SmartDashboard.putData("Reset IMU from Limelight data", new ContinuousSetIMUFromMegaTag1Command());
-      swerveCommandFactory.setupSmartDashboardCommands(
-      );
+      swerveCommandFactory.setupSmartDashboardCommands();
 
-      SmartDashboard.putData("Kill running swerve command", 
-        Commands.runOnce( () -> {
-          Command c = swerveSubsystem.getCurrentCommand();
-          if (c != null) {
-            logger.info("Killing {}", c.getName());
-            c.cancel();
-          }
-        }).withName("Kill running swerve command"));
-
-
+      SmartDashboard.putData("Kill running swerve command",
+          Commands.runOnce(() -> {
+            Command c = swerveSubsystem.getCurrentCommand();
+            if (c != null) {
+              logger.info("Killing {}", c.getName());
+              c.cancel();
+            }
+          }).withName("Kill running swerve command"));
 
     }
 
@@ -579,6 +596,8 @@ public class RobotContainer {
       return true;
     }
 
+
+
     /*
      * if (practiceBotJumper.get() == true) {
      * return true;
@@ -631,20 +650,32 @@ public class RobotContainer {
 
   public static void setupPathPlannerCommands() {
     NamedCommands.registerCommand("Intake", new RunEndEffectorUntilHasCoral(0.35, esefSubsystem).withTimeout(2.0));
-    NamedCommands.registerCommand("Suck Algae", new RunEndEffectorUntilHasCoral(0.4, esefSubsystem).andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2.getPosition(), esefSubsystem)));
-    NamedCommands.registerCommand("Home", new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home .getPosition(), esefSubsystem));
-    NamedCommands.registerCommand("L1", new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem));
-    NamedCommands.registerCommand("L2", new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem));
-    NamedCommands.registerCommand("L3", new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem));
-    NamedCommands.registerCommand("L4", new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem));
-    NamedCommands.registerCommand("L2 Algae", new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2.getPosition(), esefSubsystem));
-    NamedCommands.registerCommand("L3 Algae", new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3.getPosition(), esefSubsystem));
-    NamedCommands.registerCommand("Barge", new SetESEFPositionCommand(ESEFPosition.PresetPosition.Barge.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("Suck Algae", new RunEndEffectorUntilHasCoral(0.4, esefSubsystem)
+        .andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2.getPosition(), esefSubsystem)));
+    NamedCommands.registerCommand("Home",
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("L1",
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("L2",
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("L3",
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("L4",
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("L2 Algae",
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("L3 Algae",
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("Barge",
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.Barge.getPosition(), esefSubsystem));
     NamedCommands.registerCommand("Deposit", new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
     NamedCommands.registerCommand("Deposit and Home", new RunEndEffectorUntilCoralGone(0.9, esefSubsystem)
-                                                  .andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home .getPosition(), esefSubsystem)));
-    NamedCommands.registerCommand("Home", new SetESEFPositionCommand(ESEFPosition.PresetPosition.StationPickup.getPosition(), esefSubsystem));
-    NamedCommands.registerCommand("Spit Balls and Home", new SetEndEffectorSpeedCommand(0.95, esefSubsystem).withTimeout(Seconds.of(0.25)).andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+        .andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+    NamedCommands.registerCommand("Home",
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.StationPickup.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("Spit Balls and Home",
+        new SetEndEffectorSpeedCommand(0.95, esefSubsystem).withTimeout(Seconds.of(0.25))
+            .andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
     NamedCommands.registerCommand("Test1", new LogCommand("test 1"));
     NamedCommands.registerCommand("Test2", new LogCommand("test 2"));
     NamedCommands.registerCommand("Test", Commands.print("I EXIST"));
@@ -687,5 +718,7 @@ public class RobotContainer {
     return axisValue * axisValue * Math.signum(axisValue);
 
   }
+
+  
 
 }
