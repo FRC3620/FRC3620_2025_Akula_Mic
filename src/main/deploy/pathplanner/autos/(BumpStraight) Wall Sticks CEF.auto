@@ -77,6 +77,18 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "Wall Source to STICK F"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Deposit and Home"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "XMode"
