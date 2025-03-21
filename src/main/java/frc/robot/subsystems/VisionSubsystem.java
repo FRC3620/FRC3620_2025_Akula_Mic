@@ -43,6 +43,8 @@ public class VisionSubsystem extends SubsystemBase {
 
   private Map<Integer, Pose2d> tagToStickPose2dRight = new HashMap<>();
 
+  private Map<Integer, Pose2d> tagToAlgaePose2d = new HashMap<>();
+
   private Translation2d centerBlueReef;
   private Translation2d centerRedReef;
 
@@ -66,6 +68,25 @@ public class VisionSubsystem extends SubsystemBase {
 
     Camera(String limelightName) {
       this.limelightName = limelightName;
+    }
+  }
+
+  public enum WhichBlueAlgae {
+    Algae17(4.0739, 3.3063, Rotation2d.fromDegrees(60)),
+    S_Algae17(3.4739, 3.0063, Rotation2d.fromDegrees(60)),
+    Algae18(3.6576, 4.0259, Rotation2d.fromDegrees(0)),
+    Algae19(4.0739, 4.7455, Rotation2d.fromDegrees(-60)),
+    S_Algae19(3.7739, 5.3455, Rotation2d.fromDegrees(-60)),
+    Algae20(4.9047, 4.7455, Rotation2d.fromDegrees(-120)),
+    Algae21(5.321, 4.0259, Rotation2d.fromDegrees(-180)),
+    S_Algae21(5.721, 4.0259, Rotation2d.fromDegrees(-180)),
+    Algae22(4.9047, 3.3063, Rotation2d.fromDegrees(120)),
+    S_Algae22(5.2047, 2.9063, Rotation2d.fromDegrees(120)),;
+
+    public final Pose2d pose;
+
+    WhichBlueAlgae(double x, double y, Rotation2d rotation) {
+      pose = new Pose2d(x, y, rotation);
     }
   }
 
@@ -304,6 +325,17 @@ public class VisionSubsystem extends SubsystemBase {
     tagToStickPose2dRight.put(10, WhichRedStick.RSTICKH.pose);
     tagToStickPose2dRight.put(11, WhichRedStick.RSTICKJ.pose);
 
+    //for blue algae
+    tagToAlgaePose2d.put(17, WhichBlueAlgae.Algae17.pose);
+    tagToAlgaePose2d.put(17, WhichBlueAlgae.S_Algae17.pose);
+    tagToAlgaePose2d.put(18, WhichBlueAlgae.Algae18.pose);
+    tagToAlgaePose2d.put(19, WhichBlueAlgae.Algae19.pose);
+    tagToAlgaePose2d.put(19, WhichBlueAlgae.S_Algae19.pose);
+    tagToAlgaePose2d.put(20, WhichBlueAlgae.Algae20.pose);
+    tagToAlgaePose2d.put(21, WhichBlueAlgae.Algae21.pose);
+    tagToAlgaePose2d.put(21, WhichBlueAlgae.S_Algae21.pose);
+    tagToAlgaePose2d.put(22, WhichBlueAlgae.Algae22.pose);
+
     centerBlueReef = tagToTranslationMap.get(17).plus(tagToTranslationMap.get(20)).div(2);
     centerRedReef = tagToTranslationMap.get(6).plus(tagToTranslationMap.get(9)).div(2);
 
@@ -457,6 +489,14 @@ public class VisionSubsystem extends SubsystemBase {
       return RobotContainer.swerveSubsystem.getPose();
     } else {
       return tagToStickPose2dRight.get(tagID);
+    }
+  }
+
+  public Pose2d getBlueAlgaePose(int tagID) {
+    if (tagID == -1) {
+      return RobotContainer.swerveSubsystem.getPose();
+    } else {
+      return tagToAlgaePose2d.get(tagID);
     }
   }
 
