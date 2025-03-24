@@ -137,11 +137,12 @@ public class ESEFElevatorMechanism {
           }
         }
       }
-      if(homeSwitchHit() && getCurrentHeight().in(Inches) > 0.5) {
-        logger.info ("reset elevator because of home switch");
-        elevatorA.setPosition(0);
+      double currentHeightInInches = getCurrentHeight().in(Inches);
+      if(homeSwitchHit() && currentHeightInInches > 0.5) {
         resetCounter++;
-        SmartDashboard.putNumber("frc3620/Elevator/ResetCount", ++resetCounter);
+        logger.info ("reset elevator because of home switch, height = {}, count = {}", currentHeightInInches, resetCounter);
+        elevatorA.setPosition(0);
+        SmartDashboard.putNumber("frc3620/Elevator/ResetCount", resetCounter);
         encoderCalibrated = true;
       }
     }
