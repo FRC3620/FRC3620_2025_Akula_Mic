@@ -122,12 +122,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Bottom Source to Stick K"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "XMode"
