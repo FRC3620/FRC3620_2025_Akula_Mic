@@ -4,9 +4,6 @@
 
 package frc.robot.commands.swervedrive;
 
-import java.util.function.Supplier;
-
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -34,11 +31,8 @@ public class DriveToPoseCommand extends Command {
     private double xVelocity;
     private double yVelocity;
     private double angVelocity;
-    private boolean targetIsSet = false;
-    private int counter = 0;
     private Timer commandTimer = new Timer();
     private double COMMAND_TIMEOUT = 2.1;
-    private boolean driveToPoseRunning = false;
 
     public DriveToPoseCommand(
             SwerveSubsystem swerve,
@@ -56,6 +50,7 @@ public class DriveToPoseCommand extends Command {
         xController = new ProfiledPIDController(driveKp, 0.0, 0.0, new TrapezoidProfile.Constraints(maxSwerveVelocity, MAX_ACCELERATION));
         yController = new ProfiledPIDController(driveKp, 0.0, 0.0, new TrapezoidProfile.Constraints(maxSwerveVelocity, MAX_ACCELERATION));
 
+        SmartDashboard.putBoolean("frc3620/driveToPose/running", false);
 
         addRequirements(swerve);
     }
@@ -63,17 +58,13 @@ public class DriveToPoseCommand extends Command {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-
-        driveToPoseRunning = true;
-        SmartDashboard.putBoolean("frc3620/driveToPose/running", driveToPoseRunning);
+        SmartDashboard.putBoolean("frc3620/driveToPose/running", true);
         if(targetPose != null) {
             xController.reset(swerve.getPose().getX());
             yController.reset(swerve.getPose().getY());
     
             xController.setTolerance(0.02, 0.5);
             yController.setTolerance(0.02, 0.5); 
-            counter = 0;
-            targetIsSet = false;
             xController.setGoal(targetPose.getX());
             yController.setGoal(targetPose.getY());
     
@@ -86,11 +77,6 @@ public class DriveToPoseCommand extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        SmartDashboard.putBoolean("target is set", targetIsSet);
-        //SmartDashboard.putNumber("driveToPose counter", counter);
-        SmartDashboard.putBoolean("driveToPose at setpoint", xController.atSetpoint());
-        
-
         if(targetPose != null) {
             targetRotation = targetPose.getRotation().getDegrees();
         } else {
@@ -106,6 +92,10 @@ public class DriveToPoseCommand extends Command {
                         xVelocity * maxSwerveVelocity * 0.2,
                         yVelocity * maxSwerveVelocity * 0.2,
                         angVelocity));
+
+        SmartDashboard.putBoolean("frc3620/driveToPose/atXSetpoint", xController.atSetpoint());
+        SmartDashboard.putBoolean("frc3620/driveToPose/atYSetpoint", yController.atSetpoint());
+
         SmartDashboard.putNumber("frc3620/driveToPose/xVelocity", xVelocity * maxSwerveVelocity * 0.2);
         SmartDashboard.putNumber("frc3620/driveToPose/yVelocity", yVelocity * maxSwerveVelocity * 0.2);
         SmartDashboard.putNumber("frc3620/driveToPose/angVelocity", angVelocity);
@@ -115,13 +105,11 @@ public class DriveToPoseCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        driveToPoseRunning = false;
-        SmartDashboard.putBoolean("frc3620/driveToPose/running", driveToPoseRunning);
+        SmartDashboard.putBoolean("frc3620/driveToPose/running", false);
     }
 
     @Override
     public boolean isFinished() {
-
         if (commandTimer.hasElapsed(COMMAND_TIMEOUT)) {
             return true;
         } else {
