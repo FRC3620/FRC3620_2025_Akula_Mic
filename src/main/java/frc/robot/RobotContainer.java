@@ -370,9 +370,9 @@ public class RobotContainer {
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.A1,
         new DriveToClosestStickCommand(WhichStick.LEFT).alongWith(
-            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem)),
+            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem)),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
-    buttonBoxRightTrigger.addButtonMapping(ButtonId.A1, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
+    buttonBoxRightTrigger.addButtonMapping(ButtonId.A1, new RunEndEffectorUntilCoralGone(0.05, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.A2,
@@ -398,9 +398,9 @@ public class RobotContainer {
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.C1,
         new DriveToClosestStickCommand(WhichStick.RIGHT).alongWith(
-            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem)),
+            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem)),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
-    buttonBoxRightTrigger.addButtonMapping(ButtonId.C1, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
+    buttonBoxRightTrigger.addButtonMapping(ButtonId.C1, new RunEndEffectorUntilCoralGone(0.05, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.C2,
