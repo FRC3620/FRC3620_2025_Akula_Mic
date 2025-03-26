@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.7042008196721308,
-        "y": 2.9580942622950825
+        "x": 3.725,
+        "y": 2.94
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.9849385245901634,
-        "y": 2.2628073770491812
+        "x": 3.0057377049180327,
+        "y": 2.2447131147540986
       },
       "isLocked": false,
       "linkedName": "STICK I"
@@ -32,10 +32,10 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.8318703578663084,
+      "minWaypointRelativePos": 0.9,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 2.0,
+        "maxVelocity": 2.5,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 50.0,
         "maxAngularAcceleration": 720.0,
@@ -60,7 +60,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 3.25,
+    "maxAcceleration": 3.75,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -71,10 +71,10 @@
     "rotation": 51.45881637871856
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Fast Folder",
   "idealStartingState": {
     "velocity": 0.0,
-    "rotation": 59.03624346792642
+    "rotation": 59.99999999999999
   },
   "useDefaultConstraints": true
 }

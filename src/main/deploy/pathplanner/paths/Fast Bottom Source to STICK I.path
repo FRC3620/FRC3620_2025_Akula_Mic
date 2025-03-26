@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.075819672131147,
-        "y": 2.7902663934426233
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 2.781147540983606,
-        "y": 2.011065573770492
-      },
-      "isLocked": false,
-      "linkedName": "STICK J"
-    },
-    {
-      "anchor": {
         "x": 1.5703893442622954,
         "y": 0.6684426229508199
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.649282786885246,
+        "y": 1.5315573770491813
+      },
+      "isLocked": false,
+      "linkedName": "bottomSource"
+    },
+    {
+      "anchor": {
+        "x": 3.725,
+        "y": 2.935
+      },
       "prevControl": {
-        "x": 2.169616857204487,
-        "y": 1.5741452761000865
+        "x": 3.502146123233585,
+        "y": 2.821703267433789
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "bottomSource"
+      "linkedName": "STICK I"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.9,
+      "minWaypointRelativePos": 0.8,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 2.5,
-        "maxAcceleration": 2.0,
-        "maxAngularVelocity": 540.0,
+        "maxVelocity": 1.5,
+        "maxAcceleration": 1.5,
+        "maxAngularVelocity": 25.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
         "unlimited": false
@@ -47,34 +47,45 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Intake",
-      "waypointRelativePos": 0.6320054017555644,
+      "name": "L4",
+      "waypointRelativePos": 0.008102633355845894,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Intake"
+          "name": "L4"
+        }
+      }
+    },
+    {
+      "name": "Deposit",
+      "waypointRelativePos": 0.98,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Deposit"
         }
       }
     }
   ],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 3.25,
+    "maxAcceleration": 3.75,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 51.45881637871856
+    "velocity": 0.5,
+    "rotation": 59.99999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Fast Folder",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 62.02052561151978
+    "rotation": 51.45881637871856
   },
   "useDefaultConstraints": true
 }
