@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
 /**/
@@ -86,6 +87,8 @@ public class BlinkySubsystem extends SubsystemBase {
   private static final LEDPattern PATTERN_STEP_DEMO = LEDPattern
       .steps(Map.of(0.00, Color.kGreen, 0.33, Color.kViolet, 0.67, Color.kBlueViolet))
       .scrollAtRelativeSpeed(Hertz.of(2)).atBrightness(BRIGHTNESS);
+
+  boolean isAutoAllignFinished = false;
 
   public BlinkySubsystem() {
     addressableLED = new AddressableLED(0);
@@ -148,6 +151,8 @@ public class BlinkySubsystem extends SubsystemBase {
     }
   }
 
+ 
+
   public void setESEF(BlinkyStickHeight l) {
     if (l == BlinkyStickHeight.L1) {
       upperLeftPattern = upperRightPattern = PATTERN_L1;
@@ -194,15 +199,28 @@ public class BlinkySubsystem extends SubsystemBase {
   }
 
   public void setRobotMode(RobotMode mode) {
-    switch (mode) {
-      case DISABLED:
+    setLowerBarPattern();
+  }
+
+  public void setAutoAllignFinished(boolean b){
+    isAutoAllignFinished = b;
+    setLowerBarPattern();
+  }
+
+  void setLowerBarPattern(){
+    if(isAutoAllignFinished){
+      lowerLeftPattern = PATTERN_GREEN;
+      lowerRightPattern = PATTERN_GREEN;
+    }
+    else{
+      if(Robot.getCurrentRobotMode() == RobotMode.DISABLED){
         lowerLeftPattern = PATTERN_BREATHE_BLUE;
         lowerRightPattern = PATTERN_BREATHE_MAIZE;
-        break;
-      default:
+      }
+      else{
         lowerLeftPattern = PATTERN_BLUE;
         lowerRightPattern = PATTERN_MAIZE;
-        break;
+      }
     }
   }
 }

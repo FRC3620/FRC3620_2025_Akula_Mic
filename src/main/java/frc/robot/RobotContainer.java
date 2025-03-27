@@ -365,6 +365,8 @@ public class RobotContainer {
           .onTrue(new InstantCommand(()->visionSubsystem.setDoWeAlign(!visionSubsystem.getDoWeAlign())));
           //.toggleOnFalse(new InstantCommand(()->visionSubsystem.setDoWeAlign(false)));
           
+      driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH)
+          .onTrue(Commands.runOnce(() -> blinkySubsystem.setAutoAllignFinished(false)));
 
     }
 
