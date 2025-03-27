@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4984631147540983,
-        "y": 0.5006147540983602
+        "x": 1.5703893442622954,
+        "y": 0.6684426229508199
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.301639344262295,
-        "y": 1.843237704918033
+        "x": 2.649282786885246,
+        "y": 1.5315573770491813
       },
       "isLocked": false,
       "linkedName": "bottomSource"
@@ -20,8 +20,8 @@
         "y": 2.9580942622950825
       },
       "prevControl": {
-        "x": 3.104815573770492,
-        "y": 2.466598360655738
+        "x": 3.4813469429057156,
+        "y": 2.8447975297288717
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,12 +32,12 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.8669817690749395,
+      "minWaypointRelativePos": 0.7157326130992591,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 1.5,
         "maxAcceleration": 1.5,
-        "maxAngularVelocity": 540.0,
+        "maxAngularVelocity": 25.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
         "unlimited": false
@@ -56,29 +56,18 @@
           "name": "L4"
         }
       }
-    },
-    {
-      "name": "Reset IMU",
-      "waypointRelativePos": 0.221471978392971,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Reset IMU"
-        }
-      }
     }
   ],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 4.0,
+    "maxAcceleration": 3.25,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.0,
     "rotation": 59.03624346792642
   },
   "reversed": false,
@@ -87,5 +76,5 @@
     "velocity": 0,
     "rotation": 51.45881637871856
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

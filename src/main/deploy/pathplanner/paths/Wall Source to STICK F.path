@@ -3,43 +3,57 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.676809210526316,
-        "y": 3.8518092105263158
+        "x": 1.6063524590163931,
+        "y": 7.321618852459016
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.722208711058319,
-        "y": 3.930686684311376
+        "x": 2.421516393442622,
+        "y": 6.638319672131147
       },
       "isLocked": false,
-      "linkedName": "STICK A"
+      "linkedName": "Wall Source"
     },
     {
       "anchor": {
-        "x": 6.869901315789473,
-        "y": 4.025
+        "x": 3.596311475409836,
+        "y": 5.019979508196721
       },
       "prevControl": {
-        "x": 6.620703555517081,
-        "y": 4.045011903338342
+        "x": 3.056864754098361,
+        "y": 5.978995901639345
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Algae Pickup AB"
+      "linkedName": "STICK F"
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.75,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 1.5,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "L2 Algae",
-      "waypointRelativePos": 0.46101694915254365,
+      "name": "L4",
+      "waypointRelativePos": 0.02430790006752094,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "L2 Algae"
+          "name": "L4"
         }
       }
     }
@@ -54,13 +68,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -61.82140989004083
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": -55.74055216677249
   },
   "useDefaultConstraints": true
 }

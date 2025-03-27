@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.5703893442622954,
-        "y": 7.453483606557377
+        "x": 1.6063524590163931,
+        "y": 7.321618852459016
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.799917763157895,
-        "y": 6.411184210526316
+        "x": 2.8358808779119924,
+        "y": 6.279319456427955
       },
       "isLocked": false,
       "linkedName": "Wall Source"
     },
     {
       "anchor": {
-        "x": 3.973766447368421,
-        "y": 5.18922697368421
+        "x": 3.8960040983606556,
+        "y": 5.163831967213115
       },
       "prevControl": {
-        "x": 3.54078947368421,
-        "y": 5.881990131578948
+        "x": 3.4630271246764446,
+        "y": 5.8565951251078525
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,7 +32,7 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.6535008976660687,
+      "minWaypointRelativePos": 0.78,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 1.25,
@@ -48,7 +48,7 @@
   "eventMarkers": [
     {
       "name": "L4",
-      "waypointRelativePos": 0.23339317773788154,
+      "waypointRelativePos": 0.09182984469953112,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -59,8 +59,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.25,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -76,5 +76,5 @@
     "velocity": 0,
     "rotation": -55.74055216677249
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

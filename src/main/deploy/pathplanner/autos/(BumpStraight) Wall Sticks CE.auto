@@ -1,0 +1,97 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wall Bump Straight"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PostBump to Wall Start"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Reset IMU"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wall to STICK C"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Deposit and Home"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "STICK C to Wall Source"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Wall Source to STICK E"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Deposit and Home"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "STICK E to Wall Source"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "XMode"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": false,
+  "folder": null,
+  "choreoAuto": false
+}
