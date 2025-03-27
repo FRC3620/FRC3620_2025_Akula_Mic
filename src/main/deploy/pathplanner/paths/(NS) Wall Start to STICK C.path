@@ -59,14 +59,9 @@
     },
     {
       "name": "Deposit",
-      "waypointRelativePos": 0.97,
+      "waypointRelativePos": 0.8129642133693512,
       "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Deposit"
-        }
-      }
+      "command": null
     }
   ],
   "globalConstraints": {
