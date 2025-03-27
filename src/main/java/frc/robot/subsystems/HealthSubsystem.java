@@ -6,6 +6,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.tinylog.TaggedLogger;
+import org.usfirst.frc3620.CANDeviceId;
+import org.usfirst.frc3620.CANDeviceType;
+import org.usfirst.frc3620.CANDeviceFinder.NamedCANDevice;
 import org.usfirst.frc3620.logger.LoggingMaster;
 import org.usfirst.frc3620.motors.MotorWatcher;
 import org.usfirst.frc3620.motors.MotorWatcherFetcher;
@@ -32,7 +35,10 @@ public class HealthSubsystem extends SubsystemBase {
 
   // this stuff is for watching encoders
   EncoderWatcher encoderWatcher;
-  Alert disconnectedEncodersAlert = new Alert(HARDWARE_ALERT_GROUP_NAME, "", AlertType.kError);
+  Alert missingEssentialCANDevicesError = new Alert(HARDWARE_ALERT_GROUP_NAME, "", AlertType.kError);
+  Alert missingOptionalCANDevicesWarning = new Alert(HARDWARE_ALERT_GROUP_NAME, "", AlertType.kWarning);
+  Alert disconnectedEncodersAlertError = new Alert(HARDWARE_ALERT_GROUP_NAME, "", AlertType.kError);
+  Alert disconnectedEncodersAlertWarning = new Alert(HARDWARE_ALERT_GROUP_NAME, "", AlertType.kWarning);
 
   // record swerve motor data
   MotorWatcher swerveMotorWatcher;
@@ -44,16 +50,50 @@ public class HealthSubsystem extends SubsystemBase {
 
   Map<String, HealthStatus> healthMap = new HashMap<>();
 
+  Set<CANDeviceId> essentialDevices = Set.of(
+    new CANDeviceId(CANDeviceType.TALON_PHOENIX6, 1),
+    new CANDeviceId(CANDeviceType.TALON_PHOENIX6, 3),
+    new CANDeviceId(CANDeviceType.TALON_PHOENIX6, 5),
+    new CANDeviceId(CANDeviceType.TALON_PHOENIX6, 7),
+    new CANDeviceId(CANDeviceType.SPARK_MAX, 2),
+    new CANDeviceId(CANDeviceType.SPARK_MAX, 4),
+    new CANDeviceId(CANDeviceType.SPARK_MAX, 6),
+    new CANDeviceId(CANDeviceType.SPARK_MAX, 8)
+  );
+
   /** Creates a new HealthSubsystem. */
   public HealthSubsystem() {
-    healthMap.put("CANbus", RobotContainer.canDeviceFinder.getMissingDeviceSet().size() > 0 ? HealthStatus.HAIRONFIRE : HealthStatus.OKAY);
+    Set<NamedCANDevice> missingEssentialDevices = new HashSet<>();
+    Set<NamedCANDevice> missingOptionalDevices = new HashSet<>();
+    for (NamedCANDevice ncd : RobotContainer.canDeviceFinder.getMissingDeviceSet()) {
+      CANDeviceId canDeviceId = ncd.getCANDeviceId();
+      if (essentialDevices.contains(canDeviceId) || RobotContainer.robotParameters.isCompetitionRobot()) {
+        missingEssentialDevices.add(ncd);
+      } else {
+        missingOptionalDevices.add(ncd);
+      }
+    }
+    healthMap.put("essentialCANbus", missingEssentialDevices.size() > 0 ? HealthStatus.HAIRONFIRE : HealthStatus.OKAY);
+    healthMap.put("optionalCANbus", missingOptionalDevices.size() > 0 ? HealthStatus.WARNING : HealthStatus.OKAY);
+    if (!missingEssentialDevices.isEmpty()) {
+      missingEssentialCANDevicesError.set(true);
+      missingEssentialCANDevicesError.setText("Missing from CAN bus: " + missingEssentialDevices);
+    }
+    if (!missingOptionalDevices.isEmpty()) {
+      missingOptionalCANDevicesWarning.set(true);
+      missingOptionalCANDevicesWarning.setText("Missing from CAN bus: " + missingOptionalDevices);
+    }
 
     encoderWatcher = new EncoderWatcher();
     updateNTForDisconnectEncoders(new String[0]);
 
-    encoderWatcher.addEncoder("Intake Front Absolute", RobotContainer.afiSubsystem.frontEncoder);
-    encoderWatcher.addEncoder("Intake Rear Absolute", RobotContainer.afiSubsystem.rearEncoder);
-    encoderWatcher.addEncoder("Climber Absolute", RobotContainer.climberSubsystem.absEncoder);
+    if (RobotContainer.afiSubsystem.pivot != null) {
+      encoderWatcher.addEncoder("Intake Front Absolute", RobotContainer.afiSubsystem.frontEncoder);
+      encoderWatcher.addEncoder("Intake Rear Absolute", RobotContainer.afiSubsystem.rearEncoder);
+    }
+    if (RobotContainer.climberSubsystem.motor != null) {
+      encoderWatcher.addEncoder("Climber Absolute", RobotContainer.climberSubsystem.absEncoder);
+    }
 
     if (RobotContainer.swerveSubsystem != null) {
       swerveMotorWatcher = new MotorWatcher("frc3620/health/swerve");
@@ -65,7 +105,7 @@ public class HealthSubsystem extends SubsystemBase {
 
         Object encoder = swerveModule.getAbsoluteEncoder().getAbsoluteEncoder();
         if (encoder instanceof DutyCycleEncoder) {
-          encoderWatcher.addEncoder("swerve " + name, (DutyCycleEncoder) encoder);
+          // encoderWatcher.addEncoder("swerve " + name, (DutyCycleEncoder) encoder);
         }
 
         var angleMotor = swerveModule.getAngleMotor().getMotor();
@@ -151,7 +191,7 @@ public class HealthSubsystem extends SubsystemBase {
   void checkAbsoluteEncoders() {
     if (encoderWatcher != null) {
       boolean changed = processWatcher(encoderWatcher,
-          disconnectedEncodersAlert,
+          disconnectedEncodersAlertError,
           "Absolute encoder(s) disconnected: {}",
           "Absolute encoder(s) reconnected: {}",
           "Absolute encoder(s) broken: ");

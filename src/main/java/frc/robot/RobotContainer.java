@@ -107,8 +107,6 @@ public class RobotContainer {
   public static CANDeviceFinder canDeviceFinder;
   public static RobotParameters robotParameters;
 
-  Alert missingDevicesAlert = new Alert(HealthSubsystem.HARDWARE_ALERT_GROUP_NAME, "", Alert.AlertType.kError);
-
   // hardware here...
   // private static DigitalInput practiceBotJumper;
 
@@ -186,10 +184,13 @@ public class RobotContainer {
 
     makeSubsystems();
 
+    // moved to HealthSubsystem
+    /*
     if (!canDeviceFinder.getMissingDeviceSet().isEmpty()) {
       missingDevicesAlert.set(true);
       missingDevicesAlert.setText("Missing from CAN bus: " + canDeviceFinder.getMissingDeviceSet());
     }
+    */
 
     makeCommandFactories();
 
