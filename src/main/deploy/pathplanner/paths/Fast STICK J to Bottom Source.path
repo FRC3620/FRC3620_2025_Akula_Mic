@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.08,
-        "y": 2.85
+        "x": 4.075819672131147,
+        "y": 2.7902663934426233
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.785327868852459,
-        "y": 2.0707991803278687
+        "x": 2.781147540983606,
+        "y": 2.011065573770492
       },
       "isLocked": false,
       "linkedName": "STICK J"
@@ -76,5 +76,5 @@
     "velocity": 0.5,
     "rotation": 62.02052561151978
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

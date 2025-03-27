@@ -13,7 +13,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Fast Source STICK L"
+            "pathName": "Source STICK L"
           }
         },
         {
@@ -29,7 +29,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Fast Stick L to Bottom Source"
+                  "pathName": "Stick L to Bottom Source"
                 }
               },
               {
@@ -50,7 +50,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Fast Bottom Source to STICK J"
+            "pathName": "Bottom Source to STICK J"
           }
         },
         {
@@ -66,7 +66,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Fast STICK J to Bottom Source"
+                  "pathName": "STICK J to Bottom Source"
                 }
               },
               {
@@ -87,7 +87,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Fast Bottom Source to STICK I"
+            "pathName": "Bottom Source to STICK I"
           }
         },
         {
@@ -103,7 +103,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Fast Stick I to Bottom Source"
+                  "pathName": "Stick I to Bottom Source"
                 }
               },
               {
