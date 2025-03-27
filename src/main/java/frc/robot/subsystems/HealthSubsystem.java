@@ -105,7 +105,7 @@ public class HealthSubsystem extends SubsystemBase {
 
         Object encoder = swerveModule.getAbsoluteEncoder().getAbsoluteEncoder();
         if (encoder instanceof DutyCycleEncoder) {
-          // encoderWatcher.addEncoder("swerve " + name, (DutyCycleEncoder) encoder);
+          encoderWatcher.addEncoder("swerve " + name, (DutyCycleEncoder) encoder);
         }
 
         var angleMotor = swerveModule.getAngleMotor().getMotor();
