@@ -9,7 +9,13 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotContainer;
+import frc.robot.commands.esefcommands.RunEndEffectorUntilHasAlgae;
+import frc.robot.commands.esefcommands.SetESEFPositionCommand;
+import frc.robot.subsystems.esefsubsystem.ESEFPosition;
+
 import java.util.Optional;
 
 public class AutoAlignToAlgaeCommand extends InstantCommand {
@@ -34,11 +40,44 @@ public class AutoAlignToAlgaeCommand extends InstantCommand {
         logger.info("Detected Tag ID = {}", tagID);
 
         Pose2d targetPose = null;
-        Pose2d startPose = null;
+        Pose2d startPose = RobotContainer.swerveSubsystem.getPose(); // Initialize startPose with a valid value
 
-        if (tagID % 2 == 1) { // Odd Tag ID
-          startPose = RobotContainer.visionSubsystem.getBlueStartingAlgaePose(tagID);
-          targetPose = RobotContainer.visionSubsystem.getBlueAlgaePose(tagID);
+        if (ally.get() == Alliance.Blue && tagID % 2 == 1) { // Odd Tag ID
+          targetPose = RobotContainer.visionSubsystem.getAlgaePose(tagID);
+
+          if (targetPose == null) {
+            logger.error("Invalid Target Pose for Tag ID = {}", tagID);
+            return; // Exit if the targetPose is invalid
+          }
+
+          logger.info("Starting Pose = {}", startPose);
+          CommandScheduler.getInstance().schedule(
+              new SequentialCommandGroup(
+                  new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2.getPosition(), RobotContainer.esefSubsystem),
+                  new WaitCommand(.75),
+                  new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose)
+                  .alongWith(new RunEndEffectorUntilHasAlgae(0.45, RobotContainer.esefSubsystem)).withTimeout(3.5)));
+
+        } else { // Even Tag ID
+          targetPose = RobotContainer.visionSubsystem.getAlgaePose(tagID);
+
+          if (targetPose == null) {
+            logger.error("Invalid Target Pose for Tag ID = {}", tagID);
+            return; // Exit if the targetPose is invalid
+          }
+
+          CommandScheduler.getInstance().schedule(
+            new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3.getPosition(), RobotContainer.esefSubsystem),
+            new WaitCommand(.5),
+            new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose)
+            .alongWith(new RunEndEffectorUntilHasAlgae(0.45, RobotContainer.esefSubsystem)).withTimeout(3.5));
+        }
+
+
+        //Below is for Algae Auto Align on the Red Alliance
+
+        if (ally.get() == Alliance.Red && tagID % 2 == 0) { // Odd Tag ID
+          targetPose = RobotContainer.visionSubsystem.getAlgaePose(tagID);
 
           if (startPose == null) {
             logger.error("Invalid Start Pose for Tag ID = {}", tagID);
@@ -52,17 +91,24 @@ public class AutoAlignToAlgaeCommand extends InstantCommand {
           logger.info("Starting Pose = {}", startPose);
           CommandScheduler.getInstance().schedule(
               new SequentialCommandGroup(
-                  new DriveToPoseCommand(RobotContainer.swerveSubsystem, startPose),
-                  new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose)));
+                  new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2.getPosition(), RobotContainer.esefSubsystem),
+                  new WaitCommand(.75),
+                  new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose)
+                  .alongWith(new RunEndEffectorUntilHasAlgae(0.45, RobotContainer.esefSubsystem)).withTimeout(3.5)));
+
         } else { // Even Tag ID
-          targetPose = RobotContainer.visionSubsystem.getBlueAlgaePose(tagID);
+          targetPose = RobotContainer.visionSubsystem.getAlgaePose(tagID);
 
           if (targetPose == null) {
             logger.error("Invalid Target Pose for Tag ID = {}", tagID);
             return; // Exit if the targetPose is invalid
           }
 
-          CommandScheduler.getInstance().schedule(new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose));
+          CommandScheduler.getInstance().schedule(
+            new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3.getPosition(), RobotContainer.esefSubsystem),
+            new WaitCommand(.5),
+            new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose)
+            .alongWith(new RunEndEffectorUntilHasAlgae(0.45, RobotContainer.esefSubsystem)).withTimeout(3.5));
         }
 
         logger.info("Target Pose = {}", targetPose);
