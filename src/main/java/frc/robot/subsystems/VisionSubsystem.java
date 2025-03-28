@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 import org.usfirst.frc3620.NTStructs;
+import org.usfirst.frc3620.RobotParametersContainer;
 
 import dev.doglog.DogLog;
 import edu.wpi.first.math.VecBuilder;
@@ -25,12 +26,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 import frc.robot.RobotContainer;
+import frc.robot.RobotParameters;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.subsystems.VisionSubsystem.CameraData.MegaTagData;
 import swervelib.SwerveDrive;
 
 public class VisionSubsystem extends SubsystemBase {
   NetworkTableInstance inst = NetworkTableInstance.getDefault();
+
+  public static RobotParameters robotParameters;
 
   public static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout
       .loadField(AprilTagFields.k2025ReefscapeWelded);
@@ -60,7 +64,7 @@ public class VisionSubsystem extends SubsystemBase {
   String lastLoggedError;
 
   public enum Camera {
-    FRONT("limelight-front"); //, BACK("limelight-back");
+    FRONT("limelight-front"), BACK("limelight-back");
 
     public final String limelightName;
 
@@ -199,8 +203,29 @@ public class VisionSubsystem extends SubsystemBase {
   Set<CameraData> allCameraDataAsSet;
 
   public VisionSubsystem() {
+
+    // Set Up Camera positions
+    robotParameters = RobotParametersContainer.getRobotParameters(RobotParameters.class);
+
+    LimelightHelpers.setCameraPose_RobotSpace("limelight-front",
+                                              robotParameters.getFrontCameraFront(),
+                                              robotParameters.getFrontCameraRight(),
+                                              robotParameters.getFrontCameraUp(),
+                                              robotParameters.getFrontCameraRoll(),
+                                              robotParameters.getFrontCameraPitch(),
+                                              robotParameters.getFrontCameraYaw());
+    
+    LimelightHelpers.setCameraPose_RobotSpace("limelight-back",
+                                              robotParameters.getBackCameraFront(),
+                                              robotParameters.getBackCameraRight(),
+                                              robotParameters.getBackCameraUp(),
+                                              robotParameters.getBackCameraRoll(),
+                                              robotParameters.getBackCameraPitch(),
+                                              robotParameters.getBackCameraYaw());
+
+
     allCameraData.put(Camera.FRONT, new CameraData(Camera.FRONT));
-    //allCameraData.put(Camera.BACK, new CameraData(Camera.BACK).withUseThisCamera(false));
+    allCameraData.put(Camera.BACK, new CameraData(Camera.BACK).withUseThisCamera(true));
     allCameraData = Map.copyOf(allCameraData); // make immutable
     allCameraDataAsSet = Set.copyOf(allCameraData.values());
 

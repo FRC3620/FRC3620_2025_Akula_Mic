@@ -14,7 +14,21 @@
     "serialNumber": "03063d7e",
     "makeAllCANDevices": false,
     "swerveDirectoryName": "swerve/Joehann",
-    "shortLEDStrip": true
+    "shortLEDStrip": true,
+    "ll-frontName": "limelight-front",
+    "ll-frontForward": 0.0762,
+    "ll-frontRight": -0.32385,
+    "ll-frontUp": 0.5207,
+    "ll-frontRoll": 0,
+    "ll-frontPitch": -14,
+    "ll-frontYaw": 0,
+    "ll-backName": "limelight-back",
+    "ll-backForward": -0.1397,
+    "ll-backRight": 0.32385,
+    "ll-backUp": 1.04775,
+    "ll-backRoll": 0,
+    "ll-backPitch": 0,
+    "ll-backYaw": 180
   },
   {
     "name": "CheepCheep",
