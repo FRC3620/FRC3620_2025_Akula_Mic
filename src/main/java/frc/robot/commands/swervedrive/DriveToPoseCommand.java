@@ -22,7 +22,7 @@ public class DriveToPoseCommand extends Command {
     double targetRotation;
     private final double maxSwerveVelocity;
     private final double maxSwerveAngularVelocity;
-    private double driveKp = 5.7; //5.5
+    private double driveKp = 5.9; // 5.7
     private double turnKp = 0.12;
     //private PIDController xController;
     //private PIDController yController;

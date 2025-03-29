@@ -43,6 +43,10 @@ public class VisionSubsystem extends SubsystemBase {
 
   private Map<Integer, Pose2d> tagToStickPose2dRight = new HashMap<>();
 
+  private Map<Integer, Pose2d> tagToAlgaePose2d = new HashMap<>();
+
+  private Map<Integer, Pose2d> tagToStartingAlgaePose2d = new HashMap<>();
+
   private Translation2d centerBlueReef;
   private Translation2d centerRedReef;
 
@@ -66,6 +70,30 @@ public class VisionSubsystem extends SubsystemBase {
 
     Camera(String limelightName) {
       this.limelightName = limelightName;
+    }
+  }
+
+  public enum WhichAlgae {
+    Algae17(3.83, 2.89, Rotation2d.fromDegrees(60)),//
+    Algae18(3.30, 4.07, Rotation2d.fromDegrees(0)),//
+    Algae19(3.84, 5.17, Rotation2d.fromDegrees(-60)),//
+    Algae20(5.18, 5.10, Rotation2d.fromDegrees(-120)),//
+    Algae21(5.78, 3.98, Rotation2d.fromDegrees(-180)),//
+    Algae22(5.04, 2.92, Rotation2d.fromDegrees(120)),//
+
+    //Red Algae Poses
+
+    Algae6(13.74, 3.03, Rotation2d.fromDegrees(120)), 
+    Algae7(14.28, 4.085, Rotation2d.fromDegrees(-180)), 
+    Algae8(13.64, 5.13, Rotation2d.fromDegrees(-120)), 
+    Algae9(12.41, 5.08, Rotation2d.fromDegrees(-60)), 
+    Algae10(11.83, 3.98, Rotation2d.fromDegrees(0)), 
+    Algae11(12.4733, 3.03, Rotation2d.fromDegrees(60));
+
+    public final Pose2d pose;
+
+    WhichAlgae(double x, double y, Rotation2d rotation) {
+      pose = new Pose2d(x, y, rotation);
     }
   }
 
@@ -304,6 +332,22 @@ public class VisionSubsystem extends SubsystemBase {
     tagToStickPose2dRight.put(10, WhichRedStick.RSTICKH.pose);
     tagToStickPose2dRight.put(11, WhichRedStick.RSTICKJ.pose);
 
+    //for blue algae
+    tagToAlgaePose2d.put(17, WhichAlgae.Algae17.pose);
+    tagToAlgaePose2d.put(18, WhichAlgae.Algae18.pose);
+    tagToAlgaePose2d.put(19, WhichAlgae.Algae19.pose);
+    tagToAlgaePose2d.put(20, WhichAlgae.Algae20.pose);
+    tagToAlgaePose2d.put(21, WhichAlgae.Algae21.pose);
+    tagToAlgaePose2d.put(22, WhichAlgae.Algae22.pose);
+
+    //for red algae
+    tagToAlgaePose2d.put(6, WhichAlgae.Algae6.pose);
+    tagToAlgaePose2d.put(7, WhichAlgae.Algae18.pose);
+    tagToAlgaePose2d.put(8, WhichAlgae.Algae19.pose);
+    tagToAlgaePose2d.put(9, WhichAlgae.Algae20.pose);
+    tagToAlgaePose2d.put(10, WhichAlgae.Algae21.pose);
+    tagToAlgaePose2d.put(11, WhichAlgae.Algae22.pose);
+
     centerBlueReef = tagToTranslationMap.get(17).plus(tagToTranslationMap.get(20)).div(2);
     centerRedReef = tagToTranslationMap.get(6).plus(tagToTranslationMap.get(9)).div(2);
 
@@ -457,6 +501,14 @@ public class VisionSubsystem extends SubsystemBase {
       return RobotContainer.swerveSubsystem.getPose();
     } else {
       return tagToStickPose2dRight.get(tagID);
+    }
+  }
+
+  public Pose2d getAlgaePose(int tagID) {
+    if (tagID == -1) {
+      return RobotContainer.swerveSubsystem.getPose();
+    } else {
+      return tagToAlgaePose2d.get(tagID);
     }
   }
 
