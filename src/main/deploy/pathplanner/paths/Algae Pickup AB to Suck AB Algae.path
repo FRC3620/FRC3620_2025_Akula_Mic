@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.869901315789473,
-        "y": 4.025
+        "x": 7.0,
+        "y": 3.98
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.388719581988207,
-        "y": 4.025
+        "x": 6.518818266198734,
+        "y": 3.98
       },
       "isLocked": false,
       "linkedName": "Algae Pickup AB"
     },
     {
       "anchor": {
-        "x": 5.888486842105262,
-        "y": 4.025
+        "x": 5.9,
+        "y": 3.98
       },
       "prevControl": {
-        "x": 6.888486842105262,
-        "y": 4.025
+        "x": 6.15,
+        "y": 3.98
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,7 +32,7 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.8338983050847434,
+      "minWaypointRelativePos": 0.6590141796083825,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 1.5,
@@ -47,19 +47,19 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Suck Algae",
-      "waypointRelativePos": 0.650847457627119,
+      "name": "Suck L2 Algae",
+      "waypointRelativePos": 0.35651586765698196,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Suck Algae"
+          "name": "Suck L2 Algae"
         }
       }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 1.5,
     "maxAcceleration": 3.25,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -76,5 +76,5 @@
     "velocity": 0.0,
     "rotation": 180.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

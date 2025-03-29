@@ -1,0 +1,113 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.92828947368421,
+        "y": 4.871710526315789
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.384426229508196,
+        "y": 5.331659836065573
+      },
+      "isLocked": false,
+      "linkedName": "Barge Score"
+    },
+    {
+      "anchor": {
+        "x": 5.154713114754099,
+        "y": 5.151844262295082
+      },
+      "prevControl": {
+        "x": 5.909938524590164,
+        "y": 6.842110655737705
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Algae Pickup CD"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.6320054017555765,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 1.5,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 4.8,
+        "y": 4.5
+      },
+      "rotationOffset": 0.0,
+      "minWaypointRelativePos": 0.41323430114786713,
+      "maxWaypointRelativePos": 1.0,
+      "name": "Point Towards Zone"
+    }
+  ],
+  "eventMarkers": [
+    {
+      "name": "Reset IMU",
+      "waypointRelativePos": 0.6563133018230872,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Reset IMU"
+        }
+      }
+    },
+    {
+      "name": "L3 Algae",
+      "waypointRelativePos": 0.6617150573936507,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "L3 Algae"
+        }
+      }
+    },
+    {
+      "name": "Suck L3 Algae",
+      "waypointRelativePos": 0.985820391627261,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Suck L3 Algae"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.25,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -119.99999999999999
+  },
+  "reversed": false,
+  "folder": "Algae",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -4.864514437760576
+  },
+  "useDefaultConstraints": true
+}

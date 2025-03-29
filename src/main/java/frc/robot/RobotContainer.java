@@ -653,8 +653,10 @@ public class RobotContainer {
 
   public static void setupPathPlannerCommands() {
     NamedCommands.registerCommand("Intake", new RunEndEffectorUntilHasCoral(0.35, esefSubsystem).withTimeout(2.0));
-    NamedCommands.registerCommand("Suck Algae", new RunEndEffectorUntilHasCoral(0.4, esefSubsystem)
-        .andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2.getPosition(), esefSubsystem)));
+    NamedCommands.registerCommand("Suck L2 Algae", new RunEndEffectorUntilHasAlgae(0.4, esefSubsystem)
+        .andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2Remove.getPosition(), esefSubsystem)));
+    NamedCommands.registerCommand("Suck L3 Algae", new RunEndEffectorUntilHasAlgae(0.4, esefSubsystem)
+        .andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3Remove.getPosition(), esefSubsystem)));
     NamedCommands.registerCommand("Home",
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     NamedCommands.registerCommand("L1",
@@ -677,8 +679,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("Home",
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.StationPickup.getPosition(), esefSubsystem));
     NamedCommands.registerCommand("Spit Balls and Home",
-        new SetEndEffectorSpeedCommand(0.95, esefSubsystem).withTimeout(Seconds.of(0.25))
-            .andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+        new SetEndEffectorSpeedCommand(-0.95, esefSubsystem).withTimeout(Seconds.of(0.25))
+          .andThen(new SetEndEffectorSpeedCommand(0, esefSubsystem))
+          .andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
     NamedCommands.registerCommand("Test1", new LogCommand("test 1"));
     NamedCommands.registerCommand("Test2", new LogCommand("test 2"));
     NamedCommands.registerCommand("Test", Commands.print("I EXIST"));

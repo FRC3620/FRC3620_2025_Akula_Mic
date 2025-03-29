@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.888486842105262,
-        "y": 4.025
+        "x": 5.9,
+        "y": 3.98
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.743895322638788,
-        "y": 3.899917763157895
+        "x": 7.755408480533526,
+        "y": 3.8549177631578946
       },
       "isLocked": false,
       "linkedName": "Suck Algae"
@@ -30,7 +30,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.19518716577540057,
+      "waypointRelativePos": 0.07462686567164717,
       "rotationDegrees": 180.0
     }
   ],
@@ -61,10 +61,21 @@
           "name": "Barge"
         }
       }
+    },
+    {
+      "name": "Spit Balls and Home",
+      "waypointRelativePos": 0.9,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Spit Balls and Home"
+        }
+      }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 1.5,
     "maxAcceleration": 3.25,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -81,5 +92,5 @@
     "velocity": 0,
     "rotation": 180.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
