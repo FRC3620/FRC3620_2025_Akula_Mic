@@ -53,10 +53,8 @@ public class AutoAlignToAlgaeCommand extends InstantCommand {
           logger.info("Starting Pose = {}", startPose);
           CommandScheduler.getInstance().schedule(
               new SequentialCommandGroup(
-                  new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2.getPosition(), RobotContainer.esefSubsystem),
-                  new WaitCommand(.75),
-                  new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose)
-                  .alongWith(new RunEndEffectorUntilHasAlgae(0.45, RobotContainer.esefSubsystem)).withTimeout(3.5)));
+                  new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose))
+                  );
 
         } else { // Even Tag ID
           targetPose = RobotContainer.visionSubsystem.getAlgaePose(tagID);
@@ -67,10 +65,8 @@ public class AutoAlignToAlgaeCommand extends InstantCommand {
           }
 
           CommandScheduler.getInstance().schedule(
-            new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3.getPosition(), RobotContainer.esefSubsystem),
-            new WaitCommand(.5),
             new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose)
-            .alongWith(new RunEndEffectorUntilHasAlgae(0.45, RobotContainer.esefSubsystem)).withTimeout(3.5));
+            );
         }
 
 
@@ -91,10 +87,8 @@ public class AutoAlignToAlgaeCommand extends InstantCommand {
           logger.info("Starting Pose = {}", startPose);
           CommandScheduler.getInstance().schedule(
               new SequentialCommandGroup(
-                  new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2.getPosition(), RobotContainer.esefSubsystem),
-                  new WaitCommand(.75),
-                  new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose)
-                  .alongWith(new RunEndEffectorUntilHasAlgae(0.45, RobotContainer.esefSubsystem)).withTimeout(3.5)));
+                  new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose))
+                  );
 
         } else { // Even Tag ID
           targetPose = RobotContainer.visionSubsystem.getAlgaePose(tagID);
@@ -105,10 +99,7 @@ public class AutoAlignToAlgaeCommand extends InstantCommand {
           }
 
           CommandScheduler.getInstance().schedule(
-            new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3.getPosition(), RobotContainer.esefSubsystem),
-            new WaitCommand(.5),
-            new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose)
-            .alongWith(new RunEndEffectorUntilHasAlgae(0.45, RobotContainer.esefSubsystem)).withTimeout(3.5));
+            new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose));
         }
 
         logger.info("Target Pose = {}", targetPose);
