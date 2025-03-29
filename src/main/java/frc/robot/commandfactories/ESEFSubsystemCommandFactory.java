@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.esefcommands.RunEndEffectorUntilCoralGone;
 import frc.robot.commands.esefcommands.RunEndEffectorUntilHasCoral;
 import frc.robot.commands.esefcommands.SetESEFPositionCommand;
+import frc.robot.commands.esefcommands.SetESEFPositionPatientCommand;
 import frc.robot.commands.esefcommands.SetElevatorPositionCommand;
 import frc.robot.commands.esefcommands.SetEndEffectorSpeedCommand;
 import frc.robot.commands.esefcommands.SetManualElevatorCommand;
@@ -50,6 +51,8 @@ public class ESEFSubsystemCommandFactory {
     SmartDashboard.putData("ESEF 21 height, 120 shoulder", new SetESEFPositionCommand(new ESEFPosition(21, 120), esefSubsystem));
     SmartDashboard.putData("ESEF 48 height, 0 shoulder", new SetESEFPositionCommand(new ESEFPosition(48, 0), esefSubsystem));
     SmartDashboard.putData("ESEF 48 height, 120 shoulder", new SetESEFPositionCommand(new ESEFPosition(48, 120), esefSubsystem));
+
+    SmartDashboard.putData("Patient ESEF L4", new SetESEFPositionPatientCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem));
 
     SmartDashboard.putData("ESEF 33 height, 90 shoulder", new SetESEFPositionCommand(new ESEFPosition(33, 90), esefSubsystem));
     SmartDashboard.putData("ESEF 55 height, 90 shoulder", new SetESEFPositionCommand(new ESEFPosition(55, 90), esefSubsystem));
