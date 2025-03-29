@@ -18,6 +18,7 @@ public class SetEndEffectorSpeedCommand extends Command {
     
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(esefSubsystem);
+    setName("EndEffectorSpeedCommand[speed=" + _speed + "]");
   }
 
   // Called when the command is initially scheduled.

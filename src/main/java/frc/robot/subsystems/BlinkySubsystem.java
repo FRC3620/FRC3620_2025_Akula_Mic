@@ -19,6 +19,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
@@ -108,7 +110,6 @@ public class BlinkySubsystem extends SubsystemBase {
     topBarPattern = OFF;
     upperLeftPattern = OFF;
     upperRightPattern = OFF;
-
   }
 
   @Override
@@ -118,7 +119,6 @@ public class BlinkySubsystem extends SubsystemBase {
     if (matchTime <= 30 && matchTime > 0 && DriverStation.isTeleop()) {
       upperLeftPattern = upperRightPattern = PATTERN_RED_BLINK;
     }
-
 
     lowerLeftPattern.applyTo(lowerLeft);
     lowerRightPattern.applyTo(lowerRight);
@@ -130,7 +130,12 @@ public class BlinkySubsystem extends SubsystemBase {
     addressableLED.setData(addressableLEDBuffer);
   }
 
-  public void setMode(ModeState m) {
+  // this should probably be in command factory, but I'm lazy
+  public Command setModeCommand(ModeState m) {
+    return Commands.runOnce(() -> setMode(m)).withName("blinky.setModeCommand[" + m + "]");
+  }
+
+  private void setMode(ModeState m) {
     if (m == ModeState.CLIMB) {
       upperLeftPattern = upperRightPattern = PATTERN_CLIMB;
     }
@@ -142,9 +147,12 @@ public class BlinkySubsystem extends SubsystemBase {
     }
   }
 
- 
+  public Command setESEFCommand(BlinkyStickHeight l) {
+    return Commands.runOnce(() -> setESEF(l)).withName("blinky.setESEFCommand[" + l + "]");
+  }
 
   public void setESEF(BlinkyStickHeight l) {
+
     if (l == BlinkyStickHeight.L1) {
       upperLeftPattern = upperRightPattern = PATTERN_L1;
     }

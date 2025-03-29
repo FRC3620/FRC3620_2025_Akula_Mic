@@ -17,7 +17,7 @@ public class AFIRollerSetSpeedCommand extends Command {
     speed = _speed;
     afiSubsystem = _afiSubsystem;
     addRequirements(afiSubsystem);
-
+    setName("AFIRollerSetSpeedCommand[speed=]" + _speed + "]");
   }
 
   // Called when the command is initially scheduled.
