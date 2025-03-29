@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 
 /**/
@@ -51,16 +52,13 @@ public class BlinkySubsystem extends SubsystemBase {
   AddressableLEDBufferView lowerLeft, lowerRight, topBar, upperLeft, upperRight;
   LEDPattern lowerLeftPattern, upperLeftPattern, lowerRightPattern, upperRightPattern, topBarPattern;
 
-  private static final LEDPattern PATTERN_SCROLLING_RAINBOW = LEDPattern.rainbow(255, 32)
-      .scrollAtRelativeSpeed(Hertz.of(2)).atBrightness(BRIGHTNESS);
-
   private static final LEDPattern PATTERN_RED_BLINK = LEDPattern.solid(Color.kRed).atBrightness(BRIGHTNESS).blink(Seconds.of(0.1));
   private static final LEDPattern PATTERN_RED = LEDPattern.solid(Color.kRed).atBrightness(BRIGHTNESS);
   private static final LEDPattern PATTERN_BLUE = LEDPattern.solid(Color.kBlue).atBrightness(BRIGHTNESS);
   private static final LEDPattern PATTERN_MAIZE = LEDPattern.solid(Color.kYellow).atBrightness(BRIGHTNESS);
   private static final LEDPattern OFF = LEDPattern.solid(Color.kBlack).atBrightness(BRIGHTNESS);
   private static final LEDPattern PATTERN_GREEN = LEDPattern.solid(Color.kGreen).atBrightness(BRIGHTNESS);
-  private static final LEDPattern PATTERN_ORANGE = LEDPattern.solid(Color.kOrangeRed).atBrightness(BRIGHTNESS);
+  private static final LEDPattern PATTERN_ORANGE = LEDPattern.solid(Color.kOrangeRed).atBrightness(BRIGHTNESS.div(2));
 
   private static final LEDPattern PATTERN_L1 = LEDPattern.steps(Map.of(0.75, heightColor)).reversed();
   private static final LEDPattern PATTERN_L2 = LEDPattern.steps(Map.of(0.5, heightColor)).reversed();
@@ -82,6 +80,8 @@ public class BlinkySubsystem extends SubsystemBase {
   private static final LEDPattern PATTERN_STEP_DEMO = LEDPattern
       .steps(Map.of(0.00, Color.kGreen, 0.33, Color.kViolet, 0.67, Color.kBlueViolet))
       .scrollAtRelativeSpeed(Hertz.of(2)).atBrightness(BRIGHTNESS);
+
+  boolean isAutoAllignFinished = false;
 
   public BlinkySubsystem() {
     addressableLED = new AddressableLED(0);
@@ -151,7 +151,8 @@ public class BlinkySubsystem extends SubsystemBase {
     return Commands.runOnce(() -> setESEF(l)).withName("blinky.setESEFCommand[" + l + "]");
   }
 
-  private void setESEF(BlinkyStickHeight l) {
+  public void setESEF(BlinkyStickHeight l) {
+
     if (l == BlinkyStickHeight.L1) {
       upperLeftPattern = upperRightPattern = PATTERN_L1;
     }
@@ -197,15 +198,28 @@ public class BlinkySubsystem extends SubsystemBase {
   }
 
   public void setRobotMode(RobotMode mode) {
-    switch (mode) {
-      case DISABLED:
+    setLowerBarPattern();
+  }
+
+  public void setAutoAllignFinished(boolean b){
+    isAutoAllignFinished = b;
+    setLowerBarPattern();
+  }
+
+  void setLowerBarPattern(){
+    if(isAutoAllignFinished){
+      lowerLeftPattern = PATTERN_GREEN;
+      lowerRightPattern = PATTERN_GREEN;
+    }
+    else{
+      if(Robot.getCurrentRobotMode() == RobotMode.DISABLED){
         lowerLeftPattern = PATTERN_BREATHE_BLUE;
         lowerRightPattern = PATTERN_BREATHE_MAIZE;
-        break;
-      default:
+      }
+      else{
         lowerLeftPattern = PATTERN_BLUE;
         lowerRightPattern = PATTERN_MAIZE;
-        break;
+      }
     }
   }
 }

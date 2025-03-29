@@ -11,6 +11,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 public class DriveToPoseCommand extends Command {
@@ -71,6 +72,8 @@ public class DriveToPoseCommand extends Command {
             commandTimer.reset();
             commandTimer.start();  
         }
+        RobotContainer.blinkySubsystem.setAutoAllignFinished(false);
+
 
     }
 
@@ -113,7 +116,11 @@ public class DriveToPoseCommand extends Command {
         if (commandTimer.hasElapsed(COMMAND_TIMEOUT)) {
             return true;
         } else {
-            return (xController.atSetpoint() && yController.atSetpoint() && Math.abs(angVelocity) < 0.05);
+            boolean weAreDone = (xController.atSetpoint() && yController.atSetpoint() && Math.abs(angVelocity) < 0.05);
+            if(weAreDone){
+                RobotContainer.blinkySubsystem.setAutoAllignFinished(true);
+            }
+            return weAreDone;
         }
     }
 }
