@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.esefsubsystem;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
 
 import org.usfirst.frc3620.CANDeviceType;
@@ -54,6 +55,9 @@ public class ESEFEndEffectorMechanism {
         if (endEff != null) {
             SmartDashboard.putNumber("frc3620/EndEffector/MotorVelocity", endEff.getVelocity().getValue().in(RPM));
             SmartDashboard.putNumber("frc3620/EndEffector/ActualPower", endEff.get());
+            // getValueAsDouble() is probably slightly faster, but let's be consistent.
+            SmartDashboard.putNumber("frc3620/EndEffector/StatorCurrent", endEff.getStatorCurrent().getValue().in(Amps));
+            SmartDashboard.putNumber("frc3620/EndEffector/TorqueCurrent", endEff.getTorqueCurrent().getValue().in(Amps));
         }
     }
 
@@ -69,6 +73,7 @@ public class ESEFEndEffectorMechanism {
     }
 
     public double getEndEffectorVelocity() {
+        if (endEff == null) return 0;
         return endEff.getVelocity().getValueAsDouble();
     }
 
