@@ -75,7 +75,7 @@ public class ESEFElevatorMechanism {
       elevatorAConfigs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
 
       elevatorAConfigs.MotionMagic.MotionMagicCruiseVelocity = 200;  // Increased from 125
-      elevatorAConfigs.MotionMagic.MotionMagicAcceleration = 250;    // Increased from 100
+      elevatorAConfigs.MotionMagic.MotionMagicAcceleration = 200;    // Increased from 100
       elevatorAConfigs.MotionMagic.MotionMagicJerk = 300;           // Increased from 200
 
       elevatorAConfigs.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);

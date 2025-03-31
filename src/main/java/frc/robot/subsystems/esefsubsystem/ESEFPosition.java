@@ -24,7 +24,7 @@ public class ESEFPosition {
     L4(57.5, 59),    // High scoring position
     CLIMB(25, 142),
     AlgaeL2(11, 23),
-    AlgaeL2Remove(14, 35),
+    AlgaeL2Remove(5, 60),//12,35
     AlgaeL3(20, 47),      // Position for climbing
     AlgaeL3Remove(24, 75);      // Position for climbing
 

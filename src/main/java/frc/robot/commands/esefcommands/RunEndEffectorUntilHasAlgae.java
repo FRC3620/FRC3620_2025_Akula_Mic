@@ -36,8 +36,8 @@ public class RunEndEffectorUntilHasAlgae extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (timer.hasElapsed(0.4)) { 
-      if (esefSubsystem.getEndEffectorVelocity() < 35) {
+    if (timer.hasElapsed(0.5)) { 
+      if (esefSubsystem.getEndEffectorVelocity() < 20) {
         finish = true;
       }
     }
@@ -47,7 +47,7 @@ public class RunEndEffectorUntilHasAlgae extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    esefSubsystem.setEndEffSpeed(0.03);
+    esefSubsystem.setEndEffSpeed(0.04);
   }
 
   // Returns true when the command should end.
