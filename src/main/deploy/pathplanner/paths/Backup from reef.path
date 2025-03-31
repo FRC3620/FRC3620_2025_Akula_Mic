@@ -3,40 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.75,
-        "y": 3.98
+        "x": 5.2,
+        "y": 5.152
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.268818266198734,
-        "y": 3.98
+        "x": 5.811372950819671,
+        "y": 5.991139344262295
       },
       "isLocked": false,
-      "linkedName": "Algae Pickup AB"
+      "linkedName": "Algae Pickup CD"
     },
     {
       "anchor": {
-        "x": 5.9,
-        "y": 3.98
+        "x": 7.1,
+        "y": 5.871
       },
       "prevControl": {
-        "x": 6.15,
-        "y": 3.98
+        "x": 6.560553278688525,
+        "y": 5.894975409836067
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Suck Algae"
+      "linkedName": "Algae Score 2"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.85927505330488,
+      "rotationDegrees": 0.0
+    }
+  ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.6590141796083825,
-      "maxWaypointRelativePos": 1.0,
+      "minWaypointRelativePos": 0.5995948683322109,
+      "maxWaypointRelativePos": 0.9,
       "constraints": {
-        "maxVelocity": 1.5,
-        "maxAcceleration": 1.0,
+        "maxVelocity": 3.0,
+        "maxAcceleration": 4.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -47,19 +52,30 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Suck L2 Algae",
-      "waypointRelativePos": 0.35651586765698196,
+      "name": "Barge",
+      "waypointRelativePos": 0.1485482781904143,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Suck L2 Algae"
+          "name": "Barge"
+        }
+      }
+    },
+    {
+      "name": "Spit Balls and Home",
+      "waypointRelativePos": 0.8939905469277455,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Spit Balls and Home"
         }
       }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 1.5,
+    "maxVelocity": 2.0,
     "maxAcceleration": 3.25,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -68,13 +84,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "Algae",
   "idealStartingState": {
-    "velocity": 0.0,
-    "rotation": 180.0
+    "velocity": 0,
+    "rotation": -119.99999999999999
   },
   "useDefaultConstraints": false
 }

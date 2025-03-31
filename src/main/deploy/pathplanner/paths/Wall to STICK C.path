@@ -76,7 +76,7 @@
     "rotation": -122.73522627210762
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Safe Folder",
   "idealStartingState": {
     "velocity": 1.0,
     "rotation": -140.60385433801312

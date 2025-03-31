@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.6063524590163931,
-        "y": 7.321618852459016
+        "x": 1.4984631147540983,
+        "y": 7.327612704918032
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.8358808779119924,
-        "y": 6.279319456427955
+        "x": 2.7279915336496976,
+        "y": 6.285313308886971
       },
       "isLocked": false,
       "linkedName": "Wall Source"
@@ -71,7 +71,7 @@
     "rotation": -59.38139459109059
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Safe Folder",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -55.74055216677249

@@ -44,6 +44,8 @@ import frc.robot.commands.esefcommands.RunEndEffectorUntilCoralGone;
 import frc.robot.commands.esefcommands.RunEndEffectorUntilHasAlgae;
 import frc.robot.commands.esefcommands.RunEndEffectorUntilHasCoral;
 import frc.robot.commands.esefcommands.SetESEFPositionCommand;
+import frc.robot.commands.esefcommands.SetShoulderPositionCommand;
+import frc.robot.commands.swervedrive.AutoAlignToAlgaeCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand.WhichStick;
 import frc.robot.subsystems.AFISubsystem;
@@ -432,24 +434,26 @@ public class RobotContainer {
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.B2,
-        new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2.getPosition(), esefSubsystem)
-        .alongWith(new RunEndEffectorUntilHasAlgae(0.45, esefSubsystem)).withName("AlgaeL2"),
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2.getPosition(), RobotContainer.esefSubsystem).andThen(new WaitCommand(.75)).andThen(
+        new AutoAlignToAlgaeCommand()).alongWith(
+        new RunEndEffectorUntilHasAlgae(.55, esefSubsystem)),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2Remove.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.B2, 
-        new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem),
-        new InstantCommand());
+        new SetEndEffectorSpeedCommand(0.15, esefSubsystem),
+        new SetEndEffectorSpeedCommand(0.04, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.B3,
-        new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3.getPosition(), esefSubsystem)
-        .alongWith(new RunEndEffectorUntilHasAlgae(0.45, esefSubsystem)).withTimeout(2).withName("AlgaeL3"),
+        new AutoAlignToAlgaeCommand().andThen(
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3.getPosition(), RobotContainer.esefSubsystem)).alongWith(
+        new RunEndEffectorUntilHasAlgae(.45, esefSubsystem)),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3Remove.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.B3,
-        new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem),
-        new InstantCommand());
+      new SetEndEffectorSpeedCommand(0.15, esefSubsystem),
+      new SetEndEffectorSpeedCommand(0.04, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.B1,
         new SetPivotPositionCommand(Degrees.of(15), afiSubsystem)
-            .andThen(new AFIRollerSetSpeedUntilInCommand(0.5, afiSubsystem)).withName("AFI 15/0.5"),
+            .andThen(new AFIRollerSetSpeedUntilInCommand(0.3, afiSubsystem)).withName("AFI 15/0.3"),
         new SetPivotPositionCommand(Degrees.of(80), afiSubsystem)
             .andThen(new AFIRollerSetSpeedCommand(0.02, afiSubsystem)).withName("AFI 80/0.02"));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.B1, new AFIRollerSetSpeedCommand(-0.5, afiSubsystem),
@@ -638,8 +642,10 @@ public class RobotContainer {
 
   public static void setupPathPlannerCommands() {
     NamedCommands.registerCommand("Intake", new RunEndEffectorUntilHasCoral(0.35, esefSubsystem).withTimeout(2.0));
-    NamedCommands.registerCommand("Suck Algae", new RunEndEffectorUntilHasCoral(0.4, esefSubsystem)
-        .andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2.getPosition(), esefSubsystem)));
+    NamedCommands.registerCommand("Suck L2 Algae", new RunEndEffectorUntilHasAlgae(0.4, esefSubsystem)
+        .andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2Remove.getPosition(), esefSubsystem)));
+    NamedCommands.registerCommand("Suck L3 Algae", new RunEndEffectorUntilHasAlgae(0.4, esefSubsystem)
+        .andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3Remove.getPosition(), esefSubsystem)));
     NamedCommands.registerCommand("Home",
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     NamedCommands.registerCommand("L1",
@@ -662,8 +668,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("Home",
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.StationPickup.getPosition(), esefSubsystem));
     NamedCommands.registerCommand("Spit Balls and Home",
-        new SetEndEffectorSpeedCommand(0.95, esefSubsystem).withTimeout(Seconds.of(0.25))
-            .andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+        new SetEndEffectorSpeedCommand(-0.95, esefSubsystem).withTimeout(Seconds.of(0.25))
+          .andThen(new SetEndEffectorSpeedCommand(0, esefSubsystem))
+          .andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
     NamedCommands.registerCommand("Test1", new LogCommand("test 1"));
     NamedCommands.registerCommand("Test2", new LogCommand("test 2"));
     NamedCommands.registerCommand("Test", Commands.print("I EXIST"));

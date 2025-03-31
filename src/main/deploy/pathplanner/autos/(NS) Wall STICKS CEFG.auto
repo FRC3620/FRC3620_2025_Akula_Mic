@@ -1,0 +1,49 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Reset IMU"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "(NS) Wall Start to STICK C"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Deposit"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "(NS) STICK C to STICK E"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "(NS) STICK E to STICK F"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "(NS) STICK F to STICK G"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": false,
+  "folder": null,
+  "choreoAuto": false
+}

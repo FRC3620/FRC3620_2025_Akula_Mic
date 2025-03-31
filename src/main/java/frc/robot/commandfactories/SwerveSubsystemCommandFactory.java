@@ -12,6 +12,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotContainer;
 import frc.robot.commands.TurnToAngleCommand;
+import frc.robot.commands.swervedrive.AutoAlignToAlgaeCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand;
 import frc.robot.commands.swervedrive.SwerveDriveDiagnosticCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand.WhichStick;
@@ -44,6 +45,8 @@ public class SwerveSubsystemCommandFactory {
     SmartDashboard.putData("Drive To TEST", swerveSubsystem.driveToPoseSlow(testPose));
   
     SmartDashboard.putData("Drive to Pose", new DriveToPoseCommand(swerveSubsystem, new Pose2d(5.19, 3.04, Rotation2d.fromDegrees(120))));
+
+    SmartDashboard.putData("Algae Auto Align", new AutoAlignToAlgaeCommand());
 
     SmartDashboard.putData(new SwerveDriveDiagnosticCommand(swerveSubsystem));
 

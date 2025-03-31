@@ -1,0 +1,147 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.234210526315789,
+        "y": 5.00641447368421
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.7385,
+        "y": 5.975
+      },
+      "isLocked": false,
+      "linkedName": "STICK C"
+    },
+    {
+      "anchor": {
+        "x": 1.4984631147540983,
+        "y": 7.327612704918032
+      },
+      "prevControl": {
+        "x": 1.8716513195396134,
+        "y": 7.5716203772777915
+      },
+      "nextControl": {
+        "x": 0.4075819672131151,
+        "y": 6.614344262295081
+      },
+      "isLocked": false,
+      "linkedName": "Wall Source"
+    },
+    {
+      "anchor": {
+        "x": 3.8960040983606556,
+        "y": 5.163831967213115
+      },
+      "prevControl": {
+        "x": 3.2370000000000005,
+        "y": 6.16025
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "STICK E"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6157676348547829,
+      "rotationDegrees": -54.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.8372721134368611,
+      "maxWaypointRelativePos": 1.0587440918298519,
+      "constraints": {
+        "maxVelocity": 0.5,
+        "maxAcceleration": 3.75,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    },
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.85,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 1.5,
+        "maxAcceleration": 1.5,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Home",
+      "waypointRelativePos": 0.06550868486352437,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Home"
+        }
+      }
+    },
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.6729528535980147,
+      "endWaypointRelativePos": 1.453072248480742,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake"
+        }
+      }
+    },
+    {
+      "name": "L4",
+      "waypointRelativePos": 1.3666441593517913,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "L4"
+        }
+      }
+    },
+    {
+      "name": "Deposit",
+      "waypointRelativePos": 1.8852126941255876,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Deposit"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.25,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -59.38139459109059
+  },
+  "reversed": false,
+  "folder": "No Stop",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -122.73522627210762
+  },
+  "useDefaultConstraints": true
+}

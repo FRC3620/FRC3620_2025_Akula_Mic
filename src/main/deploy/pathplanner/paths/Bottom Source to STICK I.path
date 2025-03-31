@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.7042008196721308,
-        "y": 2.9580942622950825
+        "x": 3.725,
+        "y": 2.935
       },
       "prevControl": {
-        "x": 3.4813469429057156,
-        "y": 2.8447975297288717
+        "x": 3.502146123233585,
+        "y": 2.821703267433789
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,10 +32,10 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.7157326130992591,
+      "minWaypointRelativePos": 0.8,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 1.5,
+        "maxVelocity": 1.0,
         "maxAcceleration": 1.5,
         "maxAngularVelocity": 25.0,
         "maxAngularAcceleration": 720.0,
@@ -56,11 +56,22 @@
           "name": "L4"
         }
       }
+    },
+    {
+      "name": "Reset IMU",
+      "waypointRelativePos": 0.221471978392971,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Reset IMU"
+        }
+      }
     }
   ],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 3.25,
+    "maxAcceleration": 2.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -68,13 +79,13 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 59.03624346792642
+    "rotation": 59.99999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Safe Folder",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 51.45881637871856
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
