@@ -447,11 +447,11 @@ public class RobotContainer {
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.B2,
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2.getPosition(), RobotContainer.esefSubsystem).andThen(new WaitCommand(.75)).andThen(
         new AutoAlignToAlgaeCommand()).alongWith(
-        new RunEndEffectorUntilHasAlgae(.45, esefSubsystem)),
+        new RunEndEffectorUntilHasAlgae(.55, esefSubsystem)),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2Remove.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.B2, 
-        new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem),
-        new InstantCommand());
+        new SetEndEffectorSpeedCommand(0.15, esefSubsystem),
+        new SetEndEffectorSpeedCommand(0.04, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.B3,
         new AutoAlignToAlgaeCommand().andThen(
@@ -459,8 +459,8 @@ public class RobotContainer {
         new RunEndEffectorUntilHasAlgae(.45, esefSubsystem)),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3Remove.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.B3,
-        new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem),
-        new InstantCommand());
+      new SetEndEffectorSpeedCommand(0.15, esefSubsystem),
+      new SetEndEffectorSpeedCommand(0.04, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.B1,
         new SetPivotPositionCommand(Degrees.of(15), afiSubsystem)
