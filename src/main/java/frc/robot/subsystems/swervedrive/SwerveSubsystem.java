@@ -6,6 +6,9 @@ package frc.robot.subsystems.swervedrive;
 
 import static edu.wpi.first.units.Units.Meter;
 
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.hardware.TalonFX;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindingCommand;
@@ -15,23 +18,18 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.DriveFeedforwards;
-import com.pathplanner.lib.util.FileVersionException;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import com.pathplanner.lib.util.swerve.SwerveSetpointGenerator;
 
 import dev.doglog.DogLog;
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Unit;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -49,7 +47,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +54,6 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-import java.util.logging.Logger;
 
 import org.json.simple.parser.ParseException;
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -69,7 +65,7 @@ import swervelib.SwerveController;
 import swervelib.SwerveDrive;
 import swervelib.SwerveDriveTest;
 import swervelib.math.SwerveMath;
-import swervelib.parser.SwerveControllerConfiguration;
+import swervelib.motors.SwerveMotor;
 import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
@@ -149,6 +145,33 @@ public class SwerveSubsystem extends SubsystemBase {
     setupPathPlanner();
 
     setUpTagMaps();
+
+    Double driveStatorCurrentLimit = RobotContainer.robotParameters.getDriveStatorCurrentLimit();
+    if (driveStatorCurrentLimit != null) {
+      logger.info("setting drive motor stator current limit to {}", driveStatorCurrentLimit);
+      for (var sm : swerveDrive.getModuleMap().entrySet()) {
+        String swerveModuleName = sm.getKey();
+        SwerveMotor driveMotor = sm.getValue().getDriveMotor();
+        Object actualMotorObject = driveMotor.getMotor();
+        if (actualMotorObject instanceof TalonFX) {
+          @SuppressWarnings("resource")
+          TalonFX actualMotor = (TalonFX) actualMotorObject;
+          CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
+          StatusCode statusCode = actualMotor.getConfigurator().refresh(currentLimitsConfigs);
+          if (statusCode != StatusCode.OK) {
+            logger.warn("trouble getting CurrentLimitsConfig for {}: {}", swerveModuleName, statusCode);
+            continue;
+          }
+          currentLimitsConfigs.StatorCurrentLimit = driveStatorCurrentLimit;
+          currentLimitsConfigs.StatorCurrentLimitEnable = true;
+          statusCode = actualMotor.getConfigurator().apply(currentLimitsConfigs);
+          if (statusCode != StatusCode.OK) {
+            logger.warn("trouble applying CurrentLimitsConfig for {}: {}", swerveModuleName, statusCode);
+            continue;
+          }
+        }
+      }
+    }
 
     SmartDashboard.putData("navX", (Sendable) swerveDrive.getGyro().getIMU());
   }
