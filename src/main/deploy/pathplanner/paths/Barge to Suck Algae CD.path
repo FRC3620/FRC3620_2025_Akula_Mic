@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.92828947368421,
-        "y": 4.871710526315789
+        "x": 7.732069672131147,
+        "y": 5.163831967213115
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.384426229508196,
-        "y": 5.331659836065573
+        "x": 7.188206427955133,
+        "y": 5.623781276962899
       },
       "isLocked": false,
       "linkedName": "Barge Score"
     },
     {
       "anchor": {
-        "x": 5.154713114754099,
-        "y": 5.151844262295082
+        "x": 5.2,
+        "y": 5.152
       },
       "prevControl": {
-        "x": 5.909938524590164,
-        "y": 6.842110655737705
+        "x": 5.955225409836065,
+        "y": 6.842266393442623
       },
       "nextControl": null,
       "isLocked": false,
@@ -81,7 +81,7 @@
     },
     {
       "name": "Suck L3 Algae",
-      "waypointRelativePos": 0.985820391627261,
+      "waypointRelativePos": 0.9047940580688771,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

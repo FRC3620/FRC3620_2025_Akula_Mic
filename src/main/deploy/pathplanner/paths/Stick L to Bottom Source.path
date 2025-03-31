@@ -78,7 +78,7 @@
   "reversed": false,
   "folder": "Safe Folder",
   "idealStartingState": {
-    "velocity": 0.75,
+    "velocity": 0.5,
     "rotation": 120.17352002964432
   },
   "useDefaultConstraints": false

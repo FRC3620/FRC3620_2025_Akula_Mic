@@ -3,49 +3,79 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.154713114754099,
-        "y": 5.151844262295082
+        "x": 5.2,
+        "y": 5.152
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.189615782179809,
-        "y": 5.773353119858855
+        "x": 5.811372950819671,
+        "y": 5.991139344262295
       },
       "isLocked": false,
       "linkedName": "Algae Pickup CD"
     },
     {
       "anchor": {
-        "x": 6.485348360655738,
-        "y": 6.530430327868853
+        "x": 7.1,
+        "y": 5.871
       },
       "prevControl": {
-        "x": 5.1384635898795885,
-        "y": 5.865576586933939
+        "x": 6.560553278688525,
+        "y": 5.894975409836067
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Algae Score 2"
     }
   ],
-  "rotationTargets": [],
-  "constraintZones": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.85927505330488,
+      "rotationDegrees": 0.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.5995948683322109,
+      "maxWaypointRelativePos": 0.9,
+      "constraints": {
+        "maxVelocity": 3.0,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Home",
-      "waypointRelativePos": 0.5131667792032377,
+      "name": "Barge",
+      "waypointRelativePos": 0.1485482781904143,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Home"
+          "name": "Barge"
+        }
+      }
+    },
+    {
+      "name": "Spit Balls and Home",
+      "waypointRelativePos": 0.8939905469277455,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Spit Balls and Home"
         }
       }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 2.0,
     "maxAcceleration": 3.25,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -62,5 +92,5 @@
     "velocity": 0,
     "rotation": -119.99999999999999
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

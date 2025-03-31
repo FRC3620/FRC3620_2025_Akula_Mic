@@ -3,49 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.78,
-        "y": 3.86
+        "x": 7.1,
+        "y": 5.871
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.03,
-        "y": 3.86
+        "x": 6.392725409836065,
+        "y": 6.218643442622952
       },
       "isLocked": false,
-      "linkedName": "STICK A"
+      "linkedName": "Algae Score 2"
     },
     {
       "anchor": {
-        "x": 6.75,
-        "y": 3.98
+        "x": 5.286577868852459,
+        "y": 6.254713114754098
       },
       "prevControl": {
-        "x": 6.500802239727608,
-        "y": 4.000011903338342
+        "x": 6.029815573770491,
+        "y": 6.30266393442623
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Algae Pickup AB"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "L2 Algae",
-      "waypointRelativePos": 0.46101694915254365,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "L2 Algae"
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 2.0,
     "maxAcceleration": 3.25,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -60,7 +48,7 @@
   "folder": "Algae",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
