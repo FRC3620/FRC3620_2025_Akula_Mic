@@ -3,18 +3,11 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Seconds;
 
 import java.io.File;
@@ -35,7 +28,6 @@ import org.usfirst.frc3620.CANDeviceType;
 import org.usfirst.frc3620.ChameleonController;
 import org.usfirst.frc3620.ChameleonController.ControllerType;
 import org.usfirst.frc3620.FlySkyConstants;
-import org.usfirst.frc3620.JoystickAnalogButton;
 import org.usfirst.frc3620.RobotParametersContainer;
 import org.usfirst.frc3620.Utilities;
 import org.usfirst.frc3620.XBoxConstants;
@@ -47,19 +39,15 @@ import frc.robot.commandfactories.ClimberCommandFactory;
 import frc.robot.commandfactories.ESEFSubsystemCommandFactory;
 import frc.robot.commandfactories.HealthCommandFactory;
 import frc.robot.commandfactories.SwerveSubsystemCommandFactory;
-import frc.robot.commands.esefcommands.SetElevatorPositionCommand;
 import frc.robot.commands.esefcommands.SetEndEffectorSpeedCommand;
 import frc.robot.commands.esefcommands.RunEndEffectorUntilCoralGone;
 import frc.robot.commands.esefcommands.RunEndEffectorUntilHasAlgae;
-import frc.robot.commands.esefcommands.SetManualElevatorCommand;
 import frc.robot.commands.esefcommands.RunEndEffectorUntilHasCoral;
 import frc.robot.commands.esefcommands.SetESEFPositionCommand;
 import frc.robot.commands.esefcommands.SetShoulderPositionCommand;
 import frc.robot.commands.swervedrive.AutoAlignToAlgaeCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand;
-import frc.robot.commands.swervedrive.DriveToPoseCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand.WhichStick;
-import frc.robot.commands.swervedrive.TestDriveToPoseCommand;
 import frc.robot.subsystems.AFISubsystem;
 import frc.robot.subsystems.BlinkySubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -71,7 +59,6 @@ import frc.robot.subsystems.esefsubsystem.ESEFPosition;
 import frc.robot.subsystems.esefsubsystem.ESEFSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveInputStream;
-import frc.robot.commands.ChecklistCommand;
 import frc.robot.commands.ContinuousSetIMUFromMegaTag1Command;
 import frc.robot.commands.HankPullTheTriggerCommand;
 import frc.robot.commands.SetPivotPositionCommand;
@@ -82,7 +69,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -107,8 +93,6 @@ public class RobotContainer {
   // need this
   public static CANDeviceFinder canDeviceFinder;
   public static RobotParameters robotParameters;
-
-  Alert missingDevicesAlert = new Alert(HealthSubsystem.HARDWARE_ALERT_GROUP_NAME, "", Alert.AlertType.kError);
 
   // hardware here...
   // private static DigitalInput practiceBotJumper;
@@ -187,10 +171,13 @@ public class RobotContainer {
 
     makeSubsystems();
 
+    // moved to HealthSubsystem
+    /*
     if (!canDeviceFinder.getMissingDeviceSet().isEmpty()) {
       missingDevicesAlert.set(true);
       missingDevicesAlert.setText("Missing from CAN bus: " + canDeviceFinder.getMissingDeviceSet());
     }
+    */
 
     makeCommandFactories();
 
@@ -366,61 +353,63 @@ public class RobotContainer {
           .onTrue(new InstantCommand(()->visionSubsystem.setDoWeAlign(!visionSubsystem.getDoWeAlign())));
           //.toggleOnFalse(new InstantCommand(()->visionSubsystem.setDoWeAlign(false)));
           
+      driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH)
+          .onTrue(Commands.runOnce(() -> blinkySubsystem.setAutoAllignFinished(false)));
 
     }
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.A1,
         new DriveToClosestStickCommand(WhichStick.LEFT).alongWith(
-            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem)),
+            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem)).withName("Left.L1"),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.A1, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.A2,
         new DriveToClosestStickCommand(WhichStick.LEFT).alongWith(
-            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem)),
+            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem)).withName("Left.L2"),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.A2, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.A3,
         new DriveToClosestStickCommand(WhichStick.LEFT).alongWith(
-            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem)),
+            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem)).withName("Left.L3"),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.A3, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.A4,
         new DriveToClosestStickCommand(WhichStick.LEFT).alongWith(
-            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem)),
+            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem)).withName("Left.L4"),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.A4, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.C1,
         new DriveToClosestStickCommand(WhichStick.RIGHT).alongWith(
-            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem)),
+            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem)).withName("Right.L1"),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.C1, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.C2,
         new DriveToClosestStickCommand(WhichStick.RIGHT).alongWith(
-            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem)),
+            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem)).withName("Right.L2"),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.C2, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.C3,
         new DriveToClosestStickCommand(WhichStick.RIGHT).alongWith(
-            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem)),
+            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem)).withName("Right.L3"),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.C3, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.C4,
         new DriveToClosestStickCommand(WhichStick.RIGHT).alongWith(
-            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem)),
+            new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem)).withName("Right.L4"),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.C4, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
@@ -428,13 +417,13 @@ public class RobotContainer {
     buttonBoxRightTrigger.addButtonMapping(ButtonId.D2,
         new SequentialCommandGroup(
             new SetESEFPositionCommand(ESEFPosition.PresetPosition.StationPickup.getPosition(), esefSubsystem),
-            new RunEndEffectorUntilHasCoral(0.4, esefSubsystem)),
+            new RunEndEffectorUntilHasCoral(0.4, esefSubsystem)).withName("Station,Intake=0.4"),
         new SetEndEffectorSpeedCommand(0.0, esefSubsystem));
 
     buttonBoxRightTrigger.addButtonMapping(ButtonId.D3,
         new SequentialCommandGroup(
             new SetESEFPositionCommand(ESEFPosition.PresetPosition.StationPickup.getPosition(), esefSubsystem),
-            new SetEndEffectorSpeedCommand(0.2, esefSubsystem)),
+            new SetEndEffectorSpeedCommand(0.2, esefSubsystem)).withName("Station,Intake=0.2"),
         new SetEndEffectorSpeedCommand(0.0, esefSubsystem));
 
     // this is for the algae claw.
@@ -464,50 +453,50 @@ public class RobotContainer {
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.B1,
         new SetPivotPositionCommand(Degrees.of(15), afiSubsystem)
-            .andThen(new AFIRollerSetSpeedUntilInCommand(0.3, afiSubsystem)),
+            .andThen(new AFIRollerSetSpeedUntilInCommand(0.3, afiSubsystem)).withName("AFI 15/0.3"),
         new SetPivotPositionCommand(Degrees.of(80), afiSubsystem)
-            .andThen(new AFIRollerSetSpeedCommand(0.02, afiSubsystem)));
+            .andThen(new AFIRollerSetSpeedCommand(0.02, afiSubsystem)).withName("AFI 80/0.02"));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.B1, new AFIRollerSetSpeedCommand(-0.5, afiSubsystem),
         new AFIRollerSetSpeedCommand(0, afiSubsystem));
 
     buttonBoxRightTrigger.addButtonMapping(ButtonId.D1,
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.CLIMB.getPosition(), esefSubsystem)
-            .andThen(climberCommandFactory.makeSetClimberPowerCommand(() -> 0.7)),
-        climberCommandFactory.makeSetClimberPowerCommand(() -> 0.0));
+            .andThen(climberCommandFactory.makeSetClimberPowerCommand(() -> 0.7)).withName("Climb"),
+        climberCommandFactory.makeSetClimberPowerCommand(() -> 0.0).withName("climb=0"));
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.D1,
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.CLIMB.getPosition(), esefSubsystem)
-            .andThen(climberCommandFactory.makeSetClimberPowerCommand(() -> -1)),
-        climberCommandFactory.makeSetClimberPowerCommand(() -> 0.0));
+            .andThen(climberCommandFactory.makeSetClimberPowerCommand(() -> -1)).withName("Unclimb"),
+        climberCommandFactory.makeSetClimberPowerCommand(() -> 0.0).withName("climb=0"));
 
     // light color based on button pressed.
     new JoystickButton(buttonboxHID, ButtonBox.ButtonId.A1.joystickButtonId())
-        .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L1)));
+        .onTrue(blinkySubsystem.setESEFCommand(BlinkyStickHeight.L1));
     new JoystickButton(buttonboxHID, ButtonBox.ButtonId.A2.joystickButtonId())
-        .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L2)));
+        .onTrue(blinkySubsystem.setESEFCommand(BlinkyStickHeight.L2));
     new JoystickButton(buttonboxHID, ButtonBox.ButtonId.A3.joystickButtonId())
-        .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L3)));
+        .onTrue(blinkySubsystem.setESEFCommand(BlinkyStickHeight.L3));
     new JoystickButton(buttonboxHID, ButtonBox.ButtonId.A4.joystickButtonId())
-        .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L4)));
+        .onTrue(blinkySubsystem.setESEFCommand(BlinkyStickHeight.L4));
     new JoystickButton(buttonboxHID, ButtonBox.ButtonId.C1.joystickButtonId())
-        .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L1)));
+        .onTrue(blinkySubsystem.setESEFCommand(BlinkyStickHeight.L1));
     new JoystickButton(buttonboxHID, ButtonBox.ButtonId.C2.joystickButtonId())
-        .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L2)));
+        .onTrue(blinkySubsystem.setESEFCommand(BlinkyStickHeight.L2));
     new JoystickButton(buttonboxHID, ButtonBox.ButtonId.C3.joystickButtonId())
-        .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L3)));
+        .onTrue(blinkySubsystem.setESEFCommand(BlinkyStickHeight.L3));
     new JoystickButton(buttonboxHID, ButtonBox.ButtonId.C4.joystickButtonId())
-        .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L4)));
+        .onTrue(blinkySubsystem.setESEFCommand(BlinkyStickHeight.L4));
     new JoystickButton(buttonboxHID, ButtonBox.ButtonId.B2.joystickButtonId())
-        .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L2ALGAE)));
+        .onTrue(blinkySubsystem.setESEFCommand(BlinkyStickHeight.L2ALGAE));
     new JoystickButton(buttonboxHID, ButtonBox.ButtonId.B3.joystickButtonId())
-        .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.L3ALGAE)));
+        .onTrue(blinkySubsystem.setESEFCommand(BlinkyStickHeight.L3ALGAE));
     new JoystickButton(buttonboxHID, ButtonBox.ButtonId.B4.joystickButtonId())
-        .onTrue(Commands.runOnce(() -> blinkySubsystem.setESEF(BlinkyStickHeight.BARGEALGAE)));
+        .onTrue(blinkySubsystem.setESEFCommand(BlinkyStickHeight.BARGEALGAE));
     new JoystickButton(buttonboxHID, ButtonBox.ButtonId.D1.joystickButtonId())
-        .onTrue(Commands.runOnce(() -> blinkySubsystem.setMode(ModeState.CLIMB)));
+        .onTrue(blinkySubsystem.setModeCommand(ModeState.CLIMB));
     new JoystickButton(buttonboxHID, ButtonBox.ButtonId.B1.joystickButtonId())
-        .onTrue(Commands.runOnce(() -> blinkySubsystem.setMode(ModeState.FLOOR_PICKUP)));
+        .onTrue(blinkySubsystem.setModeCommand(ModeState.FLOOR_PICKUP));
     new JoystickButton(buttonboxHID, ButtonBox.ButtonId.D2.joystickButtonId())
-        .onTrue(Commands.runOnce(() -> blinkySubsystem.setMode(ModeState.CORAL_PICKUP)));
+        .onTrue(blinkySubsystem.setModeCommand(ModeState.CORAL_PICKUP));
 
   }
 

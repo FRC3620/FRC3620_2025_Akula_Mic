@@ -1,7 +1,6 @@
 package frc.robot;
 
 import java.io.IOException;
-import java.util.Random;
 
 import org.json.simple.parser.ParseException;
 import org.tinylog.TaggedLogger;
@@ -13,8 +12,6 @@ import com.pathplanner.lib.util.FileVersionException;
 
 import dev.doglog.DogLog;
 import dev.doglog.DogLogOptions;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -64,13 +61,6 @@ public class Robot extends TimedRobot {
         sb.append (dirty ? "-dirty" : "");
     }
     SmartDashboard.putString("frc3620/git.commit.id", sb.toString());
-
-    PortForwarder.add (10080, "wpilibpi.local", 80);
-    PortForwarder.add (10022, "wpilibpi.local", 22);
-    
-    for (int port = 5800; port <= 5809; port++) {
-      PortForwarder.add(port, "limelight.local", port);
-    }
 
     // whenever a command initializes, the function declared below will run.
     CommandScheduler.getInstance().onCommandInitialize(command ->
