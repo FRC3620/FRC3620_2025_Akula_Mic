@@ -36,6 +36,11 @@ public class TalonFetcher extends MotorWatcherFetcher {
   }
 
   @Override
+  Double measureSupplyCurrent() {
+    return supplyCurrent = talonFX.getSupplyCurrent().getValue().in(Amps);
+  }
+
+  @Override
   Double measureVelocity() {
     return velocity = talonFX.getVelocity().getValue().in(RPM);
   }

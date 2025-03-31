@@ -8,6 +8,7 @@ public enum MotorWatcherMetric {
     TEMPERATURE("temperature", (m) -> m.measureTemperature(), (m) -> m.getTemperature()),
     POSITION("position", (m) ->m.measurePosition(), (m) -> m.getPosition()),
     OUTPUT_CURRENT("outputCurrent", (m) -> m.measureOutputCurrent(), (m) -> m.getOutputCurrent()),
+    SUPPLY_CURRENT("supplyCurrent", (m) -> m.measureSupplyCurrent(), (m) -> m.getSupplyCurrent()),
     VELOCITY("velocity", (m) -> m.measureVelocity(), (m) -> m.getVelocity()),
     ;
      

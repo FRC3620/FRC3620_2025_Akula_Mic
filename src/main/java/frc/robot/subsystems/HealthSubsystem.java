@@ -42,7 +42,8 @@ public class HealthSubsystem extends SubsystemBase {
 
   // record swerve motor data
   MotorWatcher swerveMotorWatcher;
-  EnumSet<MotorWatcherMetric> whatSwerveMetricsToWatch = EnumSet.of(MotorWatcherMetric.TEMPERATURE, MotorWatcherMetric.OUTPUT_CURRENT);
+  EnumSet<MotorWatcherMetric> whatSwerveDriveMetricsToWatch = EnumSet.of(MotorWatcherMetric.TEMPERATURE, MotorWatcherMetric.OUTPUT_CURRENT, MotorWatcherMetric.SUPPLY_CURRENT);
+  EnumSet<MotorWatcherMetric> whatSwerveAngleMetricsToWatch = EnumSet.of(MotorWatcherMetric.TEMPERATURE, MotorWatcherMetric.OUTPUT_CURRENT);
 
   // watch the power distribution system
   PDWatcher pdWatcher;
@@ -110,8 +111,8 @@ public class HealthSubsystem extends SubsystemBase {
 
         var angleMotor = swerveModule.getAngleMotor().getMotor();
         var driveMotor = swerveModule.getDriveMotor().getMotor();
-        swerveMotorWatcher.addMotor(name + "/angle", angleMotor, whatSwerveMetricsToWatch);
-        swerveMotorWatcher.addMotor(name + "/drive", driveMotor, whatSwerveMetricsToWatch);
+        swerveMotorWatcher.addMotor(name + "/angle", angleMotor, whatSwerveAngleMetricsToWatch);
+        swerveMotorWatcher.addMotor(name + "/drive", driveMotor, whatSwerveDriveMetricsToWatch);
       }
     }
 

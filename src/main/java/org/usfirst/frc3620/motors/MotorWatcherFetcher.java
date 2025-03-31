@@ -12,6 +12,7 @@ abstract public class MotorWatcherFetcher {
   Double temperature;
   Double position;
   Double outputCurrent;
+  Double supplyCurrent;
   Double velocity;
 
   public static MotorWatcherFetcher create(Object motor) {
@@ -67,6 +68,20 @@ abstract public class MotorWatcherFetcher {
    * @return last measured output current
    */
   final public Double getOutputCurrent() {
+    return outputCurrent;
+  };
+
+  /**
+   * measure, save, and return the supply current.
+   * @return measured supply current
+   */
+  abstract Double measureSupplyCurrent();
+
+  /**
+   * return the last measured supply current.
+   * @return last measured supply current
+   */
+  final public Double getSupplyCurrent() {
     return outputCurrent;
   };
 

@@ -31,6 +31,11 @@ public class SparkMAXFetcher extends MotorWatcherFetcher {
   }
 
   @Override
+  Double measureSupplyCurrent() {
+    return outputCurrent = null;
+  }
+
+  @Override
   Double measureVelocity() {
     return velocity = sparkMax.getEncoder().getVelocity(); // RPM
   }
