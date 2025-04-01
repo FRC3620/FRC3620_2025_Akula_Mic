@@ -10,6 +10,7 @@ public class RobotParameters extends RobotParametersBase {
     double intakeFrontEncoderOffset = 0;
     double intakeRearEncoderOffset = 0;
     double climberEncoderOffset = 0;
+    Double driveStatorCurrentLimit = null;
     @JsonProperty("shortLEDStrip") boolean shortLEDStrip = false;
 
     public String getSwerveDirectoryName() {
@@ -28,6 +29,10 @@ public class RobotParameters extends RobotParametersBase {
         return climberEncoderOffset; 
     }
 
+    public Double getDriveStatorCurrentLimit() {
+        return driveStatorCurrentLimit;
+    }
+
     public boolean isShortLEDStrip() {
         return shortLEDStrip;
     }
@@ -39,7 +44,8 @@ public class RobotParameters extends RobotParametersBase {
         sb.append (", swerveDirectoryName=" + swerveDirectoryName);
         sb.append (", intakeFrontEncoderOffset=" + intakeFrontEncoderOffset);
         sb.append (", intakeRearEncoderOffset=" + intakeRearEncoderOffset);
-        sb.append(", climberEncoderOffset=" + climberEncoderOffset);
+        sb.append (", climberEncoderOffset=" + climberEncoderOffset);
+        sb.append (", driveStatorCurrentLimit=" + driveStatorCurrentLimit);
         sb.append ("]");
         return sb.toString();
     }
