@@ -120,7 +120,7 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public enum WhichBlueStick {
-    // as of 3/19/25 using math (geometry, apriltag coordinates and did fine-tuning
+    // as of 3/26/25 using math (geometry, apriltag coordinates and did fine-tuning
     // for all the poses)
     BSTICKA(5.71, 3.86, Rotation2d.fromDegrees(-180)), // dn
     BSTICKB(5.71, 4.25, Rotation2d.fromDegrees(-180)), // dn
@@ -131,9 +131,9 @@ public class VisionSubsystem extends SubsystemBase {
     BSTICKG(3.26, 4.17, Rotation2d.fromDegrees(0)), // dn
     BSTICKH(3.26, 3.78, Rotation2d.fromDegrees(0)), //
     BSTICKI(3.76, 3.04, Rotation2d.fromDegrees(60)), // tuned
-    BSTICKJ(4.1, 2.89, Rotation2d.fromDegrees(60)), // tuned origianl: 4.09, 2.86
-    BSTICKK(5.03, 2.92, Rotation2d.fromDegrees(120)), // dn
-    BSTICKL(5.34, 3.07, Rotation2d.fromDegrees(120));
+    BSTICKJ(4.1, 2.87, Rotation2d.fromDegrees(60)), // tuned origianl: 4.09, 2.86
+    BSTICKK(4.98, 2.98, Rotation2d.fromDegrees(120)), // dn
+    BSTICKL(5.34, 3.09,Rotation2d.fromDegrees(120));
     ; // dn
 
     public final Pose2d pose;
