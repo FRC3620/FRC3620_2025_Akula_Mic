@@ -1,5 +1,7 @@
 package frc.nemesis.controller;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import java.util.HashMap;
 import java.util.Map;
 import javafx.application.Application;
@@ -21,6 +23,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Seconds;
 
 public class ControllerApp extends Application {
 
@@ -56,9 +60,8 @@ public class ControllerApp extends Application {
   private static final String[] StickPositions = {
     "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"
   };
-  private static final String[] sources = {"sourceL", "sourceR"};
   private static final String[] levels = {"L1", "L2", "L3", "L4"};
-  private static final String[] sides = {"Left", "Right"};
+  //private static final String[] sides = {"Left", "Right"};
 
   private Pane mainPane;
   private VBox topButtonBox;
@@ -66,7 +69,6 @@ public class ControllerApp extends Application {
   private HBox bottomButtonBox;
   private VBox bottomSectionBox;
   private Pane stickButtonsPane;
-  private Pane sourceButtonsPane;
   private VBox topSectionBox; // VBox to hold levels and sides
 
   @Override
@@ -95,33 +97,30 @@ public class ControllerApp extends Application {
         .addListener(
             (obs, oldVal, newVal) -> {
               updateStickButtonPositions();
-              updateSourceButtonPositions();
             });
     mainPane
         .heightProperty()
         .addListener(
             (obs, oldVal, newVal) -> {
               updateStickButtonPositions();
-              updateSourceButtonPositions();
             });
 
     stickButtonsPane = createStickButtons();
-    sourceButtonsPane = createSourceButtons();
     mainPane.getChildren().addAll(stickButtonsPane);
 
     topButtonBox = createLevelButtons();
-    sideButtonBox = createSideButtons();
+    //sideButtonBox = createSideButtons();
     bottomButtonBox = createBottomButtons();
 
     topSectionBox = new VBox(10);
     topSectionBox.setAlignment(Pos.TOP_CENTER);
     topSectionBox
         .getChildren()
-        .addAll(topButtonBox, sideButtonBox); // Add level buttons then side buttons
+        .add(topButtonBox); // Add level buttons then side buttons
 
     bottomSectionBox = new VBox(10);
     bottomSectionBox.setAlignment(Pos.BOTTOM_CENTER);
-    bottomSectionBox.getChildren().addAll(sourceButtonsPane, bottomButtonBox);
+    bottomSectionBox.getChildren().add(bottomButtonBox);
     // BorderPane.setAlignment(sourceButtonsPane, Pos.TOP_CENTER);
     // root.setTop(sourceButtonsPane); // Add source buttons above the bottom section
 
@@ -155,31 +154,14 @@ public class ControllerApp extends Application {
       Button button = new Button(point);
       stickButtonMap.put(point, button);
       button.setOnAction(buttonHandler);
-      button.setPrefWidth(50);
-      button.setPrefHeight(50);
+      button.setPrefWidth(70);
+      button.setPrefHeight(70);
       button.setStyle(DEFAULT_BUTTON_STYLE);
-      button.setShape(new javafx.scene.shape.Circle(30)); // Half of the width/height for a circle
+      button.setShape(new javafx.scene.shape.Circle(15)); // Half of the width/height for a circle
       stickPane.getChildren().add(button);
     }
 
     return stickPane;
-  }
-
-  private Pane createSourceButtons() {
-    Pane sourcePane = new Pane();
-    EventHandler<ActionEvent> buttonHandler = event -> onSourceButtonPress(event);
-
-    for (String source : sources) {
-      Button button = new Button(source);
-      sourceButtonMap.put(source, button);
-      button.setOnAction(buttonHandler);
-      button.setPrefWidth(120);
-      button.setPrefHeight(80);
-      button.setStyle(SOURCE_BUTTON_STYLE);
-      sourcePane.getChildren().add(button);
-    }
-
-    return sourcePane;
   }
 
   private void updateStickButtonPositions() {
@@ -188,11 +170,11 @@ public class ControllerApp extends Application {
 
     double centerX = width / 2;
     double centerY = height / 2; // Center the dodecagon
-    double radius = Math.min(width, height) * 0.3; // Scale appropriately
+    double radius = Math.min(width, height) * 0.15; // Scale appropriately
 
     int sides = 12; // Shape with 12 points
     double angleStep = 360.0 / sides; // Equal spacing for 12 sides
-    double startAngle = 0 - 20; // -30° for 1 o’clock, -20° for Counter-clokwise rotation
+    double startAngle = -75; // -30° for 1 o’clock, -20° for Counter-clokwise rotation
 
     for (int i = 0; i < StickPositions.length; i++) {
         Button button = stickButtonMap.get(StickPositions[i]);
@@ -210,21 +192,6 @@ public class ControllerApp extends Application {
         button.setLayoutY(y - button.getPrefHeight() / 2);
     }
 }
-
-  private void updateSourceButtonPositions() {
-    double width = mainPane.getWidth();
-    double height = mainPane.getHeight();
-
-    // S1 pos
-    Button sourceLbutton = sourceButtonMap.get("sourceL");
-    sourceLbutton.setLayoutX(width * 0.3);
-    sourceLbutton.setLayoutY(-height * 0.1);
-
-    // S2 pos
-    Button sourceRbutton = sourceButtonMap.get("sourceR");
-    sourceRbutton.setLayoutX(width * 0.7 - sourceRbutton.getPrefWidth());
-    sourceRbutton.setLayoutY(-height * 0.1);
-  }
 
   private VBox createLevelButtons() {
     VBox levelBox = new VBox(10);
@@ -251,7 +218,7 @@ public class ControllerApp extends Application {
     return levelBox;
   }
 
-  private VBox createSideButtons() {
+  /*private VBox createSideButtons() {
     VBox sideBox = new VBox(20);
     sideBox.setAlignment(Pos.TOP_CENTER);
     sideBox.setPadding(new Insets(10, 0, 10, 0));
@@ -276,7 +243,7 @@ public class ControllerApp extends Application {
     }
     sideBox.getChildren().add(buttonRow); // Add the HBox of side buttons to the VBox
     return sideBox;
-  }
+  }*/
 
   private HBox createBottomButtons() {
     HBox buttonBox = new HBox(10);
@@ -304,7 +271,7 @@ public class ControllerApp extends Application {
     }
   }
 
-  private void updateSourceButtons() {
+  /*private void updateSourceButtons() {
     for (Map.Entry<String, Button> entry : sourceButtonMap.entrySet()) {
       Button button = entry.getValue();
       if (entry.getKey().equals(selectedSource)) {
@@ -313,7 +280,7 @@ public class ControllerApp extends Application {
         button.setStyle(SOURCE_BUTTON_STYLE);
       }
     }
-  }
+  }*/
 
   private void updateLevelButtons() {
     for (Map.Entry<String, Button> entry : levelButtonMap.entrySet()) {
@@ -326,7 +293,7 @@ public class ControllerApp extends Application {
     }
   }
 
-  private void updateSideButtons() {
+  /*private void updateSideButtons() {
     for (Map.Entry<String, ToggleButton> entry : sideButtonMap.entrySet()) {
       ToggleButton button = entry.getValue();
       if (entry.getKey().equals(selectedSide)) {
@@ -346,11 +313,11 @@ public class ControllerApp extends Application {
         }
       }
     }
-  }
+  }*/
 
   private void updatePendingCommand() {
-    if (selectedLevel != null && selectedSide != null && selectedDirection != null) {
-      pendingCommand = selectedDirection + "_" + selectedSide + "_" + selectedLevel;
+    if (selectedLevel != null && selectedDirection != null) {
+      pendingCommand = selectedDirection + "_" + selectedLevel;
       System.out.println("Updated command string: " + pendingCommand);
       sendToNetworkTables("moveTo", pendingCommand);
     }
@@ -376,12 +343,12 @@ public class ControllerApp extends Application {
         String direction = directionAndSide.replaceAll("[^A-Z]", "");
         String side = directionAndSide.replaceAll("[^a-z]", "");
 
-        if (!direction.isEmpty() && !side.isEmpty()) {
+        if (!direction.isEmpty()) {
           // Capitalize first letter of side to match our enum
-          side = side.substring(0, 1).toUpperCase() + side.substring(1);
+          //side = side.substring(0, 1).toUpperCase() + side.substring(1);
 
           selectedDirection = direction;
-          selectedSide = side;
+          //selectedSide = side;
 
           // Update level if present
           if (parts.length > 1) {
@@ -391,16 +358,17 @@ public class ControllerApp extends Application {
           pendingCommand = moveTo;
 
           updateStickButtons();
-          updateSideButtons();
+          //updateSideButtons();
           updateLevelButtons();
         }
       }
     }
 
-    if (source != null && !source.equals("not found")) {
+
+    /*if (source != null && !source.equals("not found")) {
       selectedSource = source;
       updateSourceButtons();
-    }
+    }*/
   }
 
   private void connect() {
@@ -425,7 +393,7 @@ public class ControllerApp extends Application {
     Button button = (Button) event.getSource();
     selectedSource = button.getText();
 
-    updateSourceButtons();
+    //updateSourceButtons();
     sendToNetworkTables("source", selectedSource);
   }
 
