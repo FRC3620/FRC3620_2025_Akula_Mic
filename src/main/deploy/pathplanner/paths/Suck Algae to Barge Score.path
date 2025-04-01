@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.888486842105262,
-        "y": 4.025
+        "x": 5.9,
+        "y": 3.98
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.743895322638788,
-        "y": 3.899917763157895
+        "x": 7.755408480533526,
+        "y": 3.8549177631578946
       },
       "isLocked": false,
       "linkedName": "Suck Algae"
     },
     {
       "anchor": {
-        "x": 7.92828947368421,
-        "y": 4.871710526315789
+        "x": 7.732069672131147,
+        "y": 5.163831967213115
       },
       "prevControl": {
-        "x": 7.379851973684211,
-        "y": 4.852467105263157
+        "x": 6.737090163934426,
+        "y": 5.18780737704918
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,7 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.19518716577540057,
+      "waypointRelativePos": 0.07462686567164717,
       "rotationDegrees": 180.0
     }
   ],
@@ -41,7 +41,7 @@
       "maxWaypointRelativePos": 0.20338983050847448,
       "constraints": {
         "maxVelocity": 1.5,
-        "maxAcceleration": 1.0,
+        "maxAcceleration": 2.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -61,10 +61,21 @@
           "name": "Barge"
         }
       }
+    },
+    {
+      "name": "Spit Balls and Home",
+      "waypointRelativePos": 0.9,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Spit Balls and Home"
+        }
+      }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 1.5,
     "maxAcceleration": 3.25,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -76,10 +87,10 @@
     "rotation": -4.864514437760576
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Algae",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

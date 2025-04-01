@@ -3,40 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.75,
-        "y": 3.98
+        "x": 5.346516393442624,
+        "y": 3.07797131147541
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.268818266198734,
-        "y": 3.98
+        "x": 4.171721311475411,
+        "y": 1.3637295081967213
       },
       "isLocked": false,
-      "linkedName": "Algae Pickup AB"
+      "linkedName": "K"
     },
     {
       "anchor": {
-        "x": 5.9,
-        "y": 3.98
+        "x": 1.5703893442622954,
+        "y": 0.6684426229508199
       },
       "prevControl": {
-        "x": 6.15,
-        "y": 3.98
+        "x": 3.2007172131147543,
+        "y": 1.9031762295081975
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Suck Algae"
+      "linkedName": "bottomSource"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.4989339019189884,
+      "rotationDegrees": 65.0
+    }
+  ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.6590141796083825,
+      "minWaypointRelativePos": 0.925,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 1.5,
-        "maxAcceleration": 1.0,
+        "maxVelocity": 2.5,
+        "maxAcceleration": 2.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -47,34 +52,34 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Suck L2 Algae",
-      "waypointRelativePos": 0.35651586765698196,
+      "name": "Intake",
+      "waypointRelativePos": 0.85,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Suck L2 Algae"
+          "name": "Intake"
         }
       }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 1.5,
-    "maxAcceleration": 3.25,
+    "maxVelocity": 3.75,
+    "maxAcceleration": 4.25,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 180.0
+    "velocity": 0.0,
+    "rotation": 51.45881637871856
   },
   "reversed": false,
-  "folder": "Algae",
+  "folder": "Fast Folder",
   "idealStartingState": {
-    "velocity": 0.0,
-    "rotation": 180.0
+    "velocity": 0.5,
+    "rotation": 120.17352002964432
   },
   "useDefaultConstraints": false
 }
