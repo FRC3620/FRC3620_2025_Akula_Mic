@@ -5,6 +5,7 @@
 package frc.robot.subsystems.esefsubsystem;
 
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import org.usfirst.frc3620.CANDeviceType;
 
@@ -52,7 +53,7 @@ public class ESEFEndEffectorMechanism {
     public void periodic() {
         SmartDashboard.putBoolean("frc3620/EndEffector/HasCoral", hasCoral());
         if (endEff != null) {
-            SmartDashboard.putNumber("frc3620/EndEffector/MotorVelocity", endEff.getVelocity().getValue().in(RPM));
+            SmartDashboard.putNumber("frc3620/EndEffector/MotorVelocity", endEff.getVelocity().getValue().in(RotationsPerSecond));
             SmartDashboard.putNumber("frc3620/EndEffector/ActualPower", endEff.get());
         }
     }
@@ -69,7 +70,7 @@ public class ESEFEndEffectorMechanism {
     }
 
     public double getEndEffectorVelocity() {
-        return endEff.getVelocity().getValueAsDouble();
+        return endEff.getVelocity().getValue().in(RotationsPerSecond);
     }
 
 }

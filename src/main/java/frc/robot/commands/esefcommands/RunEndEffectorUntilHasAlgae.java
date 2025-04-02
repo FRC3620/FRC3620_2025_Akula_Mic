@@ -37,7 +37,7 @@ public class RunEndEffectorUntilHasAlgae extends Command {
   @Override
   public void execute() {
     if (timer.hasElapsed(0.5)) { 
-      if (esefSubsystem.getEndEffectorVelocity() < 20) {
+      if (esefSubsystem.getEndEffectorVelocity() < 38) {
         finish = true;
       }
     }
