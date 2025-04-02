@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.2,
-        "y": 5.152
+        "x": 5.15,
+        "y": 5.1
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.811372950819671,
-        "y": 5.991139344262295
+        "x": 5.761372950819672,
+        "y": 5.939139344262294
       },
       "isLocked": false,
       "linkedName": "Algae Pickup CD"
