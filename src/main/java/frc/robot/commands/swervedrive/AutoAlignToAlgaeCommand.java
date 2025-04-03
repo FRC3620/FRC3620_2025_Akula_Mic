@@ -42,71 +42,92 @@ public class AutoAlignToAlgaeCommand extends InstantCommand {
         Pose2d targetPose = null;
         Pose2d startPose = RobotContainer.swerveSubsystem.getPose(); // Initialize startPose with a valid value
 
-        if (ally.get() == Alliance.Blue && tagID % 2 == 1) { // Odd Tag ID
-          targetPose = RobotContainer.visionSubsystem.getAlgaePose(tagID);
+        targetPose = RobotContainer.visionSubsystem.getAlgaePose(tagID);
 
-          if (targetPose == null) {
-            logger.error("Invalid Target Pose for Tag ID = {}", tagID);
-            return; // Exit if the targetPose is invalid
-          }
-
-          logger.info("Starting Pose = {}", startPose);
-          CommandScheduler.getInstance().schedule(
-              new SequentialCommandGroup(
-                  new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose))
-                  );
-
-        } else { // Even Tag ID
-          targetPose = RobotContainer.visionSubsystem.getAlgaePose(tagID);
-
-          if (targetPose == null) {
-            logger.error("Invalid Target Pose for Tag ID = {}", tagID);
-            return; // Exit if the targetPose is invalid
-          }
-
-          CommandScheduler.getInstance().schedule(
-            new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose)
-            );
+        if (targetPose == null) {
+          logger.error("Invalid Target Pose for Tag ID = {}", tagID);
+          return; // Exit if the targetPose is invalid
         }
 
+        logger.info("Starting Pose = {}", startPose);
+        CommandScheduler.getInstance().schedule(
+            new SequentialCommandGroup(
+                new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose)));
 
-        //Below is for Algae Auto Align on the Red Alliance
-
-        if (ally.get() == Alliance.Red && tagID % 2 == 0) { // Odd Tag ID
-          targetPose = RobotContainer.visionSubsystem.getAlgaePose(tagID);
-
-          if (startPose == null) {
-            logger.error("Invalid Start Pose for Tag ID = {}", tagID);
-            return; // Exit if the startPose is invalid
-          }
-          if (targetPose == null) {
-            logger.error("Invalid Target Pose for Tag ID = {}", tagID);
-            return; // Exit if the targetPose is invalid
-          }
-
-          logger.info("Starting Pose = {}", startPose);
-          CommandScheduler.getInstance().schedule(
-              new SequentialCommandGroup(
-                  new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose))
-                  );
-
-        } else { // Even Tag ID
-          targetPose = RobotContainer.visionSubsystem.getAlgaePose(tagID);
-
-          if (targetPose == null) {
-            logger.error("Invalid Target Pose for Tag ID = {}", tagID);
-            return; // Exit if the targetPose is invalid
-          }
-
-          CommandScheduler.getInstance().schedule(
-            new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose));
-        }
-
-        logger.info("Target Pose = {}", targetPose);
-        RobotContainer.swerveSubsystem.setTargetPose(targetPose);
-
-      } else {
-        logger.info("No valid alliance or tag detected. AutoAligningToAlgaeCommand Stopped.");
+        /*
+         * if (ally.get() == Alliance.Blue && tagID % 2 == 1) { // Odd Tag ID
+         * targetPose = RobotContainer.visionSubsystem.getAlgaePose(tagID);
+         * 
+         * if (targetPose == null) {
+         * logger.error("Invalid Target Pose for Tag ID = {}", tagID);
+         * return; // Exit if the targetPose is invalid
+         * }
+         * 
+         * logger.info("Starting Pose = {}", startPose);
+         * CommandScheduler.getInstance().schedule(
+         * new SequentialCommandGroup(
+         * new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose))
+         * );
+         * 
+         * } else if(ally.get() == Alliance.Blue && tagID % 2 == 0){ // Even Tag ID
+         * targetPose = RobotContainer.visionSubsystem.getAlgaePose(tagID);
+         * 
+         * if (targetPose == null) {
+         * logger.error("Invalid Target Pose for Tag ID = {}", tagID);
+         * return; // Exit if the targetPose is invalid
+         * }
+         * 
+         * CommandScheduler.getInstance().schedule(
+         * new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose)
+         * );
+         * } else {
+         * logger.
+         * info("No valid alliance or tag detected. AutoAligningToAlgaeCommand Stopped."
+         * );
+         * }
+         * 
+         * 
+         * //Below is for Algae Auto Align on the Red Alliance
+         * 
+         * if (ally.get() == Alliance.Red && tagID % 2 == 0) { // Even Tag ID
+         * targetPose = RobotContainer.visionSubsystem.getAlgaePose(tagID);
+         * 
+         * if (startPose == null) {
+         * logger.error("Invalid Start Pose for Tag ID = {}", tagID);
+         * return; // Exit if the startPose is invalid
+         * }
+         * if (targetPose == null) {
+         * logger.error("Invalid Target Pose for Tag ID = {}", tagID);
+         * return; // Exit if the targetPose is invalid
+         * }
+         * 
+         * logger.info("Starting Pose = {}", startPose);
+         * CommandScheduler.getInstance().schedule(
+         * new SequentialCommandGroup(
+         * new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose))
+         * );
+         * 
+         * } else if(ally.get() == Alliance.Red && tagID % 2 == 1){ // Odd Tag ID
+         * targetPose = RobotContainer.visionSubsystem.getAlgaePose(tagID);
+         * 
+         * if (targetPose == null) {
+         * logger.error("Invalid Target Pose for Tag ID = {}", tagID);
+         * return; // Exit if the targetPose is invalid
+         * }
+         * 
+         * CommandScheduler.getInstance().schedule(
+         * new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose));
+         * }
+         * 
+         * logger.info("Target Pose = {}", targetPose);
+         * RobotContainer.swerveSubsystem.setTargetPose(targetPose);
+         * 
+         * } else {
+         * logger.
+         * info("No valid alliance or tag detected. AutoAligningToAlgaeCommand Stopped."
+         * );
+         * }
+         */
       }
     }
   }
