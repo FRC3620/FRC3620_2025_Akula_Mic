@@ -43,8 +43,6 @@ public class DriveToClosestStickCommand extends InstantCommand {
   public void initialize() {
     if (RobotContainer.visionSubsystem.getDoWeAlign()) {
 
-      SmartDashboard.putNumber("TargetAprilTag", tagID);
-
       Pose2d pose;
 
       // Check if tagID is within the allowed range
@@ -54,11 +52,11 @@ public class DriveToClosestStickCommand extends InstantCommand {
         if (ally.get() == Alliance.Red) {
           tagID = RobotContainer.visionSubsystem.getNearestTagIDRed(RobotContainer.swerveSubsystem.getPose());
           logger.info("Saw ID = {}", tagID);
-          SmartDashboard.putNumber("TargetAprilTag", tagID);
+          SmartDashboard.putNumber("frc3620/vision/TargetAprilTag", tagID);
         } else {
           tagID = RobotContainer.visionSubsystem.getNearestTagIDBlue(RobotContainer.swerveSubsystem.getPose());
           logger.info("Saw ID = {}", tagID);
-          SmartDashboard.putNumber("TargetAprilTag", tagID);
+          SmartDashboard.putNumber("frc3620/vision/TargetAprilTag", tagID);
         }
 
         if (ally.get() == Alliance.Red && tagID >= 6 && tagID <= 11) {
