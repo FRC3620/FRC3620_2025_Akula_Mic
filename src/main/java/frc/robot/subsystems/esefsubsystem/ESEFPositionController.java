@@ -86,7 +86,7 @@ public class ESEFPositionController {
     updateDashboardForUltimate();
     ultimateSetpointMech.setShoulderAngle(ultimateSetpoint.shoulderAngle);
     ultimateSetpointMech.setElevatorHeight(ultimateSetpoint.elevatorHeight);
-    tweakIntermediateSetpoints(currentHeight, currentShoulderAngle);
+    //tweakIntermediateSetpoints(currentHeight, currentShoulderAngle);
     recalculate();
   }
 
