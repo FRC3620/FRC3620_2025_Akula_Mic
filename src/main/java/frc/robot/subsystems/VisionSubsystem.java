@@ -275,7 +275,12 @@ public class VisionSubsystem extends SubsystemBase {
               SmartDashboard.putNumber(prefix + "distance to closest seen tag", distanceToClosestSeenTarget);
             }
           }
-          NTStructs.publish(prefix + "targets", targetPoses.toArray(new Pose3d[0]));
+          var targetPosesArray = targetPoses.toArray(new Pose3d[0]);
+          NTStructs.publish(prefix + "targets", targetPosesArray);
+          // it doesn't seem that poses published to NT make it into the
+          // wpilog file via NetworkTableInstance.startEntryDataLog, so let's be
+          // explicit
+          DogLog.log(prefix + "targets", targetPosesArray);
         }
       }
     }
