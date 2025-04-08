@@ -97,6 +97,30 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
 
+  public enum WhichAlgaeInterediate {
+    Algae17(3.85, 2.91, Rotation2d.fromDegrees(60)),//
+    Algae18(3.30, 4.07, Rotation2d.fromDegrees(0)),//
+    Algae19(3.84, 5.17, Rotation2d.fromDegrees(-59)),//
+    Algae20(5.18, 5.10, Rotation2d.fromDegrees(-120)),//
+    Algae21(5.78, 3.98, Rotation2d.fromDegrees(-180)),//
+    Algae22(5.04, 2.92, Rotation2d.fromDegrees(120)),//
+
+    //Red Algae Poses
+
+    Algae6(13.74, 3.03, Rotation2d.fromDegrees(120)), 
+    Algae7(14.28, 4.085, Rotation2d.fromDegrees(-180)), 
+    Algae8(13.64, 5.13, Rotation2d.fromDegrees(-120)), 
+    Algae9(12.41, 5.08, Rotation2d.fromDegrees(-60)), 
+    Algae10(11.83, 3.98, Rotation2d.fromDegrees(0)), 
+    Algae11(12.4733, 3.03, Rotation2d.fromDegrees(60));
+
+    public final Pose2d pose;
+
+    WhichAlgae(double x, double y, Rotation2d rotation) {
+      pose = new Pose2d(x, y, rotation);
+    }
+  }
+
   public enum WhichRedStick {
     RSTICKA(14.28, 3.92, Rotation2d.fromDegrees(-180)), // dn
     RSTICKB(14.28, 4.25, Rotation2d.fromDegrees(-180)), // dn
