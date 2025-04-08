@@ -427,6 +427,12 @@ public class RobotContainer {
             new SetEndEffectorSpeedCommand(0.2, esefSubsystem)).withName("Station,Intake=0.2"),
         new SetEndEffectorSpeedCommand(0.0, esefSubsystem));
 
+    buttonBoxLeftTrigger.addButtonMapping(ButtonId.D4,
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.BargeReverse.getPosition(), esefSubsystem),
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
+    buttonBoxRightTrigger.addButtonMapping(ButtonId.D4, new SetEndEffectorSpeedCommand(-0.95, esefSubsystem),
+        new SetEndEffectorSpeedCommand(0, esefSubsystem));
+
     // this is for the algae claw.
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.B4,
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Barge.getPosition(), esefSubsystem),
@@ -663,6 +669,8 @@ public class RobotContainer {
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3.getPosition(), esefSubsystem));
     NamedCommands.registerCommand("Barge",
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Barge.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("Barge Reverse",
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.BargeReverse.getPosition(), esefSubsystem));
     NamedCommands.registerCommand("Deposit", new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
     NamedCommands.registerCommand("Deposit and Home", new RunEndEffectorUntilCoralGone(0.9, esefSubsystem)
         .andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
