@@ -28,12 +28,7 @@
       "linkedName": "Algae Score 2"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.85927505330488,
-      "rotationDegrees": 0.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
@@ -52,7 +47,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Barge",
+      "name": "Barge Reverse",
       "waypointRelativePos": 0.1485482781904143,
       "endWaypointRelativePos": null,
       "command": {

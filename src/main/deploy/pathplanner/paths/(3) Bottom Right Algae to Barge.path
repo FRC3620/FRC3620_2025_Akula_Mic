@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.9,
-        "y": 3.98
+        "x": 5.130737704918032,
+        "y": 2.874180327868852
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.755408480533526,
-        "y": 3.8549177631578946
+        "x": 6.221618852459016,
+        "y": 2.226844262295082
       },
       "isLocked": false,
-      "linkedName": "Suck Algae"
+      "linkedName": "Bottom Right Algae"
     },
     {
       "anchor": {
@@ -20,51 +20,32 @@
         "y": 5.163831967213115
       },
       "prevControl": {
-        "x": 6.401020491803279,
-        "y": 5.18780737704918
+        "x": 7.34804918032787,
+        "y": 4.564446721311476
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Barge Score"
+      "linkedName": "(3) Barge Score"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.07462686567164717,
-      "rotationDegrees": 180.0
-    }
-  ],
-  "constraintZones": [
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0.20338983050847448,
-      "constraints": {
-        "maxVelocity": 1.5,
-        "maxAcceleration": 2.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    }
-  ],
+  "rotationTargets": [],
+  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Barge",
-      "waypointRelativePos": 0.18305084745762706,
+      "name": "Barge Reverse",
+      "waypointRelativePos": 0.15,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Barge"
+          "name": "Barge Reverse"
         }
       }
     },
     {
       "name": "Spit Balls and Home",
-      "waypointRelativePos": 0.9,
+      "waypointRelativePos": 0.98,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -75,7 +56,7 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 1.5,
+    "maxVelocity": 3.0,
     "maxAcceleration": 3.25,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -84,13 +65,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -0.8299002344718979
+    "rotation": -178.28930483517848
   },
   "reversed": false,
   "folder": "Algae",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 118.49563861824498
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

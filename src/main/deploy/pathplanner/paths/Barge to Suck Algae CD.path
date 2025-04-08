@@ -107,7 +107,7 @@
   "folder": "Algae",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -4.864514437760576
+    "rotation": -0.8299002344718979
   },
   "useDefaultConstraints": true
 }
