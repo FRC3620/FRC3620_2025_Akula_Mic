@@ -444,10 +444,8 @@ public class RobotContainer {
         new SetEndEffectorSpeedCommand(0.04, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.B3,
-        new AutoAlignToAlgaeCommand().andThen(
-        new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3.getPosition(), RobotContainer.esefSubsystem)).alongWith(
-        new RunEndEffectorUntilHasAlgae(.45, esefSubsystem)),
-        new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3Remove.getPosition(), esefSubsystem));
+        new AutoAlignToAlgaeCommand(),
+        new WaitCommand(0.00001));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.B3,
       new SetEndEffectorSpeedCommand(0.15, esefSubsystem),
       new SetEndEffectorSpeedCommand(0.04, esefSubsystem));

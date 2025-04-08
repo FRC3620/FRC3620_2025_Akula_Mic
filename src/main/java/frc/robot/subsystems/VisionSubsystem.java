@@ -100,7 +100,7 @@ public class VisionSubsystem extends SubsystemBase {
   public enum WhichStartingAlgae{
     Algae17(2.85, 2.41, Rotation2d.fromDegrees(60)),//
     Algae18(2.30, 4.07, Rotation2d.fromDegrees(0)),//
-    Algae19(2.84, 5.67, Rotation2d.fromDegrees(-59)),//
+    Algae19(3.30, 5.79, Rotation2d.fromDegrees(-59)),//
     Algae20(6.18, 5.6,  Rotation2d.fromDegrees(-120)),//
     Algae21(6.78, 3.98, Rotation2d.fromDegrees(-180)),//
     Algae22(6.04, 2.42, Rotation2d.fromDegrees(120)),//

@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotContainer;
 import frc.robot.commands.esefcommands.RunEndEffectorUntilHasAlgae;
 import frc.robot.commands.esefcommands.SetESEFPositionCommand;
@@ -55,10 +54,13 @@ public class AutoAlignToAlgaeCommand extends InstantCommand {
           if (startPose != null && targetPose != null) {
             CommandScheduler.getInstance().schedule(
                 new SequentialCommandGroup(
-                    new DriveToPoseCommand(RobotContainer.swerveSubsystem, startPose).withTimeout(2.5),
-                    new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose)));
+                  new DriveToPoseCommand(RobotContainer.swerveSubsystem, startPose),
+                  new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2.getPosition(), RobotContainer.esefSubsystem).andThen(new WaitCommand(.75)).andThen(
+                  new DriveToFaceOfTheReefCommand(RobotContainer.swerveSubsystem, targetPose)).alongWith(
+                  new RunEndEffectorUntilHasAlgae(.55, RobotContainer.esefSubsystem)),
+                  new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2Remove.getPosition(), RobotContainer.esefSubsystem)));
           } else {
-            logger.warn("Null pose(s) for odd tagID {} between 17–22", tagID);
+            logger.warn("Null pose(s) for odd tagID {} between 17-22", tagID);
           }
 
         } else if (tagID <= 22 && tagID >= 17 && tagID % 2 == 0) { // Even Tag ID
@@ -68,10 +70,13 @@ public class AutoAlignToAlgaeCommand extends InstantCommand {
           if (startPose != null && targetPose != null) {
             CommandScheduler.getInstance().schedule(
                 new SequentialCommandGroup(
-                    new DriveToPoseCommand(RobotContainer.swerveSubsystem, startPose).withTimeout(2.5),
-                    new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose)));
+                    new DriveToPoseCommand(RobotContainer.swerveSubsystem, startPose),
+                    new DriveToFaceOfTheReefCommand(RobotContainer.swerveSubsystem, targetPose).andThen(
+                    new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3.getPosition(), RobotContainer.esefSubsystem)).alongWith(
+                    new RunEndEffectorUntilHasAlgae(.45, RobotContainer.esefSubsystem)),
+                    new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3Remove.getPosition(), RobotContainer.esefSubsystem)));
           } else {
-            logger.warn("Null pose(s) for even tagID {} between 17–22", tagID);
+            logger.warn("Null pose(s) for even tagID {} between 17-22", tagID);
           }
         }
 
@@ -84,10 +89,13 @@ public class AutoAlignToAlgaeCommand extends InstantCommand {
           if (startPose != null && targetPose != null) {
             CommandScheduler.getInstance().schedule(
                 new SequentialCommandGroup(
-                    new DriveToPoseCommand(RobotContainer.swerveSubsystem, startPose).withTimeout(2.5),
-                    new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose)));
+                  new DriveToPoseCommand(RobotContainer.swerveSubsystem, startPose),
+                  new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2.getPosition(), RobotContainer.esefSubsystem).andThen(new WaitCommand(.75)).andThen(
+                  new DriveToFaceOfTheReefCommand(RobotContainer.swerveSubsystem, targetPose)).alongWith(
+                  new RunEndEffectorUntilHasAlgae(.55, RobotContainer.esefSubsystem)),
+                  new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2Remove.getPosition(), RobotContainer.esefSubsystem)));
           } else {
-            logger.warn("Null pose(s) for even tagID {} between 6–11", tagID);
+            logger.warn("Null pose(s) for even tagID {} between 6-11", tagID);
           }
 
         } else if (tagID >= 6 && tagID <= 11 && tagID % 2 == 1) {
@@ -97,10 +105,13 @@ public class AutoAlignToAlgaeCommand extends InstantCommand {
           if (startPose != null && targetPose != null) {
             CommandScheduler.getInstance().schedule(
                 new SequentialCommandGroup(
-                    new DriveToPoseCommand(RobotContainer.swerveSubsystem, startPose).withTimeout(2.5),
-                    new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose)));
+                  new DriveToPoseCommand(RobotContainer.swerveSubsystem, startPose),
+                  new DriveToFaceOfTheReefCommand(RobotContainer.swerveSubsystem, targetPose).andThen(
+                  new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3.getPosition(), RobotContainer.esefSubsystem)).alongWith(
+                  new RunEndEffectorUntilHasAlgae(.45, RobotContainer.esefSubsystem)),
+                  new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3Remove.getPosition(), RobotContainer.esefSubsystem)));
           } else {
-            logger.warn("Null pose(s) for odd tagID {} between 6–11", tagID);
+            logger.warn("Null pose(s) for odd tagID {} between 6-11", tagID);
           }
         }
 
