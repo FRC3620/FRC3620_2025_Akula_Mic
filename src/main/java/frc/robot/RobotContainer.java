@@ -46,6 +46,7 @@ import frc.robot.commands.esefcommands.RunEndEffectorUntilHasCoral;
 import frc.robot.commands.esefcommands.SetESEFPositionCommand;
 import frc.robot.commands.esefcommands.SetShoulderPositionCommand;
 import frc.robot.commands.swervedrive.AutoAlignToAlgaeCommand;
+import frc.robot.commands.swervedrive.AutoAlignToStartAlgaeCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand.WhichStick;
 import frc.robot.subsystems.AFISubsystem;
@@ -435,7 +436,8 @@ public class RobotContainer {
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.B2,
-        new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2.getPosition(), RobotContainer.esefSubsystem).andThen(new WaitCommand(.75)).andThen(
+        new AutoAlignToStartAlgaeCommand().andThen(
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2.getPosition(), RobotContainer.esefSubsystem)).andThen(new WaitCommand(.75)).andThen(
         new AutoAlignToAlgaeCommand()).alongWith(
         new RunEndEffectorUntilHasAlgae(.55, esefSubsystem)),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2Remove.getPosition(), esefSubsystem));
@@ -443,12 +445,16 @@ public class RobotContainer {
         new SetEndEffectorSpeedCommand(0.15, esefSubsystem),
         new SetEndEffectorSpeedCommand(0.04, esefSubsystem));
 
+
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.B3,
-        new AutoAlignToAlgaeCommand(),
-        new WaitCommand(0.00001));
+      new AutoAlignToStartAlgaeCommand().andThen(
+      new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3.getPosition(), RobotContainer.esefSubsystem)).andThen(new WaitCommand(.75)).andThen(
+      new AutoAlignToAlgaeCommand()).alongWith(
+      new RunEndEffectorUntilHasAlgae(.55, esefSubsystem)),
+      new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3Remove.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.B3,
-      new SetEndEffectorSpeedCommand(0.15, esefSubsystem),
-      new SetEndEffectorSpeedCommand(0.04, esefSubsystem));
+        new SetEndEffectorSpeedCommand(0.15, esefSubsystem),
+        new SetEndEffectorSpeedCommand(0.04, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.B1,
         new SetPivotPositionCommand(Degrees.of(15), afiSubsystem)
