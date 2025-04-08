@@ -45,9 +45,8 @@ public class SwerveSubsystemCommandFactory {
 
     SmartDashboard.putData("Drive to Poses",
         new SequentialCommandGroup(
-            new DriveToPoseCommand(swerveSubsystem, new Pose2d(5.19, 3.04, Rotation2d.fromDegrees(120))),
-            new DriveToPoseCommand(swerveSubsystem, new Pose2d(7.5, 4.2, Rotation2d.fromDegrees(90))),
-            new DriveToPoseCommand(swerveSubsystem, new Pose2d(3.8, 6.1, Rotation2d.fromDegrees(180)))));
+            new DriveToPoseCommand(swerveSubsystem, new Pose2d(2.3, 4.07, Rotation2d.fromDegrees(0))).withTimeout(2.5),
+            new DriveToPoseCommand(swerveSubsystem, new Pose2d(3.3, 4.07, Rotation2d.fromDegrees(0)))));
 
     SmartDashboard.putData("Algae Auto Align", new AutoAlignToAlgaeCommand());
 

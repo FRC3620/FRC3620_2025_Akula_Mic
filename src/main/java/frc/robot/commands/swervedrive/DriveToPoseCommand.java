@@ -24,7 +24,7 @@ public class DriveToPoseCommand extends Command {
     private double turnKp = 0.12;
     private final ProfiledPIDController xController;
     private final ProfiledPIDController yController;
-    private static final double MAX_ACCELERATION = 1.75;
+    private static final double MAX_ACCELERATION = 2.25; //1.75
     private static final double MAX_ANGULAR_ACCELERATION = Math.PI / 2;
     private double xVelocity;
     private double yVelocity;
@@ -62,8 +62,8 @@ public class DriveToPoseCommand extends Command {
             xController.reset(swerve.getPose().getX());
             yController.reset(swerve.getPose().getY());
     
-            xController.setTolerance(0.02, 0.5);
-            yController.setTolerance(0.02, 0.5); 
+            xController.setTolerance(0.001, 0.5);
+            yController.setTolerance(0.001, 0.5); 
             xController.setGoal(targetPose.getX());
             yController.setGoal(targetPose.getY());
     

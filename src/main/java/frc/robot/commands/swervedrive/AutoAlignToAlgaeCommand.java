@@ -30,105 +30,53 @@ public class AutoAlignToAlgaeCommand extends InstantCommand {
   @Override
   public void initialize() {
     if (RobotContainer.visionSubsystem.getDoWeAlign()) {
-      Optional<Alliance> ally = DriverStation.getAlliance();
-      if (ally.isPresent()) {
-        if (ally.get() == Alliance.Red) {
-          tagID = RobotContainer.visionSubsystem.getNearestTagIDRed(RobotContainer.swerveSubsystem.getPose());
-        } else {
-          tagID = RobotContainer.visionSubsystem.getNearestTagIDBlue(RobotContainer.swerveSubsystem.getPose());
-        }
-        logger.info("Detected Tag ID = {}", tagID);
+      Pose2d targetPose = null;
+      Pose2d startPose = RobotContainer.swerveSubsystem.getPose(); // Initialize startPose with a valid value
 
-        Pose2d targetPose = null;
-        Pose2d startPose = RobotContainer.swerveSubsystem.getPose(); // Initialize startPose with a valid value
-
+      if (tagID <= 22 && tagID >= 17 && tagID % 2 == 1) { // Odd Tag ID
+        startPose = RobotContainer.visionSubsystem.getAlgaeStartingPose(tagID);
         targetPose = RobotContainer.visionSubsystem.getAlgaePose(tagID);
 
-        if (targetPose == null) {
-          logger.error("Invalid Target Pose for Tag ID = {}", tagID);
-          return; // Exit if the targetPose is invalid
-        }
-
-        logger.info("Starting Pose = {}", startPose);
         CommandScheduler.getInstance().schedule(
             new SequentialCommandGroup(
+                new DriveToPoseCommand(RobotContainer.swerveSubsystem, startPose).withTimeout(2.5),
                 new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose)));
 
-        /*
-         * if (ally.get() == Alliance.Blue && tagID % 2 == 1) { // Odd Tag ID
-         * targetPose = RobotContainer.visionSubsystem.getAlgaePose(tagID);
-         * 
-         * if (targetPose == null) {
-         * logger.error("Invalid Target Pose for Tag ID = {}", tagID);
-         * return; // Exit if the targetPose is invalid
-         * }
-         * 
-         * logger.info("Starting Pose = {}", startPose);
-         * CommandScheduler.getInstance().schedule(
-         * new SequentialCommandGroup(
-         * new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose))
-         * );
-         * 
-         * } else if(ally.get() == Alliance.Blue && tagID % 2 == 0){ // Even Tag ID
-         * targetPose = RobotContainer.visionSubsystem.getAlgaePose(tagID);
-         * 
-         * if (targetPose == null) {
-         * logger.error("Invalid Target Pose for Tag ID = {}", tagID);
-         * return; // Exit if the targetPose is invalid
-         * }
-         * 
-         * CommandScheduler.getInstance().schedule(
-         * new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose)
-         * );
-         * } else {
-         * logger.
-         * info("No valid alliance or tag detected. AutoAligningToAlgaeCommand Stopped."
-         * );
-         * }
-         * 
-         * 
-         * //Below is for Algae Auto Align on the Red Alliance
-         * 
-         * if (ally.get() == Alliance.Red && tagID % 2 == 0) { // Even Tag ID
-         * targetPose = RobotContainer.visionSubsystem.getAlgaePose(tagID);
-         * 
-         * if (startPose == null) {
-         * logger.error("Invalid Start Pose for Tag ID = {}", tagID);
-         * return; // Exit if the startPose is invalid
-         * }
-         * if (targetPose == null) {
-         * logger.error("Invalid Target Pose for Tag ID = {}", tagID);
-         * return; // Exit if the targetPose is invalid
-         * }
-         * 
-         * logger.info("Starting Pose = {}", startPose);
-         * CommandScheduler.getInstance().schedule(
-         * new SequentialCommandGroup(
-         * new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose))
-         * );
-         * 
-         * } else if(ally.get() == Alliance.Red && tagID % 2 == 1){ // Odd Tag ID
-         * targetPose = RobotContainer.visionSubsystem.getAlgaePose(tagID);
-         * 
-         * if (targetPose == null) {
-         * logger.error("Invalid Target Pose for Tag ID = {}", tagID);
-         * return; // Exit if the targetPose is invalid
-         * }
-         * 
-         * CommandScheduler.getInstance().schedule(
-         * new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose));
-         * }
-         * 
-         * logger.info("Target Pose = {}", targetPose);
-         * RobotContainer.swerveSubsystem.setTargetPose(targetPose);
-         * 
-         * } else {
-         * logger.
-         * info("No valid alliance or tag detected. AutoAligningToAlgaeCommand Stopped."
-         * );
-         * }
-         */
+      } else if (tagID <= 22 && tagID >= 17 && tagID % 2 == 0) {
+
+        // Even Tag ID
+        targetPose = RobotContainer.visionSubsystem.getAlgaePose(tagID);
+        startPose = RobotContainer.visionSubsystem.getAlgaeStartingPose(tagID);
+
+        CommandScheduler.getInstance().schedule(
+            new SequentialCommandGroup(
+                new DriveToPoseCommand(RobotContainer.swerveSubsystem, startPose).withTimeout(2.5),
+                new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose)));
       }
+
+      // Below is for Algae Auto Align on the Red Alliance
+
+      if (tagID >= 6 && tagID <= 11 && tagID % 2 == 0) { // Even Tag ID
+        targetPose = RobotContainer.visionSubsystem.getAlgaePose(tagID);
+        startPose = RobotContainer.visionSubsystem.getAlgaeStartingPose(tagID);
+
+        CommandScheduler.getInstance().schedule(
+            new SequentialCommandGroup(
+                new DriveToPoseCommand(RobotContainer.swerveSubsystem, startPose).withTimeout(2.5),
+                new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose)));
+
+      } else if (tagID >= 6 && tagID <= 11 && tagID % 2 == 1) {
+        targetPose = RobotContainer.visionSubsystem.getAlgaePose(tagID);
+        startPose = RobotContainer.visionSubsystem.getAlgaeStartingPose(tagID);
+
+        CommandScheduler.getInstance().schedule(
+            new SequentialCommandGroup(
+                new DriveToPoseCommand(RobotContainer.swerveSubsystem, startPose).withTimeout(2.5),
+                new DriveToPoseCommand(RobotContainer.swerveSubsystem, targetPose)));
+      }
+
+    } else {
+      logger.info("AutoAligningToAlgaeCommand Stopped.");
     }
   }
 }
