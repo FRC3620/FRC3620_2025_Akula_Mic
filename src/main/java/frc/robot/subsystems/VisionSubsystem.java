@@ -132,7 +132,7 @@ public class VisionSubsystem extends SubsystemBase {
     BSTICKH(3.26, 3.78, Rotation2d.fromDegrees(0)), //
     BSTICKI(3.76, 3.04, Rotation2d.fromDegrees(60)), // tuned
     BSTICKJ(4.1, 2.87, Rotation2d.fromDegrees(60)), // tuned origianl: 4.09, 2.86
-    BSTICKK(4.98, 2.98, Rotation2d.fromDegrees(120)), // dn
+    BSTICKK(4.98, 2.895, Rotation2d.fromDegrees(120)), // dn
     BSTICKL(5.34, 3.09,Rotation2d.fromDegrees(120));
     ; // dn
 
@@ -342,11 +342,11 @@ public class VisionSubsystem extends SubsystemBase {
 
     //for red algae
     tagToAlgaePose2d.put(6, WhichAlgae.Algae6.pose);
-    tagToAlgaePose2d.put(7, WhichAlgae.Algae18.pose);
-    tagToAlgaePose2d.put(8, WhichAlgae.Algae19.pose);
-    tagToAlgaePose2d.put(9, WhichAlgae.Algae20.pose);
-    tagToAlgaePose2d.put(10, WhichAlgae.Algae21.pose);
-    tagToAlgaePose2d.put(11, WhichAlgae.Algae22.pose);
+    tagToAlgaePose2d.put(7, WhichAlgae.Algae7.pose);
+    tagToAlgaePose2d.put(8, WhichAlgae.Algae8.pose);
+    tagToAlgaePose2d.put(9, WhichAlgae.Algae9.pose);
+    tagToAlgaePose2d.put(10, WhichAlgae.Algae10.pose);
+    tagToAlgaePose2d.put(11, WhichAlgae.Algae11.pose);
 
     centerBlueReef = tagToTranslationMap.get(17).plus(tagToTranslationMap.get(20)).div(2);
     centerRedReef = tagToTranslationMap.get(6).plus(tagToTranslationMap.get(9)).div(2);

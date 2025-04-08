@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 5.346516393442624,
-        "y": 3.07797131147541
+        "x": 5.33452868852459,
+        "y": 3.0180327868852457
       },
       "prevControl": {
-        "x": 5.943062446074203,
-        "y": 2.2023956535806732
+        "x": 5.931074741156169,
+        "y": 2.1424571289905088
       },
       "nextControl": null,
       "isLocked": false,
@@ -54,17 +54,6 @@
         "type": "named",
         "data": {
           "name": "L4"
-        }
-      }
-    },
-    {
-      "name": "Deposit",
-      "waypointRelativePos": 0.96,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Deposit"
         }
       }
     }

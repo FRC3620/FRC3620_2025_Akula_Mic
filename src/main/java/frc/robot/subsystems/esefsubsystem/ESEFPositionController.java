@@ -71,6 +71,10 @@ public class ESEFPositionController {
   }
 
   public void setPosition (ESEFPosition position) {
+
+    Distance currentHeight = elevatorMechanism.getCurrentHeight();
+    Angle currentShoulderAngle = shoulderMechanism.getCurrentAngle();
+
     // Set dynamic height breakpoint based on the target height, ensuring it's never below the minimum
     SmartDashboard.putNumber("frc3620/ESEF/debug/targetHeight", position.elevatorHeight.in(Inches));
     SmartDashboard.putNumber("frc3620/ESEF/debug/dynamicBreakpoint", determineDynamicBreakpoint(position.elevatorHeight).in(Inches));
@@ -82,6 +86,7 @@ public class ESEFPositionController {
     updateDashboardForUltimate();
     ultimateSetpointMech.setShoulderAngle(ultimateSetpoint.shoulderAngle);
     ultimateSetpointMech.setElevatorHeight(ultimateSetpoint.elevatorHeight);
+    //tweakIntermediateSetpoints(currentHeight, currentShoulderAngle);
     recalculate();
   }
 
