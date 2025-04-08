@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 5.130737704918032,
-        "y": 2.874180327868852
+        "x": 5.094774590163934,
+        "y": 2.9580942622950825
       },
       "prevControl": {
-        "x": 6.137704918032787,
-        "y": 1.207889344262296
+        "x": 6.1017418032786885,
+        "y": 1.2918032786885265
       },
       "nextControl": null,
       "isLocked": false,
@@ -44,11 +44,33 @@
       }
     }
   ],
-  "pointTowardsZones": [],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 4.5,
+        "y": 4.0
+      },
+      "rotationOffset": 0.0,
+      "minWaypointRelativePos": 0.10263335584064542,
+      "maxWaypointRelativePos": 0.8183659689398953,
+      "name": "Point Towards Zone"
+    }
+  ],
   "eventMarkers": [
     {
+      "name": "L3 Algae",
+      "waypointRelativePos": 0.7913571910870985,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "L3 Algae"
+        }
+      }
+    },
+    {
       "name": "Suck L3 Algae",
-      "waypointRelativePos": 0.6049966239027623,
+      "waypointRelativePos": 0.92,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

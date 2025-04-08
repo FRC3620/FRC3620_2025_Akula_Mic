@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.130737704918032,
-        "y": 2.874180327868852
+        "x": 5.094774590163934,
+        "y": 2.9580942622950825
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.221618852459016,
-        "y": 2.226844262295082
+        "x": 6.785040983606557,
+        "y": 1.6394467213114754
       },
       "isLocked": false,
       "linkedName": "Bottom Right Algae"
@@ -20,8 +20,8 @@
         "y": 5.163831967213115
       },
       "prevControl": {
-        "x": 7.34804918032787,
-        "y": 4.564446721311476
+        "x": 6.916905737704918,
+        "y": 4.8881147540983605
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "Barge Reverse",
-      "waypointRelativePos": 0.15,
+      "waypointRelativePos": 0.39972991222147386,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -56,8 +56,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.25,
+    "maxVelocity": 2.5,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -73,5 +73,5 @@
     "velocity": 0,
     "rotation": 118.49563861824498
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

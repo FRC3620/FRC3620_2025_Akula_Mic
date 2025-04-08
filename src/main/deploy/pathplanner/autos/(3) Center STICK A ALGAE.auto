@@ -71,6 +71,12 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "Barge to Suck Algae CD"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "XMode"
