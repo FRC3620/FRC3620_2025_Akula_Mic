@@ -44,6 +44,7 @@ public class VisionSubsystem extends SubsystemBase {
   private Map<Integer, Pose2d> tagToStickPose2dRight = new HashMap<>();
 
   private Map<Integer, Pose2d> tagToAlgaePose2d = new HashMap<>();
+  private Map<Integer, Pose2d> tagToAlgaeIntermediatePose2d = new HashMap<>();
 
   private Map<Integer, Pose2d> tagToStartingAlgaePose2d = new HashMap<>();
 
@@ -97,9 +98,9 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
 
-  public enum WhichAlgaeInterediate {
+  public enum WhichAlgaeIntermediate {
     Algae17(3.85, 2.91, Rotation2d.fromDegrees(60)),//
-    Algae18(3.30, 4.07, Rotation2d.fromDegrees(0)),//
+    Algae18(2.30, 4.07, Rotation2d.fromDegrees(0)),//created
     Algae19(3.84, 5.17, Rotation2d.fromDegrees(-59)),//
     Algae20(5.18, 5.10, Rotation2d.fromDegrees(-120)),//
     Algae21(5.78, 3.98, Rotation2d.fromDegrees(-180)),//
@@ -116,7 +117,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     public final Pose2d pose;
 
-    WhichAlgae(double x, double y, Rotation2d rotation) {
+    WhichAlgaeIntermediate(double x, double y, Rotation2d rotation) {
       pose = new Pose2d(x, y, rotation);
     }
   }
@@ -166,6 +167,10 @@ public class VisionSubsystem extends SubsystemBase {
       pose = new Pose2d(x, y, rotation);
     }
   }
+
+  int _tagID = -1;
+  public Pose2d algaeIntermediateTargetPose = null;
+  public Pose2d algaeTargetPose = null;
 
   public class CameraData {
     final String limelightName;
@@ -372,6 +377,22 @@ public class VisionSubsystem extends SubsystemBase {
     tagToAlgaePose2d.put(10, WhichAlgae.Algae10.pose);
     tagToAlgaePose2d.put(11, WhichAlgae.Algae11.pose);
 
+    //for blue algae
+    tagToAlgaeIntermediatePose2d.put(17, WhichAlgaeIntermediate.Algae17.pose);
+    tagToAlgaeIntermediatePose2d.put(18, WhichAlgaeIntermediate.Algae18.pose);
+    tagToAlgaeIntermediatePose2d.put(19, WhichAlgaeIntermediate.Algae19.pose);
+    tagToAlgaeIntermediatePose2d.put(20, WhichAlgaeIntermediate.Algae20.pose);
+    tagToAlgaeIntermediatePose2d.put(21, WhichAlgaeIntermediate.Algae21.pose);
+    tagToAlgaeIntermediatePose2d.put(22, WhichAlgaeIntermediate.Algae22.pose);
+
+    //for red algae
+    tagToAlgaeIntermediatePose2d.put(6, WhichAlgaeIntermediate.Algae6.pose);
+    tagToAlgaeIntermediatePose2d.put(7, WhichAlgaeIntermediate.Algae7.pose);
+    tagToAlgaeIntermediatePose2d.put(8, WhichAlgaeIntermediate.Algae8.pose);
+    tagToAlgaeIntermediatePose2d.put(9, WhichAlgaeIntermediate.Algae9.pose);
+    tagToAlgaeIntermediatePose2d.put(10, WhichAlgaeIntermediate.Algae10.pose);
+    tagToAlgaeIntermediatePose2d.put(11, WhichAlgaeIntermediate.Algae11.pose);
+
     centerBlueReef = tagToTranslationMap.get(17).plus(tagToTranslationMap.get(20)).div(2);
     centerRedReef = tagToTranslationMap.get(6).plus(tagToTranslationMap.get(9)).div(2);
 
@@ -465,7 +486,22 @@ public class VisionSubsystem extends SubsystemBase {
       }
       SmartDashboard.putString(sdPrefix + "rejectionMessage", error);
     }
+    if (RobotContainer.visionSubsystem.getDoWeAlign()) {
+      Optional<Alliance> ally = DriverStation.getAlliance();
+      if (ally.isPresent()) {
+        if (ally.get() == Alliance.Red) {
+          _tagID = RobotContainer.visionSubsystem.getNearestTagIDRed(RobotContainer.swerveSubsystem.getPose());
+        } else {
+          _tagID = RobotContainer.visionSubsystem.getNearestTagIDBlue(RobotContainer.swerveSubsystem.getPose());
+        }
+        //logger.info("Detected Tag ID = {}", tagID);
+        //Pose2d startPose = RobotContainer.swerveSubsystem.getPose(); // Initialize startPose with a valid value
 
+        algaeIntermediateTargetPose = RobotContainer.visionSubsystem.getAlgaeIntermediatePose(_tagID);
+        algaeTargetPose = RobotContainer.visionSubsystem.getAlgaePose(_tagID);
+      }
+    }
+      
     // we are not using this, so commented out to try to speed up code a little
     /*
      * if (RobotContainer.swerveSubsystem != null) {
@@ -535,7 +571,19 @@ public class VisionSubsystem extends SubsystemBase {
       return tagToAlgaePose2d.get(tagID);
     }
   }
-
+  public Pose2d getCurrentAlgaePose() {
+    return algaeTargetPose;
+  }
+  public Pose2d getAlgaeIntermediatePose(int tagID) {
+    if (tagID == -1) {
+      return RobotContainer.swerveSubsystem.getPose();
+    } else {
+      return tagToAlgaeIntermediatePose2d.get(tagID);
+    }
+  }
+  public Pose2d getCurrentAlgaeIntermediatePose() {
+    return algaeIntermediateTargetPose;
+  }
   public boolean getDoWeAlign() {
     return doWeAutoAlign;
   }
