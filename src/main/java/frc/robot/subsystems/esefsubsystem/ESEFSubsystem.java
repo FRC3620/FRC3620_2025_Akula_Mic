@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.esefsubsystem;
 
-import static edu.wpi.first.units.Units.Degrees;
-
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -31,12 +29,6 @@ public class ESEFSubsystem extends SubsystemBase {
     elevatorMechanism.periodic();
     positionController.periodic();
     endEffectorMechanism.periodic();
-  }
-
-  @Override
-  public void simulationPeriodic() {
-    shoulderMechanism.simulationPeriodic();
-    elevatorMechanism.simulationPeriodic();
   }
 
   public void setPosition(ESEFPosition position) {

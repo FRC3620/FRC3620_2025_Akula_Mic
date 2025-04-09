@@ -24,7 +24,6 @@ import com.ctre.phoenix6.sim.TalonFXSimState;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.AnalogInputSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
@@ -44,7 +43,6 @@ public class ESEFElevatorMechanism {
   Distance requestedPositionWhileCalibrating = null;
 
   AnalogInput homeLimitSwitch = new AnalogInput(0);
-  AnalogInputSim homeLimitSwitchSim = new AnalogInputSim(0);
 
   int resetCounter = 0;
 
@@ -54,8 +52,6 @@ public class ESEFElevatorMechanism {
   public TalonFX elevatorB;
   final int ELEVATORA_MOTORID = 9;
   final int ELEVATORB_MOTORID = 10;
-
-  TalonFXSimState elevatorAsim;
 
   private final Distance positionConversion = Inches.of(9 / (2 * Math.PI));
 
@@ -72,10 +68,6 @@ public class ESEFElevatorMechanism {
         || RobotContainer.shouldMakeAllCANDevices()) {
       this.elevatorA = new TalonFX(ELEVATORA_MOTORID);
 
-      if (Robot.isSimulation()) {
-        elevatorAsim = new TalonFXSimState(elevatorA);
-      }
-      // this.shoulderEncoder = new CANcoder(10);
       TalonFXConfiguration elevatorAConfigs = new TalonFXConfiguration();
       elevatorAConfigs.Slot0.kG = 0.3; // Gravity FeedForward
       elevatorAConfigs.Slot0.kS = 0; // Friction FeedForward
@@ -169,19 +161,6 @@ public class ESEFElevatorMechanism {
     SmartDashboard.putBoolean("frc3620/Elevator/Calibrated", encoderCalibrated);
     SmartDashboard.putNumber("frc3620/Elevator/ActualPosition", getCurrentHeight().in(Inches));
     SmartDashboard.putNumber("frc3620/Elevator/ActualBPosition", getCurrentHeightB().in(Inches));
-  }
-
-  public void simulationPeriodic() {
-    if (Robot.getCurrentRobotMode() != RobotMode.DISABLED) {
-      Distance currentPosition = getCurrentHeight();
-      homeLimitSwitchSim.setVoltage(currentPosition.lt(Inches.of(0.01)) ? 5 : 0);
-      Distance delta = setpoint.minus(currentPosition);
-      double rotations = delta.in(Inches) / positionConversion.in(Inches);
-      double movement = MathUtil.clamp(rotations, -1, 1);
-      if (movement != 0) {
-        elevatorAsim.addRotorPosition(-movement);
-      }
-    }
   }
 
   public boolean homeSwitchHit() {

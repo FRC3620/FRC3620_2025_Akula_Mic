@@ -106,10 +106,6 @@ public class ESEFShoulderMechanism {
         }
     }
 
-    public void simulationPeriodic() {
-
-    }
-
     Angle setpoint;
 
     public void setSetpoint(Angle position) {
