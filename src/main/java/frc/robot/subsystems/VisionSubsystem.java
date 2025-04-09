@@ -485,23 +485,7 @@ public class VisionSubsystem extends SubsystemBase {
         lastLoggedError = error;
       }
       SmartDashboard.putString(sdPrefix + "rejectionMessage", error);
-    }
-    if (RobotContainer.visionSubsystem.getDoWeAlign()) {
-      Optional<Alliance> ally = DriverStation.getAlliance();
-      if (ally.isPresent()) {
-        if (ally.get() == Alliance.Red) {
-          _tagID = RobotContainer.visionSubsystem.getNearestTagIDRed(RobotContainer.swerveSubsystem.getPose());
-        } else {
-          _tagID = RobotContainer.visionSubsystem.getNearestTagIDBlue(RobotContainer.swerveSubsystem.getPose());
-        }
-        //logger.info("Detected Tag ID = {}", tagID);
-        //Pose2d startPose = RobotContainer.swerveSubsystem.getPose(); // Initialize startPose with a valid value
-
-        algaeIntermediateTargetPose = RobotContainer.visionSubsystem.getAlgaeIntermediatePose(_tagID);
-        algaeTargetPose = RobotContainer.visionSubsystem.getAlgaePose(_tagID);
-      }
-    }
-      
+    }      
     // we are not using this, so commented out to try to speed up code a little
     /*
      * if (RobotContainer.swerveSubsystem != null) {
@@ -571,12 +555,28 @@ public class VisionSubsystem extends SubsystemBase {
       return tagToAlgaePose2d.get(tagID);
     }
   }
+
   public Pose2d getCurrentAlgaePose() {
-    if (algaeTargetPose != null) {
-      return algaeTargetPose;
-    } else {
-      return RobotContainer.swerveSubsystem.getPose();    
+    if (RobotContainer.visionSubsystem.getDoWeAlign()) {
+      if (color.isPresent()) {
+        if (color.get() == Alliance.Red) {
+          _tagID = RobotContainer.visionSubsystem.getNearestTagIDRed(RobotContainer.swerveSubsystem.getPose());
+        } else {
+          _tagID = RobotContainer.visionSubsystem.getNearestTagIDBlue(RobotContainer.swerveSubsystem.getPose());
+        }
+        // logger.info("Detected Tag ID = {}", tagID);
+        // Pose2d startPose = RobotContainer.swerveSubsystem.getPose(); // Initialize
+        // startPose with a valid value
+
+        algaeIntermediateTargetPose = RobotContainer.visionSubsystem.getAlgaeIntermediatePose(_tagID);
+        algaeTargetPose = RobotContainer.visionSubsystem.getAlgaePose(_tagID);
+      }
     }
+  }else
+
+  {
+    return RobotContainer.swerveSubsystem.getPose();
+  }
   }
   public Pose2d getAlgaeIntermediatePose(int tagID) {
     if (tagID == -1) {

@@ -450,7 +450,7 @@ public class RobotContainer {
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.B3,
         new DriveToPoseCommand(swerveSubsystem, visionSubsystem.getCurrentAlgaeIntermediatePose()).andThen(
-        new DriveToPoseCommand(swerveSubsystem, visionSubsystem.getCurrentAlgaeIntermediatePose())).andThen(
+        new DriveToPoseCommand(swerveSubsystem, visionSubsystem.getCurrentAlgaePose())).andThen(
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3.getPosition(), RobotContainer.esefSubsystem)).alongWith(
         new RunEndEffectorUntilHasAlgae(.45, esefSubsystem)),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3Remove.getPosition(), esefSubsystem));
