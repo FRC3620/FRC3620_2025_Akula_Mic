@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.75,
-        "y": 3.98
+        "x": 6.605225409836065,
+        "y": 4.001024590163935
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.268818266198734,
-        "y": 3.98
+        "x": 6.124043676034799,
+        "y": 4.001024590163935
       },
       "isLocked": false,
       "linkedName": "Algae Pickup AB"

@@ -73,7 +73,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Barge to Suck Algae CD"
+            "pathName": "(3) Short Barge to Suck Algae CD"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Suck L3 Algae"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Home"
           }
         },
         {

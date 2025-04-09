@@ -3,45 +3,40 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.396,
-        "y": 5.163831967213115
+        "x": 7.45,
+        "y": 4.9
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.264549180327867,
-        "y": 2.0230532786885247
+        "x": 6.906136755823986,
+        "y": 5.359949309749784
       },
       "isLocked": false,
-      "linkedName": "(3) Barge Score"
+      "linkedName": "Short Barge Score"
     },
     {
       "anchor": {
-        "x": 5.058811475409836,
-        "y": 2.8861680327868853
+        "x": 5.15,
+        "y": 5.1
       },
       "prevControl": {
-        "x": 5.454405737704918,
-        "y": 2.2388319672131147
+        "x": 6.257581967213115,
+        "y": 6.08688524590164
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Bottom Right Algae"
+      "linkedName": "Algae Pickup CD"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.8720682302771897,
-      "rotationDegrees": 119.99999999999999
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.877785280216066,
+      "minWaypointRelativePos": 0.6320054017555765,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 1.5,
-        "maxAcceleration": 1.5,
+        "maxAcceleration": 2.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -52,19 +47,30 @@
   "pointTowardsZones": [
     {
       "fieldPosition": {
-        "x": 4.5,
-        "y": 4.0
+        "x": 4.8,
+        "y": 4.5
       },
       "rotationOffset": 0.0,
-      "minWaypointRelativePos": 0.9101958136394322,
-      "maxWaypointRelativePos": 0.7103308575287035,
+      "minWaypointRelativePos": 0.41323430114786713,
+      "maxWaypointRelativePos": 1.0,
       "name": "Point Towards Zone"
     }
   ],
   "eventMarkers": [
     {
+      "name": "Reset IMU",
+      "waypointRelativePos": 0.6563133018230872,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Reset IMU"
+        }
+      }
+    },
+    {
       "name": "L3 Algae",
-      "waypointRelativePos": 0.7913571910870985,
+      "waypointRelativePos": 0.6617150573936507,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -75,7 +81,7 @@
     },
     {
       "name": "Suck L3 Algae",
-      "waypointRelativePos": 0.92,
+      "waypointRelativePos": 0.9047940580688771,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -87,7 +93,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 3.5,
+    "maxAcceleration": 3.25,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -95,7 +101,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 118.49563861824498
+    "rotation": -119.99999999999999
   },
   "reversed": false,
   "folder": "Algae",
@@ -103,5 +109,5 @@
     "velocity": 0,
     "rotation": -178.28930483517848
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }
