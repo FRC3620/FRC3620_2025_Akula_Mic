@@ -581,9 +581,15 @@ public class VisionSubsystem extends SubsystemBase {
       return tagToAlgaeIntermediatePose2d.get(tagID);
     }
   }
-  public Pose2d getCurrentAlgaeIntermediatePose() {
-    return algaeIntermediateTargetPose;
+
+  public Pose2d getCurrentAlgaeIntermediatePose(Optional<Integer> tagID) { //should be an optional integer coz it may and may not return null
+    if (tagID.isEmpty()) {
+      return RobotContainer.swerveSubsystem.getPose();
+    } else {
+      return tagToAlgaeIntermediatePose2d.get(tagID.get());
+    }
   }
+
   public boolean getDoWeAlign() {
     return doWeAutoAlign;
   }

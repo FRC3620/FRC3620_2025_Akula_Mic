@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.wpilibj.*;
@@ -12,6 +13,7 @@ import static edu.wpi.first.units.Units.Seconds;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
 import org.json.simple.parser.ParseException;
 import org.tinylog.TaggedLogger;
@@ -437,7 +439,7 @@ public class RobotContainer {
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.B2,
-        new DriveToPoseCommand(swerveSubsystem, visionSubsystem.getCurrentAlgaeIntermediatePose()).andThen(
+        new DriveToPoseCommand(swerveSubsystem, visionSubsystem.getCurrentAlgaeIntermediatePose(Optional.empty())).andThen(
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2.getPosition(), RobotContainer.esefSubsystem)).andThen(new WaitCommand(.75)).andThen(
         new DriveToPoseCommand(swerveSubsystem, visionSubsystem.getCurrentAlgaePose())).alongWith(
         new RunEndEffectorUntilHasAlgae(.55, esefSubsystem)),
@@ -447,8 +449,8 @@ public class RobotContainer {
         new SetEndEffectorSpeedCommand(0.04, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.B3,
-        new DriveToPoseCommand(swerveSubsystem, visionSubsystem.getCurrentAlgaeIntermediatePose()).andThen(
-        new DriveToPoseCommand(swerveSubsystem, visionSubsystem.getCurrentAlgaeIntermediatePose())).andThen(
+        new DriveToPoseCommand(swerveSubsystem, visionSubsystem.getCurrentAlgaeIntermediatePose(Optional.empty())).andThen(
+        new DriveToPoseCommand(swerveSubsystem, visionSubsystem.getCurrentAlgaeIntermediatePose(Optional.empty()))).andThen(
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3.getPosition(), RobotContainer.esefSubsystem)).alongWith(
         new RunEndEffectorUntilHasAlgae(.45, esefSubsystem)),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3Remove.getPosition(), esefSubsystem));
