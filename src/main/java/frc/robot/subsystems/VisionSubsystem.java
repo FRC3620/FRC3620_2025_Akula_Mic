@@ -97,6 +97,30 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
 
+  public enum WhichStartingAlgae{
+    Algae17(2.85, 2.41, Rotation2d.fromDegrees(60)),//
+    Algae18(2.30, 4.07, Rotation2d.fromDegrees(0)),//
+    Algae19(3.30, 5.79, Rotation2d.fromDegrees(-59)),//
+    Algae20(6.18, 5.6,  Rotation2d.fromDegrees(-120)),//
+    Algae21(6.78, 3.98, Rotation2d.fromDegrees(-180)),//
+    Algae22(6.04, 2.42, Rotation2d.fromDegrees(120)),//
+
+    //Red Algae Poses
+
+    Algae6(14.24, 2.03, Rotation2d.fromDegrees(120)), //
+    Algae7(15.28, 4.085, Rotation2d.fromDegrees(-180)), //
+    Algae8(14.14, 6.13, Rotation2d.fromDegrees(-120)), //
+    Algae9(11.91, 6.08, Rotation2d.fromDegrees(-60)), //
+    Algae10(10.83, 3.98, Rotation2d.fromDegrees(0)), //
+    Algae11(11.97, 2.03, Rotation2d.fromDegrees(60)); //
+
+    public final Pose2d pose;
+
+    WhichStartingAlgae(double x, double y, Rotation2d rotation) {
+      pose = new Pose2d(x, y, rotation);
+    }
+  }
+
   public enum WhichRedStick {
     RSTICKA(14.28, 3.92, Rotation2d.fromDegrees(-180)), // dn
     RSTICKB(14.28, 4.25, Rotation2d.fromDegrees(-180)), // dn
@@ -132,7 +156,7 @@ public class VisionSubsystem extends SubsystemBase {
     BSTICKH(3.26, 3.78, Rotation2d.fromDegrees(0)), //
     BSTICKI(3.76, 3.04, Rotation2d.fromDegrees(60)), // tuned
     BSTICKJ(4.1, 2.87, Rotation2d.fromDegrees(60)), // tuned origianl: 4.09, 2.86
-    BSTICKK(4.98, 2.98, Rotation2d.fromDegrees(120)), // dn
+    BSTICKK(4.98, 2.895, Rotation2d.fromDegrees(120)), // dn
     BSTICKL(5.34, 3.09,Rotation2d.fromDegrees(120));
     ; // dn
 
@@ -353,6 +377,24 @@ public class VisionSubsystem extends SubsystemBase {
     tagToAlgaePose2d.put(10, WhichAlgae.Algae10.pose);
     tagToAlgaePose2d.put(11, WhichAlgae.Algae11.pose);
 
+    //for starting blue algae
+
+    tagToStartingAlgaePose2d.put(17, WhichStartingAlgae.Algae17.pose);
+    tagToStartingAlgaePose2d.put(18, WhichStartingAlgae.Algae18.pose);
+    tagToStartingAlgaePose2d.put(19, WhichStartingAlgae.Algae19.pose);
+    tagToStartingAlgaePose2d.put(20, WhichStartingAlgae.Algae20.pose);
+    tagToStartingAlgaePose2d.put(21, WhichStartingAlgae.Algae21.pose);
+    tagToStartingAlgaePose2d.put(22, WhichStartingAlgae.Algae22.pose);
+
+    //for starting red algae
+
+    tagToStartingAlgaePose2d.put(6, WhichStartingAlgae.Algae6.pose);
+    tagToStartingAlgaePose2d.put(7, WhichStartingAlgae.Algae7.pose);
+    tagToStartingAlgaePose2d.put(8, WhichStartingAlgae.Algae8.pose);
+    tagToStartingAlgaePose2d.put(9, WhichStartingAlgae.Algae9.pose);
+    tagToStartingAlgaePose2d.put(10, WhichStartingAlgae.Algae10.pose);
+    tagToStartingAlgaePose2d.put(11, WhichStartingAlgae.Algae11.pose);
+
     centerBlueReef = tagToTranslationMap.get(17).plus(tagToTranslationMap.get(20)).div(2);
     centerRedReef = tagToTranslationMap.get(6).plus(tagToTranslationMap.get(9)).div(2);
 
@@ -514,6 +556,14 @@ public class VisionSubsystem extends SubsystemBase {
       return RobotContainer.swerveSubsystem.getPose();
     } else {
       return tagToAlgaePose2d.get(tagID);
+    }
+  }
+
+  public Pose2d getAlgaeStartingPose(int tagID) {
+    if (tagID == -1) {
+      return RobotContainer.swerveSubsystem.getPose();
+    } else {
+      return tagToStartingAlgaePose2d.get(tagID);
     }
   }
 

@@ -12,12 +12,32 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.VisionSubsystem.WhichAlgae;
 import frc.robot.subsystems.VisionSubsystem.WhichBlueStick;
 import frc.robot.subsystems.VisionSubsystem.WhichRedStick;
+import frc.robot.subsystems.VisionSubsystem.WhichStartingAlgae;
 
 /** Add your docs here. */
 public class CalculateTargetPositionsTest {
     AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
 
-    // @Test
+    @Test
+    public void checkAlgaeStart() {
+        checkAlgae(6, VisionSubsystem.WhichStartingAlgae.Algae6);
+        checkAlgae(7, VisionSubsystem.WhichStartingAlgae.Algae7);
+        checkAlgae(8, VisionSubsystem.WhichStartingAlgae.Algae8);
+        checkAlgae(9, VisionSubsystem.WhichStartingAlgae.Algae9);
+        checkAlgae(10, VisionSubsystem.WhichStartingAlgae.Algae10);
+        checkAlgae(11, VisionSubsystem.WhichStartingAlgae.Algae11);
+        System.out.println("-------------------");
+
+        checkAlgae(17, VisionSubsystem.WhichStartingAlgae.Algae17);
+        checkAlgae(18, VisionSubsystem.WhichStartingAlgae.Algae18);
+        checkAlgae(19, VisionSubsystem.WhichStartingAlgae.Algae19);
+        checkAlgae(20, VisionSubsystem.WhichStartingAlgae.Algae20);
+        checkAlgae(21, VisionSubsystem.WhichStartingAlgae.Algae21);
+        checkAlgae(22, VisionSubsystem.WhichStartingAlgae.Algae22);
+        System.out.println("-------------------");
+    }
+
+    @Test
     public void checkAlgae() {
         checkAlgae(6, VisionSubsystem.WhichAlgae.Algae6);
         checkAlgae(7, VisionSubsystem.WhichAlgae.Algae7);
@@ -40,13 +60,17 @@ public class CalculateTargetPositionsTest {
         check("Algae " + tagId, aprilTagFieldLayout.getTagPose(tagId).get().toPose2d(), algae.pose);
     }
 
+    void checkAlgae(int tagId, WhichStartingAlgae algae) {
+        check("Algae " + tagId, aprilTagFieldLayout.getTagPose(tagId).get().toPose2d(), algae.pose);
+    }
+
     void check(String what, Pose2d p1, Pose2d p2) {
         var distance = p1.getTranslation().getDistance(p2.getTranslation());
         var vector = p1.getTranslation().minus(p2.getTranslation()).getAngle().minus(p1.getRotation());
         System.out.println(what + "," + distance + "," + vector.getDegrees());
     }
 
-    @Test
+    //@Test
     public void checkLSticks() {
         checkStick("Left", 17, WhichBlueStick.BSTICKI);
         checkStick("Left", 18, WhichBlueStick.BSTICKG);
@@ -56,6 +80,7 @@ public class CalculateTargetPositionsTest {
         checkStick("Left", 22, WhichBlueStick.BSTICKK);
         System.out.println("-------------------");
 
+        /*
         Pose2d bstickPrime1 = new Pose2d(4.98, 2.98, Rotation2d.fromDegrees(120));
         check("adjusted1" + bstickPrime1, aprilTagFieldLayout.getTagPose(22).get().toPose2d(), bstickPrime1);
 
@@ -74,17 +99,17 @@ public class CalculateTargetPositionsTest {
             }
             System.out.println("-------------------");
         }
+        */
 
-    /*
-     * checkStick("Left", 6, WhichRedStick.RSTICKK);
-     * checkStick("Left", 7, WhichRedStick.RSTICKA);
-     * checkStick("Left", 8, WhichRedStick.RSTICKC);
-     * checkStick("Left", 9, WhichRedStick.RSTICKE);
-     * checkStick("Left", 10, WhichRedStick.RSTICKG);
-     * checkStick("Left", 11, WhichRedStick.RSTICKI);
-     * 
-     * System.out.println("-------------------");
-     */
+
+      checkStick("Left", 6, WhichRedStick.RSTICKK);
+      checkStick("Left", 7, WhichRedStick.RSTICKA);
+      checkStick("Left", 8, WhichRedStick.RSTICKC);
+      checkStick("Left", 9, WhichRedStick.RSTICKE);
+      checkStick("Left", 10, WhichRedStick.RSTICKG);
+      checkStick("Left", 11, WhichRedStick.RSTICKI);
+      
+      System.out.println("-------------------");
     }
 
     // @Test
