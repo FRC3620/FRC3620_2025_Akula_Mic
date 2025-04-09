@@ -572,7 +572,11 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
   public Pose2d getCurrentAlgaePose() {
-    return algaeTargetPose;
+    if (algaeTargetPose != null) {
+      return algaeTargetPose;
+    } else {
+      return RobotContainer.swerveSubsystem.getPose();    
+    }
   }
   public Pose2d getAlgaeIntermediatePose(int tagID) {
     if (tagID == -1) {
@@ -581,15 +585,13 @@ public class VisionSubsystem extends SubsystemBase {
       return tagToAlgaeIntermediatePose2d.get(tagID);
     }
   }
-
-  public Pose2d getCurrentAlgaeIntermediatePose(Optional<Integer> tagID) { //should be an optional integer coz it may and may not return null
-    if (tagID.isEmpty()) {
-      return RobotContainer.swerveSubsystem.getPose();
+  public Pose2d getCurrentAlgaeIntermediatePose() {
+    if (algaeTargetPose != null) {
+      return algaeIntermediateTargetPose;
     } else {
-      return tagToAlgaeIntermediatePose2d.get(tagID.get());
+      return RobotContainer.swerveSubsystem.getPose();    
     }
   }
-
   public boolean getDoWeAlign() {
     return doWeAutoAlign;
   }
