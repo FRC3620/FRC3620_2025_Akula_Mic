@@ -74,12 +74,12 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public enum WhichAlgae {
-    Algae17(3.84, 2.97, Rotation2d.fromDegrees(60)),//
+    Algae17(3.74, 2.85, Rotation2d.fromDegrees(60)),//
     Algae18(3.30, 4.07, Rotation2d.fromDegrees(0)),//
-    Algae19(3.84, 5.17, Rotation2d.fromDegrees(-59)),//
-    Algae20(5.18, 5.10, Rotation2d.fromDegrees(-120)),//
-    Algae21(5.78, 3.98, Rotation2d.fromDegrees(-180)),//
-    Algae22(5.04, 2.92, Rotation2d.fromDegrees(120)),//
+    Algae19(3.85, 5.09, Rotation2d.fromDegrees(-59)),//
+    Algae20(5.22, 5.07, Rotation2d.fromDegrees(-120)),//
+    Algae21(5.74, 3.93, Rotation2d.fromDegrees(-180)),//
+    Algae22(5.04, 2.95, Rotation2d.fromDegrees(120)),//
 
     //Red Algae Poses
 
@@ -98,14 +98,14 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public enum WhichStartingAlgae{
-    Algae17(2.85, 2.41, Rotation2d.fromDegrees(60)),//
+    Algae17(3.41, 2.21, Rotation2d.fromDegrees(60)),//crnt
     Algae18(2.30, 4.07, Rotation2d.fromDegrees(0)),//
-    Algae19(3.30, 5.79, Rotation2d.fromDegrees(-59)),//
-    Algae20(6.18, 5.6,  Rotation2d.fromDegrees(-120)),//
-    Algae21(6.78, 3.98, Rotation2d.fromDegrees(-180)),//
-    Algae22(5.47, 2.32, Rotation2d.fromDegrees(120)),//crnt
+    Algae19(3.48, 5.82, Rotation2d.fromDegrees(-59)),//
+    Algae20(5.62, 5.44,  Rotation2d.fromDegrees(-120)),//
+    Algae21(6.26, 3.93, Rotation2d.fromDegrees(-180)),//
+    Algae22(5.34, 2.30, Rotation2d.fromDegrees(120)),//crnt
 
-    //Red Algae Poses
+    //Red Algae Starting Poses
 
     Algae6(14.24, 2.03, Rotation2d.fromDegrees(120)), //
     Algae7(15.28, 4.085, Rotation2d.fromDegrees(-180)), //
