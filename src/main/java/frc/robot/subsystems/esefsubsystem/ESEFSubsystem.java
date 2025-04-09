@@ -33,6 +33,12 @@ public class ESEFSubsystem extends SubsystemBase {
     endEffectorMechanism.periodic();
   }
 
+  @Override
+  public void simulationPeriodic() {
+    shoulderMechanism.simulationPeriodic();
+    elevatorMechanism.simulationPeriodic();
+  }
+
   public void setPosition(ESEFPosition position) {
     positionController.setPosition(position);
   }

@@ -6,7 +6,9 @@ package frc.robot.subsystems.esefsubsystem;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Rotations;
 
+import org.tinylog.TaggedLogger;
 import org.usfirst.frc3620.CANDeviceType;
+import org.usfirst.frc3620.logger.LoggingMaster;
 
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -27,6 +29,7 @@ import frc.robot.RobotContainer;
 
 /** Add your docs here. */
 public class ESEFShoulderMechanism {
+    TaggedLogger logger = LoggingMaster.getLogger(getClass());
 
     private final MotionMagicVoltage shoulderMotionMagicRequest = new MotionMagicVoltage(0).withSlot(0);
 
@@ -103,12 +106,23 @@ public class ESEFShoulderMechanism {
         }
     }
 
-    public void setSetpoint(Angle position) {
-        // set the shoulder to the desired position Cat
-        SmartDashboard.putNumber("frc3620/Shoulder/RequestedPosition", position.in(Degrees));
+    public void simulationPeriodic() {
 
-        if (shoulder != null) {
-            shoulder.setControl(shoulderMotionMagicRequest.withPosition(position.in(Rotations)));
+    }
+
+    Angle setpoint;
+
+    public void setSetpoint(Angle position) {
+        if (!position.equals(setpoint)) {
+            logger.info("Changing shoulder setpoint: {} -> {}", setpoint, position);
+
+            setpoint = position;
+            // set the shoulder to the desired position Cat
+            SmartDashboard.putNumber("frc3620/Shoulder/RequestedPosition", position.in(Degrees));
+
+            if (shoulder != null) {
+                shoulder.setControl(shoulderMotionMagicRequest.withPosition(position.in(Rotations)));
+            }
         }
     }
 
@@ -120,6 +134,8 @@ public class ESEFShoulderMechanism {
         }
     }
 
+    public Angle getSetpoint() {
+        return setpoint;
+    }
+
 }
-
-
