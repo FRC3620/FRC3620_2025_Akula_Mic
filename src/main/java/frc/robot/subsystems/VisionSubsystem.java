@@ -74,7 +74,7 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public enum WhichAlgae {
-    Algae17(3.85, 2.91, Rotation2d.fromDegrees(60)),//
+    Algae17(3.84, 2.97, Rotation2d.fromDegrees(60)),//
     Algae18(3.30, 4.07, Rotation2d.fromDegrees(0)),//
     Algae19(3.84, 5.17, Rotation2d.fromDegrees(-59)),//
     Algae20(5.18, 5.10, Rotation2d.fromDegrees(-120)),//
@@ -103,7 +103,7 @@ public class VisionSubsystem extends SubsystemBase {
     Algae19(3.30, 5.79, Rotation2d.fromDegrees(-59)),//
     Algae20(6.18, 5.6,  Rotation2d.fromDegrees(-120)),//
     Algae21(6.78, 3.98, Rotation2d.fromDegrees(-180)),//
-    Algae22(6.04, 2.42, Rotation2d.fromDegrees(120)),//
+    Algae22(5.47, 2.32, Rotation2d.fromDegrees(120)),//crnt
 
     //Red Algae Poses
 
