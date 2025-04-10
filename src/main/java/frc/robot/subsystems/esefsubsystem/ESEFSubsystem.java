@@ -63,6 +63,6 @@ public class ESEFSubsystem extends SubsystemBase {
     return endEffectorMechanism.getEndEffectorVelocity();
   }
   public void callReverseESEFCalibration() {
-    elevatorMechanism.reverseESEFCalibration();
+    elevatorMechanism.ESEFRecalibration();
   }
 }
