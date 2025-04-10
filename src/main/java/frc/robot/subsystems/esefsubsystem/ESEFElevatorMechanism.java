@@ -71,14 +71,14 @@ public class ESEFElevatorMechanism {
       TalonFXConfiguration elevatorAConfigs = new TalonFXConfiguration();
       elevatorAConfigs.Slot0.kG = 0.3; // Gravity FeedForward
       elevatorAConfigs.Slot0.kS = 0; // Friction FeedForward
-      elevatorAConfigs.Slot0.kP = 1.2; // an error of 1 rotation results in x Volt output
+      elevatorAConfigs.Slot0.kP = 2; // an error of 1 rotation results in x Volt output
       elevatorAConfigs.Slot0.kI = 0;
       elevatorAConfigs.Slot0.kD = 0;
       elevatorAConfigs.Slot0.GravityType = GravityTypeValue.Elevator_Static;
 
-      elevatorAConfigs.MotionMagic.MotionMagicCruiseVelocity = 200;  // Increased from 125
-      elevatorAConfigs.MotionMagic.MotionMagicAcceleration = 200;    //200
-      elevatorAConfigs.MotionMagic.MotionMagicJerk = 300;           //300
+      elevatorAConfigs.MotionMagic.MotionMagicCruiseVelocity = 300;  // Increased from 125
+      elevatorAConfigs.MotionMagic.MotionMagicAcceleration = 500;    //200
+      elevatorAConfigs.MotionMagic.MotionMagicJerk = 700;           //300
 
       elevatorAConfigs.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);
       elevatorAConfigs.MotorOutput.withPeakForwardDutyCycle(0.95);

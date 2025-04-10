@@ -60,17 +60,17 @@ public class ESEFShoulderMechanism {
             // this.shoulderEncoder = new CANcoder(10);
             TalonFXConfiguration shoulderConfigs = new TalonFXConfiguration();
 
-            shoulderConfigs.Slot0.kG = 0.04; // Gravity FeedForward
+            shoulderConfigs.Slot0.kG = 0.5; // Gravity FeedForward
             shoulderConfigs.Slot0.kS = 0; // Friction FeedForward
-            shoulderConfigs.Slot0.kP = 50; // an error of 1 rotation results in x Volt output
+            shoulderConfigs.Slot0.kP = 75; // an error of 1 rotation results in x Volt output
             shoulderConfigs.Slot0.kI = 0;
             shoulderConfigs.Slot0.kD = 0;
 
             shoulderConfigs.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
-            shoulderConfigs.MotionMagic.MotionMagicCruiseVelocity = 75; // Max speed in Rotations per second
-            shoulderConfigs.MotionMagic.MotionMagicAcceleration = 60; // Max acceleration in Rotations per second^2
-            shoulderConfigs.MotionMagic.MotionMagicJerk = 200; // Smooth acceleration (optional)
+            shoulderConfigs.MotionMagic.MotionMagicCruiseVelocity = 200; // Max speed in Rotations per second
+            shoulderConfigs.MotionMagic.MotionMagicAcceleration = 250; // Max acceleration in Rotations per second^2
+            shoulderConfigs.MotionMagic.MotionMagicJerk = 400; // Smooth acceleration (optional)
 
 
             shoulderConfigs.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);
