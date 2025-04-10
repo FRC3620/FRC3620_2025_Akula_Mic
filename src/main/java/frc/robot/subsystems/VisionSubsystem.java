@@ -84,8 +84,8 @@ public class VisionSubsystem extends SubsystemBase {
     //Red Algae Poses
 
     Algae6(13.63, 2.91, Rotation2d.fromDegrees(120)), 
-    Algae7(14.31, 3.94, Rotation2d.fromDegrees(-180)), 
-    Algae8(13.75, 5.07, Rotation2d.fromDegrees(-120)), 
+    Algae7(14.28, 3.94, Rotation2d.fromDegrees(-180)), // 
+    Algae8(13.75, 5.03, Rotation2d.fromDegrees(-120)), //
     Algae9(12.49, 5.14, Rotation2d.fromDegrees(-60)), 
     Algae10(11.80, 4.12, Rotation2d.fromDegrees(0)), 
     Algae11(12.37, 3.02, Rotation2d.fromDegrees(60));
@@ -109,7 +109,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     Algae6(14.47, 2.08, Rotation2d.fromDegrees(120)), //
     Algae7(15.28, 4.01, Rotation2d.fromDegrees(-180)), //
-    Algae8(13.99, 5.53, Rotation2d.fromDegrees(-120)), //
+    Algae8(14.05, 5.3, Rotation2d.fromDegrees(-120)), //
     Algae9(11.99, 6.01, Rotation2d.fromDegrees(-60)), //
     Algae10(10.23, 4.04, Rotation2d.fromDegrees(0)), //
     Algae11(11.61, 2.12, Rotation2d.fromDegrees(60)); //
