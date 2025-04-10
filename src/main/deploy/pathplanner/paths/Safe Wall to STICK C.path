@@ -1,0 +1,85 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.08825,
+        "y": 5.92625
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.013569078947367,
+        "y": 6.276480263157895
+      },
+      "isLocked": false,
+      "linkedName": "Left Start"
+    },
+    {
+      "anchor": {
+        "x": 5.234210526315789,
+        "y": 5.00641447368421
+      },
+      "prevControl": {
+        "x": 5.6678457722174285,
+        "y": 5.766434965487489
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "STICK C"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -120.2031564461256
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.8,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "L4",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "L4"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0.0,
+    "rotation": -122.73522627210762
+  },
+  "reversed": false,
+  "folder": "Safe Folder",
+  "idealStartingState": {
+    "velocity": 1.0,
+    "rotation": -140.60385433801312
+  },
+  "useDefaultConstraints": false
+}

@@ -1,0 +1,80 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.943954918032787,
+        "y": 5.199795081967213
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.5174180327868854,
+        "y": 6.146823770491803
+      },
+      "isLocked": false,
+      "linkedName": "STICK E"
+    },
+    {
+      "anchor": {
+        "x": 1.5704,
+        "y": 7.454
+      },
+      "prevControl": {
+        "x": 1.8700926229508195,
+        "y": 6.734737704918032
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Wall Source"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.83,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Intake",
+      "waypointRelativePos": 0.47535449020931886,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.25,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -55.74055216677249
+  },
+  "reversed": false,
+  "folder": "Safe Folder",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -59.38139459109059
+  },
+  "useDefaultConstraints": true
+}
