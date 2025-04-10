@@ -18,16 +18,16 @@ import frc.robot.subsystems.esefsubsystem.ESEFPosition;
 
 import java.util.Optional;
 
-public class AutoAlignToAlgaeCommand extends InstantCommand {
+public class AutoAlignToStartAlgaeCommand extends InstantCommand {
 
   TaggedLogger logger = LoggingMaster.getLogger(getClass());
 
-  public AutoAlignToAlgaeCommand() {}
+  public AutoAlignToStartAlgaeCommand() {}
 
   @Override
   public void initialize() {
     if (!RobotContainer.visionSubsystem.getDoWeAlign()) {
-      logger.info("AutoAligningToAlgaeCommand Stopped: Alignment not active.");
+      logger.info("AutoAligningToStartAlgaeCommand Stopped: Alignment not active.");
       return;
     }
 
@@ -45,7 +45,7 @@ public class AutoAlignToAlgaeCommand extends InstantCommand {
     SmartDashboard.putNumber("frc3620/vision/TargetAprilTag", tagID);
 
     if ((tagID >= 17 && tagID <= 22) || (tagID >= 6 && tagID <= 11)) {
-      Pose2d startPose = RobotContainer.visionSubsystem.getAlgaePose(tagID);
+      Pose2d startPose = RobotContainer.visionSubsystem.getAlgaeStartingPose(tagID);
       if (startPose != null) {
         CommandScheduler.getInstance().schedule(
             new SequentialCommandGroup(
@@ -56,7 +56,7 @@ public class AutoAlignToAlgaeCommand extends InstantCommand {
         logger.warn("Null startPose for tagID {}", tagID);
       }
     } else {
-      logger.info("TagID {} not in valid range for AutoAlignToAlgaeCommand.", tagID);
+      logger.info("TagID {} not in valid range for AutoAlignToStartAlgaeCommand.", tagID);
     }
   }
 }
