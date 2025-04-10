@@ -205,4 +205,7 @@ public class ESEFElevatorMechanism {
     return setpoint;
   }
 
+  public void reverseESEFCalibration() {
+    encoderCalibrated = !encoderCalibrated;
+  }
 }
