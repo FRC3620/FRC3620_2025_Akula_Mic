@@ -5,8 +5,10 @@
 package frc.robot.commands.swervedrive;
 
 import org.tinylog.TaggedLogger;
+import org.usfirst.frc3620.NTStructs;
 import org.usfirst.frc3620.logger.LoggingMaster;
 
+import dev.doglog.DogLog;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -68,12 +70,14 @@ public class DriveToClosestStickCommand extends InstantCommand {
           }
           RobotContainer.swerveSubsystem.setTargetPose(pose);
           logger.info("Target Pose = {}", pose);
+          NTStructs.publish("frc3620/vision/TargetPose", pose);
+          DogLog.log("frc3620/vision/TargetPose", pose);
 
           CommandScheduler.getInstance().schedule(new DriveToPoseCommand(RobotContainer.swerveSubsystem, pose));
 
         } else if (ally.get() == Alliance.Blue && tagID >= 17 && tagID <= 22) {
+          // does this need to be here (we set it up above?)
           tagID = RobotContainer.visionSubsystem.getNearestTagIDBlue(RobotContainer.swerveSubsystem.getPose());
-          logger.info("Saw ID = {}", tagID);
 
           if (whichStick == WhichStick.LEFT) {
             pose = RobotContainer.visionSubsystem.getNearestLeftStickPose(tagID);
@@ -82,6 +86,8 @@ public class DriveToClosestStickCommand extends InstantCommand {
           }
           RobotContainer.swerveSubsystem.setTargetPose(pose);
           logger.info("Target Pose = {}", pose);
+          NTStructs.publish("frc3620/vision/TargetPose", pose);
+          DogLog.log("frc3620/vision/TargetPose", pose);
 
           CommandScheduler.getInstance().schedule(new DriveToPoseCommand(RobotContainer.swerveSubsystem, pose));
 

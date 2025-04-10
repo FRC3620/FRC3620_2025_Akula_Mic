@@ -19,10 +19,12 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.sim.TalonFXSimState;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.simulation.AnalogInputSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
@@ -65,7 +67,7 @@ public class ESEFElevatorMechanism {
         "Elevator Motor A")
         || RobotContainer.shouldMakeAllCANDevices()) {
       this.elevatorA = new TalonFX(ELEVATORA_MOTORID);
-      // this.shoulderEncoder = new CANcoder(10);
+
       TalonFXConfiguration elevatorAConfigs = new TalonFXConfiguration();
       elevatorAConfigs.Slot0.kG = 0.3; // Gravity FeedForward
       elevatorAConfigs.Slot0.kS = 0; // Friction FeedForward
@@ -159,21 +161,28 @@ public class ESEFElevatorMechanism {
     SmartDashboard.putBoolean("frc3620/Elevator/Calibrated", encoderCalibrated);
     SmartDashboard.putNumber("frc3620/Elevator/ActualPosition", getCurrentHeight().in(Inches));
     SmartDashboard.putNumber("frc3620/Elevator/ActualBPosition", getCurrentHeightB().in(Inches));
-
   }
 
   public boolean homeSwitchHit() {
     return homeLimitSwitch.getVoltage() > 2.0;
   }
 
+  Distance setpoint;
+
   public void setSetpoint(Distance position) {
-    SmartDashboard.putNumber("frc3620/Elevator/RequestedPosition", position.in(Inches));
+    if (!position.equals(setpoint)) {
+      logger.info("Changing elevator setpoint: {} -> {}", setpoint, position);
 
-    double motorRotations = position.in(Inches) / positionConversion.in(Inches); // Convert inches to rotations
-    motorRotations = MathUtil.clamp(motorRotations, 0, 40.2);  // how was this magic number determined?????
+      setpoint = position;
+      SmartDashboard.putNumber("frc3620/Elevator/RequestedPosition", position.in(Inches));
 
-    if (elevatorA != null && encoderCalibrated) {
-      elevatorA.setControl(elevatorMotionMagicRequest.withPosition(motorRotations));    }
+      double motorRotations = position.in(Inches) / positionConversion.in(Inches); // Convert inches to rotations
+      motorRotations = MathUtil.clamp(motorRotations, 0, 40.2); // how was this magic number determined?????
+
+      if (elevatorA != null && encoderCalibrated) {
+        elevatorA.setControl(elevatorMotionMagicRequest.withPosition(motorRotations));
+      }
+    }
   }
 
   public Distance getCurrentHeight() {
@@ -190,6 +199,10 @@ public class ESEFElevatorMechanism {
     } else {
       return Inches.of(0);
     }
+  }
+
+  public Distance getSetpoint() {
+    return setpoint;
   }
 
 }

@@ -65,6 +65,7 @@ public class ESEFSubsystemCommandFactory {
     SmartDashboard.putData("ESEF L3", new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem));
     SmartDashboard.putData("ESEF L4", new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem));
 
+    SmartDashboard.putData("ESEF Climber", new SetESEFPositionCommand(ESEFPosition.PresetPosition.CLIMB.getPosition(), esefSubsystem));
   }
 
 }
