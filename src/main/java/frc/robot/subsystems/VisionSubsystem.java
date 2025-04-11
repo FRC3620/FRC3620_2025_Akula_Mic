@@ -146,18 +146,18 @@ public class VisionSubsystem extends SubsystemBase {
   public enum WhichBlueStick {
     // as of 3/26/25 using math (geometry, apriltag coordinates and did fine-tuning
     // for all the poses)
-    BSTICKA(5.71, 3.86, Rotation2d.fromDegrees(-180)), // dn
-    BSTICKB(5.71, 4.25, Rotation2d.fromDegrees(-180)), // dn
-    BSTICKC(5.22, 5.01, Rotation2d.fromDegrees(-120)), // dn
-    BSTICKD(4.93, 5.18, Rotation2d.fromDegrees(-120)), // dn
-    BSTICKE(3.98, 5.16, Rotation2d.fromDegrees(-60)), // dn
-    BSTICKF(3.66, 4.96, Rotation2d.fromDegrees(-60)), // dn
-    BSTICKG(3.26, 4.17, Rotation2d.fromDegrees(0)), // dn
-    BSTICKH(3.26, 3.78, Rotation2d.fromDegrees(0)), //
-    BSTICKI(3.76, 3.04, Rotation2d.fromDegrees(60)), // tuned
-    BSTICKJ(4.1, 2.87, Rotation2d.fromDegrees(60)), // tuned origianl: 4.09, 2.86
-    BSTICKK(4.98, 2.895, Rotation2d.fromDegrees(120)), // dn
-    BSTICKL(5.34, 3.09,Rotation2d.fromDegrees(120));
+    BSTICKA(5.69, 3.86, Rotation2d.fromDegrees(-180)),
+    BSTICKB(5.69, 4.22, Rotation2d.fromDegrees(-180)), 
+    BSTICKC(5.26, 4.98, Rotation2d.fromDegrees(-120)),
+    BSTICKD(4.91, 5.17, Rotation2d.fromDegrees(-120)),
+    BSTICKE(3.98, 5.16, Rotation2d.fromDegrees(-60)),
+    BSTICKF(3.66, 4.96, Rotation2d.fromDegrees(-60)),
+    BSTICKG(3.26, 4.17, Rotation2d.fromDegrees(0)), 
+    BSTICKH(3.26, 3.84, Rotation2d.fromDegrees(0)), 
+    BSTICKI(3.76, 3.04, Rotation2d.fromDegrees(60)), 
+    BSTICKJ(4.01, 2.91, Rotation2d.fromDegrees(60)),
+    BSTICKK(4.98, 2.895, Rotation2d.fromDegrees(120)),
+    BSTICKL(5.34, 3.09,Rotation2d.fromDegrees(120)); 
     ; // dn
 
     public final Pose2d pose;

@@ -70,7 +70,7 @@ public class CalculateTargetPositionsTest {
         System.out.println(what + "," + distance + "," + vector.getDegrees());
     }
 
-    //@Test
+    @Test
     public void checkLSticks() {
         checkStick("Left", 17, WhichBlueStick.BSTICKI);
         checkStick("Left", 18, WhichBlueStick.BSTICKG);
@@ -112,7 +112,7 @@ public class CalculateTargetPositionsTest {
       System.out.println("-------------------");
     }
 
-    // @Test
+    @Test
     public void checkRSticks() {
         checkStick("Right", 17, WhichBlueStick.BSTICKJ);
         checkStick("Right", 18, WhichBlueStick.BSTICKH);
