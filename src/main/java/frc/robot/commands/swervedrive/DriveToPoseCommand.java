@@ -24,7 +24,7 @@ public class DriveToPoseCommand extends Command {
     private double turnKp = 0.12;
     private final ProfiledPIDController xController;
     private final ProfiledPIDController yController;
-    private static final double MAX_ACCELERATION = 2.25; //1.75
+    private static final double MAX_ACCELERATION = 2.25; // 1.75
     private static final double MAX_ANGULAR_ACCELERATION = Math.PI / 2;
     private double xVelocity;
     private double yVelocity;
@@ -41,10 +41,10 @@ public class DriveToPoseCommand extends Command {
         this.maxSwerveVelocity = swerve.getSwerveDrive().getMaximumChassisVelocity();
         this.maxSwerveAngularVelocity = swerve.getSwerveDrive().getMaximumChassisAngularVelocity();
 
-        xController = new ProfiledPIDController(driveKp, 0.0, 0.0, 
-            new TrapezoidProfile.Constraints(maxSwerveVelocity, MAX_ACCELERATION));
-        yController = new ProfiledPIDController(driveKp, 0.0, 0.0, 
-            new TrapezoidProfile.Constraints(maxSwerveVelocity, MAX_ACCELERATION));
+        xController = new ProfiledPIDController(driveKp, 0.0, 0.0,
+                new TrapezoidProfile.Constraints(maxSwerveVelocity, MAX_ACCELERATION));
+        yController = new ProfiledPIDController(driveKp, 0.0, 0.0,
+                new TrapezoidProfile.Constraints(maxSwerveVelocity, MAX_ACCELERATION));
 
         SmartDashboard.putBoolean("frc3620/driveToPose/running", false);
 
@@ -61,32 +61,34 @@ public class DriveToPoseCommand extends Command {
         if (targetPose != null) {
             xController.reset(swerve.getPose().getX());
             yController.reset(swerve.getPose().getY());
-    
+
             xController.setTolerance(0.001, 0.5);
-            yController.setTolerance(0.001, 0.5); 
+            yController.setTolerance(0.001, 0.5);
             xController.setGoal(targetPose.getX());
             yController.setGoal(targetPose.getY());
-    
+
             commandTimer.reset();
-            commandTimer.start();  
+            commandTimer.start();
         }
         RobotContainer.blinkySubsystem.setAutoAllignFinished(false);
     }
 
     @Override
     public void execute() {
-        if (targetPose == null) return;
-        
+        if (targetPose == null)
+            return;
+
         targetRotation = targetPose.getRotation().getDegrees();
-        
+
         xVelocity = xController.calculate(swerve.getPose().getX());
         yVelocity = yController.calculate(swerve.getPose().getY());
         angVelocity = turnKp * Math.IEEEremainder(targetRotation - swerve.getHeading().getDegrees(), 360);
 
+        double rampFactor = Math.min(commandTimer.get(), 0.5); // Ramp for first 0.5 seconds
         swerve.driveFieldOriented(
                 new ChassisSpeeds(
-                        xVelocity * maxSwerveVelocity * 0.2,
-                        yVelocity * maxSwerveVelocity * 0.2,
+                        rampFactor * xVelocity * maxSwerveVelocity * 0.2,
+                        rampFactor * yVelocity * maxSwerveVelocity * 0.2,
                         angVelocity));
 
         SmartDashboard.putBoolean("frc3620/driveToPose/atXSetpoint", xController.atSetpoint());
@@ -109,7 +111,8 @@ public class DriveToPoseCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        if (targetPose == null) return true;
+        if (targetPose == null)
+            return true;
         if (commandTimer.hasElapsed(COMMAND_TIMEOUT)) {
             return true;
         }

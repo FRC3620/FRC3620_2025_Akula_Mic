@@ -3,45 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.15,
-        "y": 5.1
+        "x": 7.396,
+        "y": 5.163831967213115
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.761372950819672,
-        "y": 5.939139344262294
+        "x": 7.264549180327867,
+        "y": 2.0230532786885247
       },
       "isLocked": false,
-      "linkedName": "Algae Pickup CD"
+      "linkedName": "(3) Barge Score"
     },
     {
       "anchor": {
-        "x": 7.396,
-        "y": 5.871
+        "x": 5.058811475409836,
+        "y": 2.8861680327868853
       },
       "prevControl": {
-        "x": 6.8565532786885255,
-        "y": 5.894975409836067
+        "x": 5.454405737704918,
+        "y": 2.2388319672131147
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Algae Score 2"
+      "linkedName": "Bottom Right Algae"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.85927505330488,
-      "rotationDegrees": 0.0
+      "waypointRelativePos": 0.8720682302771897,
+      "rotationDegrees": 119.99999999999999
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.5995948683322109,
-      "maxWaypointRelativePos": 0.9,
+      "minWaypointRelativePos": 0.877785280216066,
+      "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 3.0,
-        "maxAcceleration": 4.0,
+        "maxVelocity": 1.5,
+        "maxAcceleration": 1.5,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -49,34 +49,45 @@
       }
     }
   ],
-  "pointTowardsZones": [],
+  "pointTowardsZones": [
+    {
+      "fieldPosition": {
+        "x": 4.5,
+        "y": 4.0
+      },
+      "rotationOffset": 0.0,
+      "minWaypointRelativePos": 0.9101958136394322,
+      "maxWaypointRelativePos": 0.7103308575287035,
+      "name": "Point Towards Zone"
+    }
+  ],
   "eventMarkers": [
     {
-      "name": "Barge",
-      "waypointRelativePos": 0.1485482781904143,
+      "name": "L3 Algae",
+      "waypointRelativePos": 0.7913571910870985,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Barge"
+          "name": "L3 Algae"
         }
       }
     },
     {
-      "name": "Spit Balls and Home",
-      "waypointRelativePos": 0.9507089804186324,
+      "name": "Suck L3 Algae",
+      "waypointRelativePos": 0.92,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "Spit Balls and Home"
+          "name": "Suck L3 Algae"
         }
       }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 3.25,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -84,13 +95,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 179.99490528263297
+    "rotation": 118.49563861824498
   },
   "reversed": false,
   "folder": "Algae",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -119.99999999999999
+    "rotation": -178.28930483517848
   },
   "useDefaultConstraints": false
 }

@@ -16,6 +16,7 @@ public class ESEFPosition {
   public enum PresetPosition {
     Home(0, 88),        // Fully retracted, shoulder at 90°
     Barge(57.25, 70),        // Fully retracted, shoulder at 90°
+    BargeReverse(57.25, 123),        // Fully retracted, shoulder at 90°
     StationPickup(0, 88),        // Fully retracted, shoulder at 90°
     L1(0, 80),        // Fully retracted, shoulder at 90°
     L2(11.5, 57),     // Low scoring position

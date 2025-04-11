@@ -354,6 +354,9 @@ public class RobotContainer {
       driverJoystick.button(XBoxConstants.BUTTON_X, FlySkyConstants.BUTTON_SWD)
           .onTrue(new InstantCommand(()->visionSubsystem.setDoWeAlign(!visionSubsystem.getDoWeAlign())));
           //.toggleOnFalse(new InstantCommand(()->visionSubsystem.setDoWeAlign(false)));
+     
+      driverJoystick.button(XBoxConstants.BUTTON_START, FlySkyConstants.BUTTON_SWC /*CHANGE*/)
+          .onTrue(new InstantCommand(()->esefSubsystem.callReverseESEFCalibration()));
           
       driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH)
           .onTrue(Commands.runOnce(() -> blinkySubsystem.setAutoAllignFinished(false)));
@@ -428,9 +431,21 @@ public class RobotContainer {
             new SetEndEffectorSpeedCommand(0.2, esefSubsystem)).withName("Station,Intake=0.2"),
         new SetEndEffectorSpeedCommand(0.0, esefSubsystem));
 
+    buttonBoxLeftTrigger.addButtonMapping(ButtonId.D4,
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.BargeReverse.getPosition(), esefSubsystem),
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
+    buttonBoxRightTrigger.addButtonMapping(ButtonId.D4, new SetEndEffectorSpeedCommand(-0.95, esefSubsystem),
+        new SetEndEffectorSpeedCommand(0, esefSubsystem));
+
     // this is for the algae claw.
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.B4,
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Barge.getPosition(), esefSubsystem),
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
+    buttonBoxRightTrigger.addButtonMapping(ButtonId.B4, new SetEndEffectorSpeedCommand(-0.95, esefSubsystem),
+        new SetEndEffectorSpeedCommand(0, esefSubsystem));
+
+    buttonBoxLeftTrigger.addButtonMapping(ButtonId.D4,
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.BargeReverse.getPosition(), esefSubsystem),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.B4, new SetEndEffectorSpeedCommand(-0.95, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
@@ -667,6 +682,8 @@ public class RobotContainer {
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL3.getPosition(), esefSubsystem));
     NamedCommands.registerCommand("Barge",
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Barge.getPosition(), esefSubsystem));
+    NamedCommands.registerCommand("Barge Reverse",
+        new SetESEFPositionCommand(ESEFPosition.PresetPosition.BargeReverse.getPosition(), esefSubsystem));
     NamedCommands.registerCommand("Deposit", new RunEndEffectorUntilCoralGone(0.9, esefSubsystem));
     NamedCommands.registerCommand("Deposit and Home", new RunEndEffectorUntilCoralGone(0.9, esefSubsystem)
         .andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));

@@ -74,21 +74,21 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public enum WhichAlgae {
-    Algae17(3.85, 2.91, Rotation2d.fromDegrees(60)),//
+    Algae17(3.74, 2.85, Rotation2d.fromDegrees(60)),//
     Algae18(3.30, 4.07, Rotation2d.fromDegrees(0)),//
-    Algae19(3.84, 5.17, Rotation2d.fromDegrees(-59)),//
-    Algae20(5.18, 5.10, Rotation2d.fromDegrees(-120)),//
-    Algae21(5.78, 3.98, Rotation2d.fromDegrees(-180)),//
-    Algae22(5.04, 2.92, Rotation2d.fromDegrees(120)),//
+    Algae19(3.85, 5.09, Rotation2d.fromDegrees(-59)),//
+    Algae20(5.22, 5.07, Rotation2d.fromDegrees(-120)),//
+    Algae21(5.74, 3.93, Rotation2d.fromDegrees(-180)),//
+    Algae22(5.04, 2.95, Rotation2d.fromDegrees(120)),//
 
     //Red Algae Poses
 
-    Algae6(13.74, 3.03, Rotation2d.fromDegrees(120)), 
-    Algae7(14.28, 4.085, Rotation2d.fromDegrees(-180)), 
-    Algae8(13.64, 5.13, Rotation2d.fromDegrees(-120)), 
-    Algae9(12.41, 5.08, Rotation2d.fromDegrees(-60)), 
-    Algae10(11.83, 3.98, Rotation2d.fromDegrees(0)), 
-    Algae11(12.4733, 3.03, Rotation2d.fromDegrees(60));
+    Algae6(13.63, 2.91, Rotation2d.fromDegrees(120)), 
+    Algae7(14.28, 3.94, Rotation2d.fromDegrees(-180)), // 
+    Algae8(13.75, 5.03, Rotation2d.fromDegrees(-120)), //
+    Algae9(12.49, 5.14, Rotation2d.fromDegrees(-60)), 
+    Algae10(11.80, 4.12, Rotation2d.fromDegrees(0)), 
+    Algae11(12.37, 3.02, Rotation2d.fromDegrees(60));
 
     public final Pose2d pose;
 
@@ -98,21 +98,21 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public enum WhichStartingAlgae{
-    Algae17(2.85, 2.41, Rotation2d.fromDegrees(60)),//
+    Algae17(3.41, 2.21, Rotation2d.fromDegrees(60)),//crnt
     Algae18(2.30, 4.07, Rotation2d.fromDegrees(0)),//
-    Algae19(3.30, 5.79, Rotation2d.fromDegrees(-59)),//
-    Algae20(6.18, 5.6,  Rotation2d.fromDegrees(-120)),//
-    Algae21(6.78, 3.98, Rotation2d.fromDegrees(-180)),//
-    Algae22(6.04, 2.42, Rotation2d.fromDegrees(120)),//
+    Algae19(3.48, 5.82, Rotation2d.fromDegrees(-59)),//
+    Algae20(5.62, 5.44,  Rotation2d.fromDegrees(-120)),//
+    Algae21(6.26, 3.93, Rotation2d.fromDegrees(-180)),//
+    Algae22(5.34, 2.30, Rotation2d.fromDegrees(120)),//crnt
 
-    //Red Algae Poses
+    //Red Algae Starting Poses
 
-    Algae6(14.24, 2.03, Rotation2d.fromDegrees(120)), //
-    Algae7(15.28, 4.085, Rotation2d.fromDegrees(-180)), //
-    Algae8(14.14, 6.13, Rotation2d.fromDegrees(-120)), //
-    Algae9(11.91, 6.08, Rotation2d.fromDegrees(-60)), //
-    Algae10(10.83, 3.98, Rotation2d.fromDegrees(0)), //
-    Algae11(11.97, 2.03, Rotation2d.fromDegrees(60)); //
+    Algae6(14.47, 2.08, Rotation2d.fromDegrees(120)), //
+    Algae7(15.28, 4.01, Rotation2d.fromDegrees(-180)), //
+    Algae8(14.05, 5.3, Rotation2d.fromDegrees(-120)), //
+    Algae9(11.99, 6.01, Rotation2d.fromDegrees(-60)), //
+    Algae10(10.23, 4.04, Rotation2d.fromDegrees(0)), //
+    Algae11(11.61, 2.12, Rotation2d.fromDegrees(60)); //
 
     public final Pose2d pose;
 
