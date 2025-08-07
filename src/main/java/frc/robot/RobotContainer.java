@@ -56,6 +56,7 @@ import frc.robot.subsystems.HealthSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.BlinkySubsystem.BlinkyStickHeight;
 import frc.robot.subsystems.BlinkySubsystem.ModeState;
+import frc.robot.subsystems.VisionSubsystem.CameraType;
 import frc.robot.subsystems.esefsubsystem.ESEFPosition;
 import frc.robot.subsystems.esefsubsystem.ESEFSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -225,7 +226,7 @@ public class RobotContainer {
     SmartDashboard.putData("frc3620/AFI/afiSubsystem", afiSubsystem);
     climberSubsystem = new ClimberSubsystem();
     blinkySubsystem = new BlinkySubsystem();
-    visionSubsystem = new VisionSubsystem();
+    visionSubsystem = new VisionSubsystem(CameraType.ObjectDetection);
 
     // need to create healthSubsystem LAST!!!!!!!
     healthSubsystem = new HealthSubsystem();

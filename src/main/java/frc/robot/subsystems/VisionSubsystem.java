@@ -32,6 +32,21 @@ import swervelib.SwerveDrive;
 public class VisionSubsystem extends SubsystemBase {
   NetworkTableInstance inst = NetworkTableInstance.getDefault();
 
+  public enum CameraType {
+    ObjectDetection, AprilTagDetection
+  }
+  private CameraType _cameraType;
+
+  //for Object detection
+  double tx;
+  double ty;
+  double ta;
+  boolean hasTarget;
+
+  static final double TA_CLOSE_ENOUGH = 2.5;
+  static final double TX_TOLERANCE = 1.0; 
+
+  //for AprilTag detection
   public static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout
       .loadField(AprilTagFields.k2025ReefscapeWelded);
 
@@ -250,13 +265,19 @@ public class VisionSubsystem extends SubsystemBase {
   Map<Camera, CameraData> allCameraData = new TreeMap<>();
   Set<CameraData> allCameraDataAsSet;
 
-  public VisionSubsystem() {
-    allCameraData.put(Camera.FRONT, new CameraData(Camera.FRONT));
-    //allCameraData.put(Camera.BACK, new CameraData(Camera.BACK).withUseThisCamera(false));
-    allCameraData = Map.copyOf(allCameraData); // make immutable
-    allCameraDataAsSet = Set.copyOf(allCameraData.values());
-
-    setUpTagMaps();
+  public VisionSubsystem(CameraType cameraType) {
+    _cameraType = cameraType;
+    if(_cameraType == CameraType.AprilTagDetection ) {
+      allCameraData.put(Camera.FRONT, new CameraData(Camera.FRONT));
+      //allCameraData.put(Camera.BACK, new CameraData(Camera.BACK).withUseThisCamera(false));
+      allCameraData = Map.copyOf(allCameraData); // make immutable
+      allCameraDataAsSet = Set.copyOf(allCameraData.values());
+  
+      setUpTagMaps();
+    }
+    else if (_cameraType == CameraType.ObjectDetection) {
+      LimelightHelpers.setPipelineIndex(Camera.FRONT.limelightName, 0);
+    }
   }
 
   void processMegaTag(MegaTagData megaTagData, Supplier<PoseEstimate> supplier, Pose2d currentPose) {
@@ -403,6 +424,7 @@ public class VisionSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
 
+    if(_cameraType == CameraType.AprilTagDetection) {
     SmartDashboard.putBoolean("doWeAutoAlign", doWeAutoAlign);
 
     // gets alliance color
@@ -496,7 +518,14 @@ public class VisionSubsystem extends SubsystemBase {
      * getNearestTagID(RobotContainer.swerveSubsystem.getPose()));
      * }
      */
+    }
 
+    else if (_cameraType == CameraType.ObjectDetection){
+      tx = LimelightHelpers.getTX(Camera.FRONT.limelightName);
+      ty = LimelightHelpers.getTY(Camera.FRONT.limelightName);
+      ta = LimelightHelpers.getTA(Camera.FRONT.limelightName);
+      hasTarget = LimelightHelpers.getTV(Camera.FRONT.limelightName);
+    }
   }
 
   public CameraData getCameraData(Camera camera) {
@@ -575,4 +604,25 @@ public class VisionSubsystem extends SubsystemBase {
     doWeAutoAlign = _doWeAutoAlign;
   }
 
+
+  //Object Detection Methods
+
+  public boolean seesTarget() {
+    return hasTarget && ta > 0.1;
+  }
+  public boolean isCentered() {
+    return Math.abs(tx) < TX_TOLERANCE;
+  }
+  public boolean isCloseEnough() {
+    return ta >= TA_CLOSE_ENOUGH;
+  }
+  public double getTx() {
+    return tx;
+  }
+  public double getTy() {
+    return ty;
+  }
+  public double getTa() {
+    return ta;
+  }
 }
