@@ -15,14 +15,17 @@ import frc.robot.RobotContainer;
 import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.swervedrive.AutoAlignToAlgaeCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand;
+import frc.robot.commands.swervedrive.DriveToCoralCommand;
 import frc.robot.commands.swervedrive.SwerveDriveDiagnosticCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand.WhichStick;
 import frc.robot.commands.swervedrive.DriveToPoseCommand;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.VisionSubsystem.Camera;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 public class SwerveSubsystemCommandFactory {
   SwerveSubsystem swerveSubsystem;
+  VisionSubsystem visionSubsystem;
 
   public SwerveSubsystemCommandFactory(SwerveSubsystem afiSubsystem) {
     this.swerveSubsystem = afiSubsystem;
@@ -51,6 +54,8 @@ public class SwerveSubsystemCommandFactory {
     SmartDashboard.putData("Algae Auto Align", new AutoAlignToAlgaeCommand());
 
     SmartDashboard.putData(new SwerveDriveDiagnosticCommand(swerveSubsystem));
+
+    SmartDashboard.putData("DriveToCoral", new DriveToCoralCommand(Camera.FRONT, swerveSubsystem));
 
   }
 

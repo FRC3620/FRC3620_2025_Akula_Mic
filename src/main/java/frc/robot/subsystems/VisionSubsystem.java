@@ -35,6 +35,9 @@ public class VisionSubsystem extends SubsystemBase {
   public enum CameraType {
     ObjectDetection, AprilTagDetection
   }
+  public enum GamePieceType {
+    Coral, Algae, None
+  }
   private CameraType _cameraType;
 
   //for Object detection
@@ -79,7 +82,7 @@ public class VisionSubsystem extends SubsystemBase {
   String lastLoggedError;
 
   public enum Camera {
-    FRONT("limelight-front"); //, BACK("limelight-back");
+    FRONT("limelight-front"), BACK("limelight-back");
 
     public final String limelightName;
 
@@ -188,9 +191,11 @@ public class VisionSubsystem extends SubsystemBase {
     public final MegaTagData megaTag2 = new MegaTagData("megaTag2");
     boolean useThisCamera = true;
     int countOfSwerveUpdatesFromThisCamera = 0;
+    final Camera _c;
 
     CameraData(Camera c) {
       limelightName = c.limelightName;
+      _c = c;
       /*
        * see
        * https://docs.wpilib.org/en/stable/docs/software/networktables/listening-for-
@@ -211,6 +216,10 @@ public class VisionSubsystem extends SubsystemBase {
           entry,
           EnumSet.of(NetworkTableEvent.Kind.kValueAll),
           event -> megaTag2.haveNewPose.set(true));
+    }
+
+    public Camera getCamera() {
+      return _c;
     }
 
     public String getLimelightName() {
@@ -265,19 +274,20 @@ public class VisionSubsystem extends SubsystemBase {
   Map<Camera, CameraData> allCameraData = new TreeMap<>();
   Set<CameraData> allCameraDataAsSet;
 
-  public VisionSubsystem(CameraType cameraType) {
-    _cameraType = cameraType;
-    if(_cameraType == CameraType.AprilTagDetection ) {
+  public VisionSubsystem() {
+    
+      LimelightHelpers.setPipelineIndex(Camera.FRONT.limelightName, 0);
+      LimelightHelpers.setPipelineIndex(Camera.BACK.limelightName, 0);
+
+        //////////////////////////////////////////////
+
       allCameraData.put(Camera.FRONT, new CameraData(Camera.FRONT));
-      //allCameraData.put(Camera.BACK, new CameraData(Camera.BACK).withUseThisCamera(false));
+      allCameraData.put(Camera.BACK, new CameraData(Camera.BACK));
       allCameraData = Map.copyOf(allCameraData); // make immutable
       allCameraDataAsSet = Set.copyOf(allCameraData.values());
   
       setUpTagMaps();
-    }
-    else if (_cameraType == CameraType.ObjectDetection) {
-      LimelightHelpers.setPipelineIndex(Camera.FRONT.limelightName, 0);
-    }
+
   }
 
   void processMegaTag(MegaTagData megaTagData, Supplier<PoseEstimate> supplier, Pose2d currentPose) {
@@ -423,8 +433,6 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-
-    if(_cameraType == CameraType.AprilTagDetection) {
     SmartDashboard.putBoolean("doWeAutoAlign", doWeAutoAlign);
 
     // gets alliance color
@@ -450,6 +458,7 @@ public class VisionSubsystem extends SubsystemBase {
     }
 
     for (var cameraData : allCameraData.values()) {
+      if (getCameraType(cameraData.getCamera()) == CameraType.AprilTagDetection) {
       var sdPrefix = "frc3620/vision/" + cameraData.getLimelightName() + "/";
 
       LimelightHelpers.SetRobotOrientation(cameraData.limelightName, yaw, yawRate, pitch, 0, 0, 0);
@@ -510,6 +519,11 @@ public class VisionSubsystem extends SubsystemBase {
       }
       SmartDashboard.putString(sdPrefix + "rejectionMessage", error);
     }
+    else if (getCameraType(cameraData.getCamera()) == CameraType.ObjectDetection) {
+      //Not sure yet, Maybe should be reading the tx ty and ta here???
+    }
+  }
+
 
     // we are not using this, so commented out to try to speed up code a little
     /*
@@ -518,13 +532,26 @@ public class VisionSubsystem extends SubsystemBase {
      * getNearestTagID(RobotContainer.swerveSubsystem.getPose()));
      * }
      */
-    }
+  }
 
-    else if (_cameraType == CameraType.ObjectDetection){
-      tx = LimelightHelpers.getTX(Camera.FRONT.limelightName);
-      ty = LimelightHelpers.getTY(Camera.FRONT.limelightName);
-      ta = LimelightHelpers.getTA(Camera.FRONT.limelightName);
-      hasTarget = LimelightHelpers.getTV(Camera.FRONT.limelightName);
+  public void setCameraType(Camera camera, CameraType cameraType) {
+    if (cameraType == CameraType.AprilTagDetection) {
+      LimelightHelpers.setPipelineIndex(camera.limelightName, 0);
+    }
+    else if (cameraType == CameraType.ObjectDetection) {
+      LimelightHelpers.setPipelineIndex(camera.limelightName, 1);
+    }
+  }
+
+  public CameraType getCameraType(Camera camera) {
+    if (LimelightHelpers.getCurrentPipelineIndex(camera.limelightName) == 0) {
+      return CameraType.AprilTagDetection;
+    }
+    else if (LimelightHelpers.getCurrentPipelineIndex(camera.limelightName) == 1) {
+      return CameraType.ObjectDetection;
+    }
+    else {
+      return CameraType.AprilTagDetection;
     }
   }
 
@@ -607,22 +634,35 @@ public class VisionSubsystem extends SubsystemBase {
 
   //Object Detection Methods
 
-  public boolean seesTarget() {
-    return hasTarget && ta > 0.1;
+  public boolean seesTarget(Camera camera) {
+    return hasTarget && LimelightHelpers.getTA(camera.limelightName) > 0.1;
   }
-  public boolean isCentered() {
-    return Math.abs(tx) < TX_TOLERANCE;
+  public boolean isCentered(Camera camera) {
+    return Math.abs(LimelightHelpers.getTX(camera.limelightName)) < TX_TOLERANCE;
   }
-  public boolean isCloseEnough() {
-    return ta >= TA_CLOSE_ENOUGH;
+  public boolean isCloseEnough(Camera camera) {
+    return LimelightHelpers.getTA(camera.limelightName) >= TA_CLOSE_ENOUGH;
   }
-  public double getTx() {
-    return tx;
+  public double getTx(Camera camera) {
+    return LimelightHelpers.getTX(camera.limelightName);
   }
-  public double getTy() {
-    return ty;
+  public double getTy(Camera camera) {
+    return LimelightHelpers.getTY(camera.limelightName);
   }
-  public double getTa() {
-    return ta;
+  public double getTa(Camera camera) {
+    return LimelightHelpers.getTA(camera.limelightName);
+  }
+  public double countObjects(Camera camera) {
+    return LimelightHelpers.getTargetCount(Camera.FRONT.limelightName);
+  }
+  public GamePieceType getGamePieceType(Camera camera) {
+    int index = LimelightHelpers.getDetectorClassIndex(Camera.FRONT.limelightName);
+    if (index == 0) {
+      return GamePieceType.Coral;
+    } else if (index == 1) {
+      return GamePieceType.Algae;
+    } else {
+      return GamePieceType.None;
+    }
   }
 }

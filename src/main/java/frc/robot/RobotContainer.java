@@ -226,7 +226,7 @@ public class RobotContainer {
     SmartDashboard.putData("frc3620/AFI/afiSubsystem", afiSubsystem);
     climberSubsystem = new ClimberSubsystem();
     blinkySubsystem = new BlinkySubsystem();
-    visionSubsystem = new VisionSubsystem(CameraType.ObjectDetection);
+    visionSubsystem = new VisionSubsystem();
 
     // need to create healthSubsystem LAST!!!!!!!
     healthSubsystem = new HealthSubsystem();
