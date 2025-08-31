@@ -46,8 +46,8 @@ public class VisionSubsystem extends SubsystemBase {
   double ta;
   boolean hasTarget;
 
-  static final double TA_CLOSE_ENOUGH = 2.5;
-  static final double TX_TOLERANCE = 1.0; 
+  static final double TA_CLOSE_ENOUGH = 4.0;
+  static final double TX_TOLERANCE = 2.0; 
 
   //for AprilTag detection
   public static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout

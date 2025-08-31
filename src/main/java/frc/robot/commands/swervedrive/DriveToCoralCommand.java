@@ -23,7 +23,7 @@ public class DriveToCoralCommand extends Command {
   VisionSubsystem visionSubsystem;
   Camera camera;
 
-  double desiredTX = 23.85;
+  double desiredTX = 0.0;
   double desiredTY = -25.25;
   double desiredTa = 3.65;
 
@@ -31,9 +31,10 @@ public class DriveToCoralCommand extends Command {
   double ty;
   double ta;
 
+  //double driveX;
   double driveX;
   double driveY;
-  double SpinA;
+  //double SpinA;
 
   ProfiledPIDController txController;
   ProfiledPIDController tyController;
@@ -46,7 +47,7 @@ public class DriveToCoralCommand extends Command {
   public DriveToCoralCommand(Camera camera, SwerveSubsystem swerve) {
     this.visionSubsystem = RobotContainer.visionSubsystem;
     this.camera = camera;
-    this.swerve = swerve;
+    this.swerve = RobotContainer.swerveSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(swerve);
   }
@@ -61,27 +62,36 @@ public class DriveToCoralCommand extends Command {
     ty = visionSubsystem.getTy(camera);
     ta = visionSubsystem.getTa(camera);
 
-    txController = new ProfiledPIDController(0.025, 0, 0, new TrapezoidProfile.Constraints(0.05, 0.01));
-    tyController = new ProfiledPIDController(0.05, 0, 0, new TrapezoidProfile.Constraints(0.05, 0.01));
-    taController = new ProfiledPIDController(1.0, 0, 0, new TrapezoidProfile.Constraints(0.2, 0.1));
+    txController = new ProfiledPIDController(0.06, 0, 0, new TrapezoidProfile.Constraints(0.3, 1));
+    tyController = new ProfiledPIDController(0.15, 0, 0, new TrapezoidProfile.Constraints(0.35, 0.1));
+    //taController = new ProfiledPIDController(1.0, 0, 0, new TrapezoidProfile.Constraints(0.2, 0.1));
 
-    txController.setGoal(desiredTX);
-    tyController.setGoal(desiredTY);
+    txController.setTolerance(0.05);
+    tyController.setTolerance(0.05);
+
+    //txController.setGoal(desiredTX);
+    //tyController.setGoal(desiredTY);
     //taController.setGoal(desiredTA);
 
     if (visionSubsystem.countObjects(camera) < 1) {
       seenTarget = false;
     }
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (visionSubsystem.countObjects(camera) < 1) {
+      seenTarget = false;
+    } else {
+      seenTarget = true;
+    }
+
     tx = visionSubsystem.getTx(camera);
     ty = visionSubsystem.getTy(camera);
     ta = visionSubsystem.getTa(camera);
 
+    //driveX = txController.calculate(tx, desiredTX);
     driveX = txController.calculate(tx, desiredTX);
     driveY = tyController.calculate(ty, desiredTY);
     //SpinA = taController.calculate(ta, desiredTa);
@@ -90,21 +100,24 @@ public class DriveToCoralCommand extends Command {
 
     if (visionSubsystem.getCameraType(camera) == CameraType.ObjectDetection && seenTarget) {
       swerve.drive(new ChassisSpeeds(
-        driveX, driveY, 0
+        1/Math.sqrt(driveY), 0, driveX
       ));
     }
-
+    
     SmartDashboard.putNumber("Tx", tx);
     SmartDashboard.putNumber("Ty", ty);
     SmartDashboard.putNumber("Ta", ta);
     
     SmartDashboard.putNumber("TxVelocity", txController.getSetpoint().velocity);
     SmartDashboard.putNumber("TyVelocity", tyController.getSetpoint().velocity);
-    SmartDashboard.putNumber("TaVelocity", taController.getSetpoint().velocity);
+    //SmartDashboard.putNumber("TaVelocity", taController.getSetpoint().velocity);
 
     SmartDashboard.putNumber("TxError", desiredTX-tx);
     SmartDashboard.putNumber("TyError", desiredTY-ty);
-    SmartDashboard.putString("Fucj", "Fucj");
+
+    SmartDashboard.putBoolean("seenTarget", seenTarget);
+    SmartDashboard.putNumber("NumberTargetsSeen", visionSubsystem.countObjects(camera));
+
   }
 
   // Called once the command ends or is interrupted.
@@ -116,6 +129,6 @@ public class DriveToCoralCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false; //(visionSubsystem.isCloseEnough(camera) && visionSubsystem.isCentered(camera)) || seenTarget == false;
+    return (visionSubsystem.isCloseEnough(camera) && visionSubsystem.isCentered(camera));
   }
 }
