@@ -47,7 +47,9 @@ import frc.robot.commands.esefcommands.SetESEFPositionCommand;
 import frc.robot.commands.esefcommands.SetShoulderPositionCommand;
 import frc.robot.commands.swervedrive.AutoAlignToAlgaeCommand;
 import frc.robot.commands.swervedrive.AutoAlignToStartAlgaeCommand;
+import frc.robot.commands.swervedrive.DriveToAprilTagCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand;
+import frc.robot.commands.swervedrive.DriveToAprilTagCommand.WhichSideOfTag;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand.WhichStick;
 import frc.robot.subsystems.AFISubsystem;
 import frc.robot.subsystems.BlinkySubsystem;
@@ -364,56 +366,56 @@ public class RobotContainer {
     }
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.A1,
-        new DriveToClosestStickCommand(WhichStick.LEFT).alongWith(
+        new DriveToAprilTagCommand(swerveSubsystem, WhichSideOfTag.Left).alongWith(
             new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem)).withName("Left.L1"),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.A1, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.A2,
-        new DriveToClosestStickCommand(WhichStick.LEFT).alongWith(
+        new DriveToAprilTagCommand(swerveSubsystem, WhichSideOfTag.Left).alongWith(
             new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem)).withName("Left.L2"),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.A2, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.A3,
-        new DriveToClosestStickCommand(WhichStick.LEFT).alongWith(
+        new DriveToAprilTagCommand(swerveSubsystem, WhichSideOfTag.Left).alongWith(
             new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem)).withName("Left.L3"),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.A3, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.A4,
-        new DriveToClosestStickCommand(WhichStick.LEFT).alongWith(
+        new DriveToAprilTagCommand(swerveSubsystem, WhichSideOfTag.Left).alongWith(
             new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem)).withName("Left.L4"),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.A4, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.C1,
-        new DriveToClosestStickCommand(WhichStick.RIGHT).alongWith(
+        new DriveToAprilTagCommand(swerveSubsystem, WhichSideOfTag.Right).alongWith(
             new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem)).withName("Right.L1"),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.C1, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.C2,
-        new DriveToClosestStickCommand(WhichStick.RIGHT).alongWith(
+        new DriveToAprilTagCommand(swerveSubsystem, WhichSideOfTag.Right).alongWith(
             new SetESEFPositionCommand(ESEFPosition.PresetPosition.L2.getPosition(), esefSubsystem)).withName("Right.L2"),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.C2, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.C3,
-        new DriveToClosestStickCommand(WhichStick.RIGHT).alongWith(
+        new DriveToAprilTagCommand(swerveSubsystem, WhichSideOfTag.Right).alongWith(
             new SetESEFPositionCommand(ESEFPosition.PresetPosition.L3.getPosition(), esefSubsystem)).withName("Right.L3"),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.C3, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),
         new SetEndEffectorSpeedCommand(0, esefSubsystem));
 
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.C4,
-        new DriveToClosestStickCommand(WhichStick.RIGHT).alongWith(
+        new DriveToAprilTagCommand(swerveSubsystem, WhichSideOfTag.Right).alongWith(
             new SetESEFPositionCommand(ESEFPosition.PresetPosition.L4.getPosition(), esefSubsystem)).withName("Right.L4"),
         new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem));
     buttonBoxRightTrigger.addButtonMapping(ButtonId.C4, new RunEndEffectorUntilCoralGone(0.9, esefSubsystem),

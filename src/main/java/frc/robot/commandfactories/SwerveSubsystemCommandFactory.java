@@ -14,11 +14,14 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
 import frc.robot.commands.TurnToAngleCommand;
 import frc.robot.commands.swervedrive.AutoAlignToAlgaeCommand;
+import frc.robot.commands.swervedrive.DriveToAprilTagCommand;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand;
 import frc.robot.commands.swervedrive.SwerveDriveDiagnosticCommand;
+import frc.robot.commands.swervedrive.DriveToAprilTagCommand.WhichSideOfTag;
 import frc.robot.commands.swervedrive.DriveToClosestStickCommand.WhichStick;
 import frc.robot.commands.swervedrive.DriveToPoseCommand;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.VisionSubsystem.Camera;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 public class SwerveSubsystemCommandFactory {
@@ -52,6 +55,6 @@ public class SwerveSubsystemCommandFactory {
 
     SmartDashboard.putData(new SwerveDriveDiagnosticCommand(swerveSubsystem));
 
-  }
+    SmartDashboard.putData("DriveToTag", new DriveToAprilTagCommand(swerveSubsystem, WhichSideOfTag.Right));  }
 
 }

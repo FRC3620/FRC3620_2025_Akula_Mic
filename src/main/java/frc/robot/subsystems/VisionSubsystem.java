@@ -47,6 +47,9 @@ public class VisionSubsystem extends SubsystemBase {
 
   private Map<Integer, Pose2d> tagToStartingAlgaePose2d = new HashMap<>();
 
+  static final double TA_CLOSE_ENOUGH = 4.0;
+  static final double TX_TOLERANCE = 0.5; 
+
   private Translation2d centerBlueReef;
   private Translation2d centerRedReef;
 
@@ -575,4 +578,23 @@ public class VisionSubsystem extends SubsystemBase {
     doWeAutoAlign = _doWeAutoAlign;
   }
 
+  
+  public boolean isCentered() {
+    return Math.abs(LimelightHelpers.getTX(Camera.FRONT.limelightName)) < TX_TOLERANCE;
+  }
+  public boolean isCloseEnough() {
+    return LimelightHelpers.getTA(Camera.FRONT.limelightName) >= TA_CLOSE_ENOUGH;
+  }
+  public double getTx() {
+    return LimelightHelpers.getTX(Camera.FRONT.limelightName);
+  }
+  public double getTy() {
+    return LimelightHelpers.getTY(Camera.FRONT.limelightName);
+  }
+  public double getTa() {
+    return LimelightHelpers.getTA(Camera.FRONT.limelightName);
+  }
+  public double countObjects() {
+    return LimelightHelpers.getTargetCount(Camera.FRONT.limelightName);
+  }
 }
