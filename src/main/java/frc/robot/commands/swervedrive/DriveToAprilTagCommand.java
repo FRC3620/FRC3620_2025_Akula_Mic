@@ -50,9 +50,9 @@ public class DriveToAprilTagCommand extends Command {
     Timer timeouter = new Timer();
 
     /** Creates a new DriveToCoral. */
-    public DriveToAprilTagCommand(SwerveSubsystem swerve, WhichSideOfTag _whichStick) {
+    public DriveToAprilTagCommand(SwerveSubsystem _swerve, WhichSideOfTag _whichStick) {
         this.visionSubsystem = RobotContainer.visionSubsystem;
-        this.swerve = RobotContainer.swerveSubsystem;
+        this.swerve = _swerve;
         this.whichSideOfTag = _whichStick;
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(swerve);
@@ -120,6 +120,7 @@ public class DriveToAprilTagCommand extends Command {
             // swerve.driveCommand(() -> driveX, () -> driveY, () -> SpinA);
             swerve.drive(new ChassisSpeeds(
                     1 / Math.sqrt(driveY), driveX, 0));
+                    //500, 0, 0));
         }
         // Drive in straight line once in range
 
