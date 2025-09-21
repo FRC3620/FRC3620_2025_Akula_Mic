@@ -5,6 +5,7 @@
 package frc.robot.commands.swervedrive;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
@@ -52,7 +53,8 @@ public class DriveToAprilTagCommand extends Command {
     /** Creates a new DriveToCoral. */
     public DriveToAprilTagCommand(SwerveSubsystem _swerve, WhichSideOfTag _whichStick) {
         this.visionSubsystem = RobotContainer.visionSubsystem;
-        this.swerve = _swerve;
+        //this.swerve = _swerve;
+        swerve = RobotContainer.swerveSubsystem;
         this.whichSideOfTag = _whichStick;
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(swerve);
@@ -63,27 +65,23 @@ public class DriveToAprilTagCommand extends Command {
     public void initialize() {
         timeouter.reset();
         timeouter.stop();
-        if (whichSideOfTag == WhichSideOfTag.Left) {
-            desiredTX = -4;
-            desiredTY = -14.25;
-        } else if (whichSideOfTag == WhichSideOfTag.Right) {
-            desiredTX = 4.38;
-            desiredTY = -14.25;
-        }
 
         seenTarget = true;
 
         tx = visionSubsystem.getTx();
         ty = visionSubsystem.getTy();
         ta = visionSubsystem.getTa();
+        
 
-        txController = new ProfiledPIDController(0.06, 0, 0, new TrapezoidProfile.Constraints(0.3, 1));
-        tyController = new ProfiledPIDController(0.15, 0, 0, new TrapezoidProfile.Constraints(0.35, 0.1));
+        txController = new ProfiledPIDController(0.04, 0, 0, new TrapezoidProfile.Constraints(1.2, 1)); // originally
+                                                                                                          // 0.06, 0, 0,
+        tyController = new ProfiledPIDController(0.24, 0, 0, new TrapezoidProfile.Constraints(0.7, 1)); // originally
+                                                                                                           // 0.15, 0, 0
         // taController = new ProfiledPIDController(1.0, 0, 0, new
         // TrapezoidProfile.Constraints(0.2, 0.1));
 
-        txController.setTolerance(0.05);
-        tyController.setTolerance(0.05);
+        txController.setTolerance(0.2);
+        tyController.setTolerance(0.2);
 
         // txController.setGoal(desiredTX);
         // tyController.setGoal(desiredTY);
@@ -92,54 +90,78 @@ public class DriveToAprilTagCommand extends Command {
         if (visionSubsystem.countObjects() < 1) {
             seenTarget = false;
         }
+
+        if (whichSideOfTag == WhichSideOfTag.Left) {
+            desiredTX = 34.25;
+            desiredTY = -14.25;
+        } else {
+            desiredTX = 4.55;
+            desiredTY = -14.25;
+        }
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+
         if (visionSubsystem.countObjects() < 1) {
             seenTarget = false;
         } else {
             seenTarget = true;
         }
+        if (seenTarget == true) {
+            tx = visionSubsystem.getTx();
+            ty = visionSubsystem.getTy();
+            ta = visionSubsystem.getTa();
 
-        tx = visionSubsystem.getTx();
-        ty = visionSubsystem.getTy();
-        ta = visionSubsystem.getTa();
+            // driveX = txController.calculate(tx, desiredTX);
+            driveX = txController.calculate(tx, desiredTX);
+            driveY = tyController.calculate(ty, desiredTY);
+            // SpinA = taController.calculate(ta, desiredTa);
 
-        // driveX = txController.calculate(tx, desiredTX);
-        driveX = txController.calculate(tx, desiredTX);
-        driveY = tyController.calculate(ty, desiredTY);
-        // SpinA = taController.calculate(ta, desiredTa);
+            if (Math.abs(tx-desiredTX) < 1) {
+                timeouter.start();
+                swerve.drive(new ChassisSpeeds(-0.4, 0, 0));
 
-        if (visionSubsystem.isCentered()) {
+            } else {
+                // swerve.driveCommand(() -> driveX, () -> driveY, () -> SpinA);
+                
+                swerve.drive(new ChassisSpeeds(
+                        -driveY, driveX, 0).times(1));
+
+                //swerve.drive(new Translation2d(1/Math.sqrt(driveY), driveX), 0, false);
+                // 500, 0, 0));
+            }
+            // Drive in straight line once in range
+
+            SmartDashboard.putNumber("Tx", tx);
+            SmartDashboard.putNumber("Ty", ty);
+            SmartDashboard.putNumber("Ta", ta);
+
+            SmartDashboard.putNumber("TxVelocity", txController.getSetpoint().velocity);
+            SmartDashboard.putNumber("TyVelocity", tyController.getSetpoint().velocity);
+            SmartDashboard.putNumber("Drivey", driveY);
+            SmartDashboard.putNumber("Drivex", driveX);
+            // SmartDashboard.putNumber("TaVelocity", taController.getSetpoint().velocity);
+
+            SmartDashboard.putNumber("TxError", desiredTX - tx);
+            SmartDashboard.putNumber("TyError", desiredTY - ty);
+
+            SmartDashboard.putNumber("DesiredTx", desiredTX);
+            SmartDashboard.putNumber("DesiredError", desiredTY);
+
+            SmartDashboard.putBoolean("seenTarget", seenTarget);
+            SmartDashboard.putBoolean("closeEnough?", visionSubsystem.isCloseEnough());
+            SmartDashboard.putBoolean("centered?", visionSubsystem.isCentered());
+            SmartDashboard.putNumber("NumberTargetsSeen", visionSubsystem.countObjects());
+            SmartDashboard.putString("SwerveCommandkeykey", swerve.getCurrentCommand().toString());
+
+        } else{
+            timeouter.stop();
             timeouter.start();
-            swerve.drive(new ChassisSpeeds(0.05, 0, 0));
-
-        } else {
-            // swerve.driveCommand(() -> driveX, () -> driveY, () -> SpinA);
-            swerve.drive(new ChassisSpeeds(
-                    1 / Math.sqrt(driveY), driveX, 0));
-                    //500, 0, 0));
+            swerve.drive(new ChassisSpeeds(-0.4, 0, 0));
+            SmartDashboard.putBoolean("seenTarget", seenTarget);
         }
-        // Drive in straight line once in range
-
-        SmartDashboard.putNumber("Tx", tx);
-        SmartDashboard.putNumber("Ty", ty);
-        SmartDashboard.putNumber("Ta", ta);
-
-        SmartDashboard.putNumber("TxVelocity", txController.getSetpoint().velocity);
-        SmartDashboard.putNumber("TyVelocity", tyController.getSetpoint().velocity);
-        // SmartDashboard.putNumber("TaVelocity", taController.getSetpoint().velocity);
-
-        SmartDashboard.putNumber("TxError", desiredTX - tx);
-        SmartDashboard.putNumber("TyError", desiredTY - ty);
-
-        SmartDashboard.putBoolean("seenTarget", seenTarget);
-        SmartDashboard.putBoolean("closeEnough?", visionSubsystem.isCloseEnough());
-        SmartDashboard.putBoolean("centered?", visionSubsystem.isCentered());
-        SmartDashboard.putNumber("NumberTargetsSeen", visionSubsystem.countObjects());
-
     }
 
     // Called once the command ends or is interrupted.
