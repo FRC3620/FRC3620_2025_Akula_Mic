@@ -189,7 +189,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("frc3620/modeInt", newMode.ordinal());
 
     // if any subsystems need to know about mode changes, let them know here.
-    RobotContainer.blinkySubsystem.setRobotMode(newMode);
+    //RobotContainer.blinkySubsystem.setRobotMode(newMode);
   }
 
   public static RobotMode getCurrentRobotMode(){

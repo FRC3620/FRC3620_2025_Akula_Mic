@@ -103,19 +103,19 @@ public class RobotContainer {
   public static PneumaticsModuleType pneumaticModuleType = null;
 
   // subsystems here
-  public static ESEFSubsystem esefSubsystem;
-  public static AFISubsystem afiSubsystem;
+  //public static ESEFSubsystem esefSubsystem;
+  //public static AFISubsystem afiSubsystem;
   public static SwerveSubsystem swerveSubsystem;
   public static HealthSubsystem healthSubsystem;
-  public static ClimberSubsystem climberSubsystem;
-  public static BlinkySubsystem blinkySubsystem;
+  //public static ClimberSubsystem climberSubsystem;
+  //public static BlinkySubsystem blinkySubsystem;
   public static VisionSubsystem visionSubsystem;
 
   // command factories here
-  public static AFISubsystemCommandFactory afiCommandFactory;
+  //public static AFISubsystemCommandFactory afiCommandFactory;
   public static SwerveSubsystemCommandFactory swerveCommandFactory;
-  public static ESEFSubsystemCommandFactory esefCommandFactory;
-  public static ClimberCommandFactory climberCommandFactory;
+  //public static ESEFSubsystemCommandFactory esefCommandFactory;
+  //public static ClimberCommandFactory climberCommandFactory;
   public static HealthCommandFactory healthCommandFactory;
 
   // joysticks here....
@@ -220,23 +220,23 @@ public class RobotContainer {
       SmartDashboard.putData("frc3620/swerveSubsystem", swerveSubsystem);
     }
 
-    esefSubsystem = new ESEFSubsystem();
-    afiSubsystem = new AFISubsystem();
-    SmartDashboard.putData("frc3620/AFI/afiSubsystem", afiSubsystem);
-    climberSubsystem = new ClimberSubsystem();
-    blinkySubsystem = new BlinkySubsystem();
-    visionSubsystem = new VisionSubsystem();
+    //esefSubsystem = new ESEFSubsystem();
+    //afiSubsystem = new AFISubsystem();
+    //SmartDashboard.putData("frc3620/AFI/afiSubsystem", afiSubsystem);
+    //climberSubsystem = new ClimberSubsystem();
+    //blinkySubsystem = new BlinkySubsystem();
+    //visionSubsystem = new VisionSubsystem();
 
     // need to create healthSubsystem LAST!!!!!!!
     healthSubsystem = new HealthSubsystem();
   }
 
   private void makeCommandFactories() {
-    afiCommandFactory = new AFISubsystemCommandFactory(afiSubsystem);
+    //afiCommandFactory = new AFISubsystemCommandFactory(afiSubsystem);
     swerveCommandFactory = new SwerveSubsystemCommandFactory(swerveSubsystem);
-    esefCommandFactory = new ESEFSubsystemCommandFactory(esefSubsystem);
-    climberCommandFactory = new ClimberCommandFactory(climberSubsystem);
-    healthCommandFactory = new HealthCommandFactory();
+    //esefCommandFactory = new ESEFSubsystemCommandFactory(esefSubsystem);
+    //climberCommandFactory = new ClimberCommandFactory(climberSubsystem);
+    //healthCommandFactory = new HealthCommandFactory();
   }
 
   public String getDriverControllerName() {
@@ -262,13 +262,13 @@ public class RobotContainer {
    */
   private void configureButtonBindingsAndDefaultCommands() {
     driverJoystick = new ChameleonController(new Joystick(0));
-    buttonboxHID = new GenericHID(2);
+    //buttonboxHID = new GenericHID(2);
 
-    buttonBoxRightTrigger = new ButtonBox(buttonboxHID);
-    buttonBoxLeftTrigger = new ButtonBox(buttonboxHID);
+    //buttonBoxRightTrigger = new ButtonBox(buttonboxHID);
+    //buttonBoxLeftTrigger = new ButtonBox(buttonboxHID);
 
     // gets called once, command ends once IMU is reset
-    CommandScheduler.getInstance().schedule(new ContinuousSetIMUFromMegaTag1Command());
+    //CommandScheduler.getInstance().schedule(new ContinuousSetIMUFromMegaTag1Command());
 
     if (swerveSubsystem != null) {
       /*
@@ -339,12 +339,12 @@ public class RobotContainer {
       // .onTrue(swerveSubsystem.pathFinderCommand());
 
       //NavX Reset
-      driverJoystick.button(XBoxConstants.BUTTON_A, FlySkyConstants.BUTTON_SWA).onTrue(new ContinuousSetIMUFromMegaTag1Command());
+      //driverJoystick.button(XBoxConstants.BUTTON_A, FlySkyConstants.BUTTON_SWA).onTrue(new ContinuousSetIMUFromMegaTag1Command());
 
 
       driverJoystick.button(XBoxConstants.BUTTON_LEFT_BUMPER, FlySkyConstants.BUTTON_SWF)
           .whileTrue(driveRobotOrientedSlowCommand);
-
+/* 
       driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH)
           .whileTrue(new HankPullTheTriggerCommand(buttonBoxRightTrigger).withName("RightTrigger"));
 
@@ -355,14 +355,14 @@ public class RobotContainer {
           .onTrue(new InstantCommand(()->visionSubsystem.setDoWeAlign(!visionSubsystem.getDoWeAlign())));
           //.toggleOnFalse(new InstantCommand(()->visionSubsystem.setDoWeAlign(false)));
      
-      driverJoystick.button(XBoxConstants.BUTTON_START, FlySkyConstants.BUTTON_SWC /*CHANGE*/)
+      driverJoystick.button(XBoxConstants.BUTTON_START, FlySkyConstants.BUTTON_SWC)
           .onTrue(new InstantCommand(()->esefSubsystem.callReverseESEFCalibration()));
           
       driverJoystick.analogButton(XBoxConstants.AXIS_RIGHT_TRIGGER, FlySkyConstants.AXIS_SWH)
           .onTrue(Commands.runOnce(() -> blinkySubsystem.setAutoAllignFinished(false)));
-
+*/
     }
-
+/*
     buttonBoxLeftTrigger.addButtonMapping(ButtonId.A1,
         new DriveToClosestStickCommand(WhichStick.LEFT).alongWith(
             new SetESEFPositionCommand(ESEFPosition.PresetPosition.L1.getPosition(), esefSubsystem)).withName("Left.L1"),
@@ -517,19 +517,19 @@ public class RobotContainer {
         .onTrue(blinkySubsystem.setModeCommand(ModeState.FLOOR_PICKUP));
     new JoystickButton(buttonboxHID, ButtonBox.ButtonId.D2.joystickButtonId())
         .onTrue(blinkySubsystem.setModeCommand(ModeState.CORAL_PICKUP));
-
+*/
   }
 
   private void setupSmartDashboardCommands() throws FileVersionException, IOException, ParseException {
     // ESEF commands
-    esefCommandFactory.setupSmartDashboardCommands();
+    //esefCommandFactory.setupSmartDashboardCommands();
 
     // AFI commands
-    afiCommandFactory.setupSmartDashboardCommands();
+    //afiCommandFactory.setupSmartDashboardCommands();
 
     // Swerve commands
     if (swerveSubsystem != null) {
-      SmartDashboard.putData("Reset IMU from Limelight data", new ContinuousSetIMUFromMegaTag1Command());
+      //SmartDashboard.putData("Reset IMU from Limelight data", new ContinuousSetIMUFromMegaTag1Command());
       swerveCommandFactory.setupSmartDashboardCommands();
 
       SmartDashboard.putData("Kill running swerve command",
@@ -544,13 +544,13 @@ public class RobotContainer {
     }
 
     // ESEF commands
-    esefCommandFactory.setupSmartDashboardCommands();
+    //esefCommandFactory.setupSmartDashboardCommands();
 
     // climber commands
-    climberCommandFactory.setupSmartDashboardCommands();
+    //climberCommandFactory.setupSmartDashboardCommands();
 
     // checklists
-    healthCommandFactory.setupSmartDashboardCommands();
+    //healthCommandFactory.setupSmartDashboardCommands();
 
   }
 
@@ -661,6 +661,7 @@ public class RobotContainer {
   }
 
   public static void setupPathPlannerCommands() {
+    /*
     NamedCommands.registerCommand("Intake", new RunEndEffectorUntilHasCoral(0.35, esefSubsystem).withTimeout(2.0));
     NamedCommands.registerCommand("Suck L2 Algae", new RunEndEffectorUntilHasAlgae(0.4, esefSubsystem)
         .andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.AlgaeL2Remove.getPosition(), esefSubsystem)));
@@ -693,10 +694,11 @@ public class RobotContainer {
         new SetEndEffectorSpeedCommand(-0.95, esefSubsystem).withTimeout(Seconds.of(0.25))
           .andThen(new SetEndEffectorSpeedCommand(0, esefSubsystem))
           .andThen(new SetESEFPositionCommand(ESEFPosition.PresetPosition.Home.getPosition(), esefSubsystem)));
+    */
     NamedCommands.registerCommand("Test1", new LogCommand("test 1"));
     NamedCommands.registerCommand("Test2", new LogCommand("test 2"));
     NamedCommands.registerCommand("Test", Commands.print("I EXIST"));
-    NamedCommands.registerCommand("Reset IMU", new ContinuousSetIMUFromMegaTag1Command());
+    //NamedCommands.registerCommand("Reset IMU", new ContinuousSetIMUFromMegaTag1Command());
     NamedCommands.registerCommand("XMode", new InstantCommand(() -> swerveSubsystem.lock()));
   }
 

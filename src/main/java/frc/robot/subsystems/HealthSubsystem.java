@@ -86,7 +86,7 @@ public class HealthSubsystem extends SubsystemBase {
 
     encoderWatcher = new EncoderWatcher();
     updateNTForDisconnectEncoders(new String[0]);
-
+/* 
     if (RobotContainer.afiSubsystem.pivot != null) {
       encoderWatcher.addEncoder("Intake Front Absolute", RobotContainer.afiSubsystem.frontEncoder);
       encoderWatcher.addEncoder("Intake Rear Absolute", RobotContainer.afiSubsystem.rearEncoder);
@@ -94,6 +94,7 @@ public class HealthSubsystem extends SubsystemBase {
     if (RobotContainer.climberSubsystem.motor != null) {
       encoderWatcher.addEncoder("Climber Absolute", RobotContainer.climberSubsystem.absEncoder);
     }
+    */
 
     if (RobotContainer.swerveSubsystem != null) {
       swerveMotorWatcher = new MotorWatcher("frc3620/health/swerve");
@@ -144,7 +145,7 @@ public class HealthSubsystem extends SubsystemBase {
           healthMapEntry.getValue().toString());
     }
     HealthStatus healthStatus = Collections.max(healthMap.values());
-    RobotContainer.blinkySubsystem.setHealthStatus(healthStatus);
+    //RobotContainer.blinkySubsystem.setHealthStatus(healthStatus);
 
     Color indicator = Color.kGreen;
     if (healthStatus.compareTo(HealthStatus.ERROR) >= 0) {

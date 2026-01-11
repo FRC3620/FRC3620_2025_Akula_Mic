@@ -70,7 +70,7 @@ public class DriveToPoseCommand extends Command {
             commandTimer.reset();
             commandTimer.start();
         }
-        RobotContainer.blinkySubsystem.setAutoAllignFinished(false);
+        //RobotContainer.blinkySubsystem.setAutoAllignFinished(false);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class DriveToPoseCommand extends Command {
     public void end(boolean interrupted) {
         SmartDashboard.putBoolean("frc3620/driveToPose/running", false);
         if (!interrupted) {
-            RobotContainer.blinkySubsystem.setAutoAllignFinished(true);
+            //RobotContainer.blinkySubsystem.setAutoAllignFinished(true);
         }
     }
 

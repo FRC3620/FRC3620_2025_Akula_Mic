@@ -16,12 +16,12 @@ import frc.robot.subsystems.esefsubsystem.ESEFSubsystem;
 
 public class SetManualElevatorCommand extends Command {
 
-  ESEFSubsystem esef = RobotContainer.esefSubsystem;
+  //ESEFSubsystem esef = RobotContainer.esefSubsystem;
 
   /** Creates a new ManualShooterSpeedAndAngleCommand. */
   public SetManualElevatorCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(esef);  
+    //addRequirements(esef);  
   }
 
   // Called when the command is initially scheduled.
@@ -32,7 +32,7 @@ public class SetManualElevatorCommand extends Command {
 
     double elevatorPos = SmartDashboard.getNumber("Elevator.ManualPosition", 5);
 
-    esef.setElevatorPosition(Inches.of(elevatorPos));
+    //esef.setElevatorPosition(Inches.of(elevatorPos));
 
 
   }
@@ -46,7 +46,7 @@ public class SetManualElevatorCommand extends Command {
 
         double elevatorPos = SmartDashboard.getNumber("Elevator.ManualPosition", 5);
 
-        esef.setElevatorPosition(Inches.of(elevatorPos));
+        //esef.setElevatorPosition(Inches.of(elevatorPos));
 
 
   }
